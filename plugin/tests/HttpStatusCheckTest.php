@@ -120,4 +120,71 @@ class HttpStatusCheckTest extends TestCase
     {
         $this->assertFalse($this->orcidCheck->invoke(null, []));
     }
+
+    // ── Redirect chain tests (P1 fix) ──────────────────────────────
+
+    public function testSparqlRedirect301Then200(): void
+    {
+        $headers = [
+            'HTTP/1.1 301 Moved Permanently',
+            'Location: https://example.com/new',
+            'HTTP/1.1 200 OK',
+            'Content-Type: application/json',
+        ];
+        $this->assertTrue($this->sparqlCheck->invoke(null, $headers));
+    }
+
+    public function testSparqlRedirect302Then200(): void
+    {
+        $headers = [
+            'HTTP/1.1 302 Found',
+            'Location: https://example.com/other',
+            'HTTP/1.1 200 OK',
+        ];
+        $this->assertTrue($this->sparqlCheck->invoke(null, $headers));
+    }
+
+    public function testSparqlDoubleRedirectThen200(): void
+    {
+        $headers = [
+            'HTTP/1.1 301 Moved Permanently',
+            'Location: https://example.com/a',
+            'HTTP/1.1 302 Found',
+            'Location: https://example.com/b',
+            'HTTP/1.1 200 OK',
+            'Content-Type: text/html',
+        ];
+        $this->assertTrue($this->sparqlCheck->invoke(null, $headers));
+    }
+
+    public function testSparqlRedirectThen404(): void
+    {
+        $headers = [
+            'HTTP/1.1 301 Moved Permanently',
+            'Location: https://example.com/gone',
+            'HTTP/1.1 404 Not Found',
+        ];
+        $this->assertFalse($this->sparqlCheck->invoke(null, $headers));
+    }
+
+    public function testOrcidRedirect301Then200(): void
+    {
+        $headers = [
+            'HTTP/1.1 301 Moved Permanently',
+            'Location: https://pub.orcid.org/v3.0/0000-0001-2345-6789',
+            'HTTP/1.1 200 OK',
+            'Content-Type: application/json',
+        ];
+        $this->assertTrue($this->orcidCheck->invoke(null, $headers));
+    }
+
+    public function testOrcidRedirectThen500(): void
+    {
+        $headers = [
+            'HTTP/1.1 302 Found',
+            'Location: https://pub.orcid.org/error',
+            'HTTP/1.1 500 Internal Server Error',
+        ];
+        $this->assertFalse($this->orcidCheck->invoke(null, $headers));
+    }
 }

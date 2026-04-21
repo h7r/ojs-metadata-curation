@@ -252,7 +252,11 @@ SPARQL;
         }
 
         if (!self::isHttpSuccess($http_response_header ?? [])) {
-            error_log('[nvMetadataCuration] SPARQL HTTP error: ' . ($http_response_header[0] ?? 'unknown') . ' — ' . $endpoint);
+            $lastStatus = '';
+            foreach (($http_response_header ?? []) as $h) {
+                if (stripos($h, 'HTTP/') === 0) { $lastStatus = $h; }
+            }
+            error_log('[nvMetadataCuration] SPARQL HTTP error: ' . ($lastStatus ?: 'unknown') . ' — ' . $endpoint);
             return null;
         }
 
@@ -321,12 +325,22 @@ SPARQL;
 
     /**
      * Check whether the HTTP response status line indicates a 2xx success.
+     *
+     * When file_get_contents follows redirects, $http_response_header
+     * accumulates all status lines (e.g. 301 then 200). We check the
+     * last HTTP/ status line — the final response.
      */
     private static function isHttpSuccess(array $headers): bool
     {
-        if (empty($headers[0])) {
+        $statusLine = '';
+        foreach ($headers as $h) {
+            if (stripos($h, 'HTTP/') === 0) {
+                $statusLine = $h;
+            }
+        }
+        if ($statusLine === '') {
             return false;
         }
-        return (bool) preg_match('/\bHTTP\/[\d.]+ 2\d{2}\b/', $headers[0]);
+        return (bool) preg_match('/\bHTTP\/[\d.]+ 2\d{2}\b/', $statusLine);
     }
 }

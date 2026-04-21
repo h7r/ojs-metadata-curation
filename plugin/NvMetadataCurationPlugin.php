@@ -26,6 +26,7 @@ use PKP\linkAction\LinkAction;
 use PKP\linkAction\request\AjaxModal;
 use PKP\plugins\GenericPlugin;
 use PKP\plugins\Hook;
+use Illuminate\Support\Facades\DB;
 
 class NvMetadataCurationPlugin extends GenericPlugin
 {
@@ -361,6 +362,7 @@ class NvMetadataCurationPlugin extends GenericPlugin
 
         if ($changed) {
             $syncing = true;
+            DB::beginTransaction();
             try {
                 // Acquire row-level lock to prevent concurrent lost-update race
                 $publicationDao = DAORegistry::getDAO('PublicationDAO');
@@ -376,7 +378,9 @@ class NvMetadataCurationPlugin extends GenericPlugin
                     $freshKeywords[$locale] = array_values(array_unique(array_merge($existing, $labels)));
                 }
                 Repo::publication()->edit($freshPub, ['keywords' => $freshKeywords]);
+                DB::commit();
             } catch (\Throwable $e) {
+                DB::rollBack();
                 error_log('[nvMetadataCuration] syncNvKeywordsAfterEdit failed: ' . $e->getMessage());
             }
             $syncing = false;
