@@ -14,6 +14,7 @@ namespace APP\plugins\generic\nvMetadataCuration\classes\handlers;
 
 use APP\facades\Repo;
 use APP\plugins\generic\nvMetadataCuration\classes\managers\OrcidRorManager;
+use APP\plugins\generic\nvMetadataCuration\classes\managers\RateLimitManager;
 use APP\plugins\generic\nvMetadataCuration\classes\managers\SparqlLookupManager;
 use PKP\db\DAORegistry;
 use PKP\handler\PKPHandler;
@@ -67,42 +68,18 @@ class SuggestHandler extends PKPHandler
             return;
         }
 
-        // Free tier: enforce daily limit per context via file-based counter
-        // Uses flock() for atomic read-check-increment to prevent TOCTOU race
-        $countFile = sys_get_temp_dir() . '/nv_ratelimit_' . $contextId . '_' . date('Ymd');
-        $fp = @fopen($countFile, 'c+');
-        if (!$fp) {
-            return; // Cannot enforce limit — fail open rather than block users
-        }
+        // Free tier: enforce daily limit per context via RateLimitManager
+        $limiter = new RateLimitManager(self::FREE_TIER_DAILY_LIMIT);
+        $result = $limiter->check($contextId);
 
-        try {
-            if (!flock($fp, LOCK_EX)) {
-                fclose($fp);
-                return;
-            }
-
-            $currentCount = (int) stream_get_contents($fp);
-
-            if ($currentCount >= self::FREE_TIER_DAILY_LIMIT) {
-                flock($fp, LOCK_UN);
-                fclose($fp);
-                http_response_code(429);
-                header('Content-Type: application/json; charset=utf-8');
-                echo json_encode([
-                    'error' => 'Daily request limit reached. Add an NV API key in plugin settings for unlimited access.',
-                    'limit' => self::FREE_TIER_DAILY_LIMIT,
-                ], JSON_UNESCAPED_UNICODE);
-                exit;
-            }
-
-            // Atomic increment: rewind, truncate, write new count while holding lock
-            rewind($fp);
-            ftruncate($fp, 0);
-            fwrite($fp, (string) ($currentCount + 1));
-            fflush($fp);
-            flock($fp, LOCK_UN);
-        } finally {
-            fclose($fp);
+        if (!$result['allowed']) {
+            http_response_code(429);
+            header('Content-Type: application/json; charset=utf-8');
+            echo json_encode([
+                'error' => 'Daily request limit reached. Add an NV API key in plugin settings for unlimited access.',
+                'limit' => self::FREE_TIER_DAILY_LIMIT,
+            ], JSON_UNESCAPED_UNICODE);
+            exit;
         }
     }
 
