@@ -53,7 +53,7 @@ class AuditHandler extends PKPHandler
         $collector = Repo::submission()
             ->getCollector()
             ->filterByContextIds([$contextId])
-            ->filterByStatus([STATUS_QUEUED, STATUS_PUBLISHED])
+            ->filterByStatus([STATUS_QUEUED, STATUS_PUBLISHED, STATUS_DECLINED, STATUS_SCHEDULED])
             ->limit(100);
 
         $submissions = Repo::submission()->getMany($collector);
