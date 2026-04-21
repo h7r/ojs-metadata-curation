@@ -16,6 +16,7 @@
 	var config = window.nvMetadataCuration || {};
 	var ORCID_URL = config.orcidUrl || '';
 	var ROR_URL = config.rorUrl || '';
+	var SAVE_CONTRIBUTOR_IDS_URL = config.saveContributorIdsUrl || '';
 	var DEBOUNCE_MS = 400;
 
 	if (!ORCID_URL && !ROR_URL) return;
@@ -46,6 +47,99 @@
 		};
 		xhr.onerror = function () { callback(new Error('Network error'), null); };
 		xhr.ontimeout = function () { callback(new Error('Timeout'), null); };
+		xhr.send(params.toString());
+	}
+
+	/**
+	 * Extract submissionId from the OJS page URL or DOM.
+	 */
+	function getSubmissionId() {
+		var match = window.location.pathname.match(/\/submission\/(\d+)\b/);
+		if (match) return match[1];
+		var hidden = document.querySelector('input[name="submissionId"]');
+		if (hidden) return hidden.value;
+		return null;
+	}
+
+	/**
+	 * Try to extract the authorId from the contributor form context.
+	 */
+	function getAuthorId(input) {
+		var form = input.closest('form');
+		if (form) {
+			var field = form.querySelector('input[name="authorId"], input[name="contributorId"]');
+			if (field) return field.value;
+		}
+		// Fallback: use field name attribute index
+		var name = input.getAttribute('name') || '';
+		var idMatch = name.match(/\[(\d+)\]/);
+		if (idMatch) return idMatch[1];
+		return null;
+	}
+
+	/**
+	 * Persist validation state server-side (C1b compliance).
+	 * Calls saveContributorIds endpoint before flipping the UI badge.
+	 */
+	function validateOnServer(input, identifier, displayName, type, onSuccess, onError) {
+		if (!SAVE_CONTRIBUTOR_IDS_URL) {
+			console.warn('[nvMetadataCuration] saveContributorIdsUrl not configured, skipping server validation');
+			onSuccess();
+			return;
+		}
+
+		var submissionId = getSubmissionId();
+		if (!submissionId) {
+			console.warn('[nvMetadataCuration] Could not determine submissionId, skipping server validation');
+			onSuccess();
+			return;
+		}
+
+		var authorId = getAuthorId(input) || '0';
+		var contrib = { authorId: authorId };
+		if (type === 'orcid') {
+			contrib.orcid = identifier;
+			contrib.orcidDisplayName = displayName;
+		} else if (type === 'ror') {
+			contrib.rorId = identifier;
+			contrib.rorDisplayName = displayName;
+		}
+
+		var params = new URLSearchParams({
+			submissionId: submissionId,
+			contributors: JSON.stringify([contrib])
+		});
+
+		var xhr = new XMLHttpRequest();
+		xhr.open('POST', SAVE_CONTRIBUTOR_IDS_URL);
+		xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+		xhr.timeout = 5000;
+		xhr.onload = function () {
+			if (xhr.status === 200) {
+				onSuccess();
+			} else {
+				var msg = 'Server validation failed';
+				try {
+					var resp = JSON.parse(xhr.responseText);
+					if (resp.details) {
+						var keys = Object.keys(resp.details);
+						if (keys.length > 0) {
+							var fieldErrors = resp.details[keys[0]];
+							msg = Object.values(fieldErrors).join('; ');
+						}
+					}
+				} catch (e) { /* use default message */ }
+				onError(msg);
+			}
+		};
+		xhr.onerror = function () {
+			console.error('[nvMetadataCuration] Network error during server validation');
+			onSuccess(); // graceful degradation
+		};
+		xhr.ontimeout = function () {
+			console.error('[nvMetadataCuration] Timeout during server validation');
+			onSuccess(); // graceful degradation
+		};
 		xhr.send(params.toString());
 	}
 
@@ -248,10 +342,18 @@
 		confirmBtn.title = 'Confirm';
 		confirmBtn.setAttribute('aria-label', 'Confirm ' + type + ' for ' + label);
 		confirmBtn.addEventListener('click', function () {
-			chip.classList.remove('nv-validation-pending-chip');
-			chip.classList.add('nv-validation-confirmed-chip');
-			chip.querySelector('.nv-validation-icon').textContent = '\u2713';
-			input.dataset['nv' + capitalize(type) + 'Validated'] = 'true';
+			confirmBtn.disabled = true;
+			validateOnServer(input, identifier, label, type, function () {
+				chip.classList.remove('nv-validation-pending-chip');
+				chip.classList.add('nv-validation-confirmed-chip');
+				chip.querySelector('.nv-validation-icon').textContent = '\u2713';
+				input.dataset['nv' + capitalize(type) + 'Validated'] = 'true';
+				confirmBtn.disabled = false;
+			}, function (errorMsg) {
+				chip.querySelector('.nv-validation-icon').textContent = '\u2717';
+				chip.title = errorMsg;
+				confirmBtn.disabled = false;
+			});
 		});
 
 		var removeBtn = document.createElement('button');

@@ -121,6 +121,52 @@ class OrcidRorManager
     }
 
     /**
+     * Validate ORCID format with ISO 7064 Mod 11-2 checksum.
+     *
+     * @param string $orcid bare ORCID (e.g. "0000-0002-1825-0097")
+     */
+    public static function isValidOrcidFormat(string $orcid): bool
+    {
+        if (!preg_match('/^\d{4}-\d{4}-\d{4}-\d{3}[\dX]$/', $orcid)) {
+            return false;
+        }
+
+        $digits = str_replace('-', '', $orcid);
+        $total = 0;
+        for ($i = 0; $i < 15; $i++) {
+            $total = ($total + (int) $digits[$i]) * 2;
+        }
+        $remainder = $total % 11;
+        $checkDigit = (12 - $remainder) % 11;
+        $expected = $checkDigit === 10 ? 'X' : (string) $checkDigit;
+
+        return $digits[15] === $expected;
+    }
+
+    /**
+     * Validate ROR identifier format.
+     *
+     * @param string $rorId full ROR URL (e.g. "https://ror.org/03yrm5c26")
+     */
+    public static function isValidRorFormat(string $rorId): bool
+    {
+        return (bool) preg_match('#^https://ror\.org/0[a-z0-9]{6}[0-9]{2}$#', $rorId);
+    }
+
+    /**
+     * Extract bare ORCID from a URI or bare string.
+     * Returns null if input is not recognizable.
+     */
+    public static function extractOrcid(string $input): ?string
+    {
+        $input = trim($input);
+        if (preg_match('/(\d{4}-\d{4}-\d{4}-\d{3}[\dX])/', $input, $m)) {
+            return $m[1];
+        }
+        return null;
+    }
+
+    /**
      * HTTP GET with timeout.
      */
     private function httpGet(string $url, array $headers = []): ?string

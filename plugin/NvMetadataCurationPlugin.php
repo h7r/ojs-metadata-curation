@@ -161,6 +161,7 @@ class NvMetadataCurationPlugin extends GenericPlugin
         $saveUrl = $dispatcher->url($request, Application::ROUTE_PAGE, null, 'nv-metadata-suggest', 'save');
         $orcidUrl = $dispatcher->url($request, Application::ROUTE_PAGE, null, 'nv-metadata-suggest', 'orcid');
         $rorUrl = $dispatcher->url($request, Application::ROUTE_PAGE, null, 'nv-metadata-suggest', 'ror');
+        $saveContributorIdsUrl = $dispatcher->url($request, Application::ROUTE_PAGE, null, 'nv-metadata-suggest', 'saveContributorIds');
 
         $thesaurus = $this->getSetting($contextId, 'thesaurus') ?: 'unesco';
         $interactionMode = $this->getSetting($contextId, 'interactionMode') ?: 'suggestion';
@@ -176,6 +177,7 @@ class NvMetadataCurationPlugin extends GenericPlugin
             'saveUrl' => $saveUrl,
             'orcidUrl' => $orcidUrl,
             'rorUrl' => $rorUrl,
+            'saveContributorIdsUrl' => $saveContributorIdsUrl,
             'thesaurus' => $thesaurus,
             'thesauri' => $thesauri,
             'interactionMode' => $interactionMode,

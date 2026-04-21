@@ -132,23 +132,18 @@ class SuggestHandler extends PKPHandler
     }
 
     /**
-     * Save selected SKOS keywords to submission_settings.
-     * Stores JSON array under key 'nvKeywords' (SPECS.md section 6.3).
+     * Authorize access to a submission: user must be authenticated,
+     * submission must exist in the current context, and user must be
+     * a participant or journal manager.
      *
-     * Expects POST with:
-     *   - submissionId (int)
-     *   - keywords (JSON string — array of keyword objects)
+     * @return array{user: \PKP\user\User, submission: \APP\submission\Submission, submissionDao: \PKP\db\DAO}
      */
-    public function save($args, $request)
+    private function authorizeSubmissionAccess($request, int $submissionId): array
     {
-        $submissionId = (int) $request->getUserVar('submissionId');
-        $keywordsRaw = (string) $request->getUserVar('keywords');
-
         if ($submissionId <= 0) {
             $this->sendJsonError('Missing or invalid submissionId');
         }
 
-        // Authorization: verify the current user is author or editor of this submission
         $user = $request->getUser();
         if (!$user) {
             $this->sendJsonError('Authentication required', 401);
@@ -161,26 +156,22 @@ class SuggestHandler extends PKPHandler
             $this->sendJsonError('Submission not found', 404);
         }
 
-        // Check context match: submission must belong to the current journal
         $context = $request->getContext();
         if (!$context || $submission->getData('contextId') !== $context->getId()) {
             $this->sendJsonError('Submission not in current context', 403);
         }
 
-        // Check user role: must be a participant on this submission
-        // (author, editor, section editor) or a journal manager
         $stageAssignmentDao = DAORegistry::getDAO('StageAssignmentDAO');
         $assignments = $stageAssignmentDao->getBySubmissionAndStageId(
             $submissionId,
-            null, // all stages
-            null, // all group IDs
+            null,
+            null,
             $user->getId()
         );
 
         $isParticipant = !$assignments->wasEmpty();
 
         if (!$isParticipant) {
-            // Fallback: check if user is a journal manager for this context
             $userRoles = $user->getRoles($context->getId());
             $isManager = false;
             foreach ($userRoles as $role) {
@@ -193,6 +184,25 @@ class SuggestHandler extends PKPHandler
                 $this->sendJsonError('Not authorized to modify this submission', 403);
             }
         }
+
+        return ['user' => $user, 'submission' => $submission, 'submissionDao' => $submissionDao];
+    }
+
+    /**
+     * Save selected SKOS keywords to submission_settings.
+     * Stores JSON array under key 'nvKeywords' (SPECS.md section 6.3).
+     *
+     * Expects POST with:
+     *   - submissionId (int)
+     *   - keywords (JSON string — array of keyword objects)
+     */
+    public function save($args, $request)
+    {
+        $submissionId = (int) $request->getUserVar('submissionId');
+        $keywordsRaw = (string) $request->getUserVar('keywords');
+
+        ['submission' => $submission, 'submissionDao' => $submissionDao]
+            = $this->authorizeSubmissionAccess($request, $submissionId);
 
         $keywords = json_decode($keywordsRaw, true);
         if (!is_array($keywords)) {
@@ -273,6 +283,114 @@ class SuggestHandler extends PKPHandler
 
         header('Content-Type: application/json; charset=utf-8');
         echo json_encode($result, JSON_UNESCAPED_UNICODE);
+        exit;
+    }
+
+    /**
+     * Server-side ORCID/ROR validation endpoint (C1b compliance).
+     * Validates identifier formats and persists human-confirmed validation state.
+     *
+     * Expects POST with:
+     *   - submissionId (int)
+     *   - contributors (JSON string — array of contributor objects)
+     *
+     * Each contributor object: { authorId, orcid?, rorId?, orcidDisplayName?, rorDisplayName? }
+     */
+    public function saveContributorIds($args, $request)
+    {
+        $submissionId = (int) $request->getUserVar('submissionId');
+        $contributorsRaw = (string) $request->getUserVar('contributors');
+
+        ['user' => $user, 'submission' => $submission, 'submissionDao' => $submissionDao]
+            = $this->authorizeSubmissionAccess($request, $submissionId);
+
+        $contributors = json_decode($contributorsRaw, true);
+        if (!is_array($contributors)) {
+            $this->sendJsonError('Invalid contributors JSON');
+        }
+
+        $errors = [];
+        $validated = [];
+        $now = gmdate('Y-m-d\TH:i:s\Z');
+        $userId = $user->getId();
+
+        foreach ($contributors as $contrib) {
+            $authorId = (string) ($contrib['authorId'] ?? '');
+            if ($authorId === '') {
+                continue;
+            }
+
+            $entry = [];
+            $entryErrors = [];
+
+            // Validate ORCID if provided
+            $orcid = trim((string) ($contrib['orcid'] ?? ''));
+            if ($orcid !== '') {
+                $bareOrcid = OrcidRorManager::extractOrcid($orcid);
+                if ($bareOrcid === null || !OrcidRorManager::isValidOrcidFormat($bareOrcid)) {
+                    $entryErrors['orcid'] = 'Invalid ORCID format or checksum';
+                } else {
+                    $entry['orcid'] = $bareOrcid;
+                    $entry['orcidDisplayName'] = (string) ($contrib['orcidDisplayName'] ?? '');
+                    $entry['orcidValidated'] = true;
+                    $entry['orcidValidatedAt'] = $now;
+                    $entry['orcidValidatedBy'] = $userId;
+                }
+            }
+
+            // Validate ROR if provided
+            $rorId = trim((string) ($contrib['rorId'] ?? ''));
+            if ($rorId !== '') {
+                if (!OrcidRorManager::isValidRorFormat($rorId)) {
+                    $entryErrors['rorId'] = 'Invalid ROR identifier format';
+                } else {
+                    $entry['rorId'] = $rorId;
+                    $entry['rorDisplayName'] = (string) ($contrib['rorDisplayName'] ?? '');
+                    $entry['rorValidated'] = true;
+                    $entry['rorValidatedAt'] = $now;
+                    $entry['rorValidatedBy'] = $userId;
+                }
+            }
+
+            if (!empty($entryErrors)) {
+                $errors[$authorId] = $entryErrors;
+            }
+
+            if (!empty($entry)) {
+                $validated[$authorId] = $entry;
+            }
+        }
+
+        if (!empty($errors)) {
+            http_response_code(422);
+            header('Content-Type: application/json; charset=utf-8');
+            echo json_encode([
+                'error' => 'Validation failed',
+                'details' => $errors,
+            ], JSON_UNESCAPED_UNICODE);
+            exit;
+        }
+
+        // Merge with existing validation data (preserves previously validated contributors)
+        $existingJson = $submission->getData('nvContributorValidation');
+        $existing = $existingJson ? json_decode($existingJson, true) : [];
+        if (!is_array($existing)) {
+            $existing = [];
+        }
+
+        foreach ($validated as $authorId => $entry) {
+            $existing[$authorId] = array_merge($existing[$authorId] ?? [], $entry);
+        }
+
+        $submission->setData('nvContributorValidation', json_encode($existing, JSON_UNESCAPED_UNICODE));
+        $submissionDao->updateObject($submission);
+
+        header('Content-Type: application/json; charset=utf-8');
+        echo json_encode([
+            'status' => 'ok',
+            'submissionId' => $submissionId,
+            'validatedCount' => count($validated),
+        ], JSON_UNESCAPED_UNICODE);
         exit;
     }
 
