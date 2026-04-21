@@ -16,6 +16,7 @@
 	var config = window.nvMetadataCuration || {};
 	var SUGGEST_URL = config.suggestUrl || '';
 	var THESAURUS = config.thesaurus || 'unesco';
+	var INTERACTION_MODE = config.interactionMode || 'suggestion';
 	var MIN_CHARS = config.minChars || 3;
 	var DEBOUNCE_MS = 300;
 
@@ -217,6 +218,7 @@
 	function selectItem(input, item) {
 		input.value = item.label_primary;
 		hideDropdown();
+		clearBypassWarning(input);
 
 		var kwdEntry = {
 			kwd_value: item.label_primary,
@@ -239,6 +241,58 @@
 
 		// Clear the input for next keyword entry
 		input.value = '';
+	}
+
+	/**
+	 * Handle free-text keyword entry (bypass mode).
+	 * Adds an unvalidated keyword and shows a warning.
+	 */
+	function addFreeTextKeyword(input) {
+		var value = input.value.trim();
+		if (!value) return;
+
+		hideDropdown();
+
+		var kwdEntry = {
+			kwd_value: value,
+			kwd_uri: '',
+			kwd_lang: detectLang(),
+			kwd_thesaurus: '',
+			kwd_validated: false
+		};
+
+		var exists = selectedKeywords.some(function (k) {
+			return k.kwd_value === kwdEntry.kwd_value && !k.kwd_uri;
+		});
+		if (!exists) {
+			selectedKeywords.push(kwdEntry);
+		}
+
+		addTagChip(input, kwdEntry);
+		showBypassWarning(input);
+		input.value = '';
+	}
+
+	/**
+	 * Show bypass warning below the input.
+	 */
+	function showBypassWarning(input) {
+		var container = input.closest('.pkpFormField') || input.parentNode;
+		if (container.querySelector('.nv-bypass-warning')) return;
+		var warning = document.createElement('span');
+		warning.className = 'nv-bypass-warning';
+		warning.setAttribute('role', 'alert');
+		warning.textContent = 'Mot-cl\u00e9 libre \u2014 non valid\u00e9 par un th\u00e9saurus contr\u00f4l\u00e9.';
+		container.appendChild(warning);
+	}
+
+	/**
+	 * Clear bypass warning.
+	 */
+	function clearBypassWarning(input) {
+		var container = input.closest('.pkpFormField') || input.parentNode;
+		var warning = container.querySelector('.nv-bypass-warning');
+		if (warning) warning.parentNode.removeChild(warning);
 	}
 
 	/**
@@ -365,10 +419,31 @@
 			input.setAttribute('aria-expanded', 'false');
 			input.setAttribute('aria-haspopup', 'listbox');
 			input.addEventListener('input', onInput);
-			input.addEventListener('keydown', handleKeydown);
+			input.addEventListener('keydown', function (e) {
+				// Mode-dependent Enter behavior (when no dropdown item is active)
+				if (e.key === 'Enter' && (!activeDropdown || activeIndex < 0)) {
+					if (INTERACTION_MODE === 'choice') {
+						// Block free text — must select from dropdown
+						e.preventDefault();
+						return;
+					}
+					if (INTERACTION_MODE === 'bypass' && input.value.trim()) {
+						e.preventDefault();
+						addFreeTextKeyword(input);
+						return;
+					}
+				}
+				handleKeydown(e);
+			});
 			input.addEventListener('blur', function () {
 				// Delay to allow click on dropdown items
-				setTimeout(hideDropdown, 200);
+				setTimeout(function () {
+					hideDropdown();
+					// In bypass mode, commit free text on blur
+					if (INTERACTION_MODE === 'bypass' && input.value.trim()) {
+						addFreeTextKeyword(input);
+					}
+				}, 200);
 			});
 		});
 

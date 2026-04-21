@@ -217,6 +217,10 @@ class SuggestHandler extends PKPHandler
         $submission->setData('nvKeywords', json_encode($validated, JSON_UNESCAPED_UNICODE));
         $submissionDao->updateObject($submission);
 
+        // Sync validated keywords into OJS native Publication::keywords
+        // so they appear in OAI-PMH, Crossref, and the public article view.
+        $this->syncKeywordsToPublication($submission, $validated);
+
         header('Content-Type: application/json; charset=utf-8');
         echo json_encode([
             'status' => 'ok',
@@ -270,6 +274,56 @@ class SuggestHandler extends PKPHandler
         header('Content-Type: application/json; charset=utf-8');
         echo json_encode($result, JSON_UNESCAPED_UNICODE);
         exit;
+    }
+
+    /**
+     * Write validated NV keywords into the OJS native keywords field
+     * on the current publication. Defensive: logs errors but never
+     * breaks the save flow if the Repo call fails.
+     */
+    private function syncKeywordsToPublication($submission, array $validated): void
+    {
+        if (empty($validated)) {
+            return;
+        }
+
+        try {
+            $publication = $submission->getCurrentPublication();
+            if (!$publication) {
+                return;
+            }
+
+            $existingKeywords = $publication->getData('keywords') ?? [];
+
+            // Group NV keywords by OJS locale
+            $nvByLocale = [];
+            foreach ($validated as $kwd) {
+                $locale = $this->mapLangToLocale($kwd['kwd_lang']);
+                $nvByLocale[$locale][] = $kwd['kwd_value'];
+            }
+
+            // Merge: NV keywords replace per-locale but preserve other locales
+            foreach ($nvByLocale as $locale => $labels) {
+                $existingKeywords[$locale] = array_values(array_unique($labels));
+            }
+
+            Repo::publication()->edit($publication, ['keywords' => $existingKeywords]);
+        } catch (\Throwable $e) {
+            error_log('[nvMetadataCuration] Failed to sync keywords to publication: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Map a short language code to an OJS locale string.
+     */
+    private function mapLangToLocale(string $lang): string
+    {
+        $map = [
+            'es' => 'es',
+            'fr' => 'fr_FR',
+            'en' => 'en',
+        ];
+        return $map[$lang] ?? $lang;
     }
 
     /**

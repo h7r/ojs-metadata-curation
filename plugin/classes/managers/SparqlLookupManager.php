@@ -14,8 +14,11 @@ namespace APP\plugins\generic\nvMetadataCuration\classes\managers;
 
 class SparqlLookupManager
 {
-    /** @var int HTTP timeout in seconds (SPECS.md section 5.3) */
+    /** @var int Default HTTP timeout in seconds (SPECS.md section 5.3) */
     private const TIMEOUT_SECONDS = 2;
+
+    /** @var int Higher timeout for BnF/Rameau — Virtuoso endpoint is slower */
+    private const TIMEOUT_SECONDS_BNF = 8;
 
     /** @var int Minimum prefix length before querying */
     private const MIN_PREFIX_LENGTH = 3;
@@ -148,35 +151,30 @@ SPARQL;
 
     /**
      * Rameau/BnF query (SPECS.md section 3.2).
-     * French only. Requires GRAPH and inScheme filters to isolate Rameau
-     * from the 650M+ triple BnF LOD graph.
+     * French only. Uses bif:contains (Virtuoso full-text index) because
+     * strstarts() does not work on lang-tagged literals in BnF's Virtuoso.
+     * Correct scheme URI: http://data.bnf.fr/vocabulary/rameau
+     * scopeNote OPTIONAL dropped — causes timeout on this endpoint.
      */
     private function buildRameauQuery(string $prefix): string
     {
         return <<<SPARQL
 PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
-PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX bif: <bif:>
 
-SELECT DISTINCT ?concept ?label ?altLabel ?broader ?broaderLabel ?scopeNote
+SELECT DISTINCT ?concept ?label ?altLabel ?broader ?broaderLabel
 WHERE {
-  GRAPH <http://data.bnf.fr/> {
-    ?concept a skos:Concept ;
-             skos:inScheme <http://rameau.bnf.fr/> ;
-             skos:prefLabel ?label .
+  ?concept a skos:Concept ;
+           skos:inScheme <http://data.bnf.fr/vocabulary/rameau> ;
+           skos:prefLabel ?label .
+  ?label bif:contains "\"{$prefix}*\"" .
+  FILTER(lang(?label) = "fr")
 
-    OPTIONAL { ?concept skos:altLabel ?altLabel . FILTER(lang(?altLabel) = "fr") }
-    OPTIONAL {
-      ?concept skos:broader ?broader .
-      ?broader skos:prefLabel ?broaderLabel .
-      FILTER(lang(?broaderLabel) = "fr")
-    }
-    OPTIONAL {
-      ?concept skos:scopeNote ?scopeNote .
-      FILTER(lang(?scopeNote) = "fr")
-    }
-
-    FILTER(lang(?label) = "fr")
-    FILTER(strstarts(lcase(str(?label)), "{$prefix}"))
+  OPTIONAL { ?concept skos:altLabel ?altLabel . FILTER(lang(?altLabel) = "fr") }
+  OPTIONAL {
+    ?concept skos:broader ?broader .
+    ?broader skos:prefLabel ?broaderLabel .
+    FILTER(lang(?broaderLabel) = "fr")
   }
 }
 ORDER BY ?label
@@ -233,10 +231,15 @@ SPARQL;
             'format' => 'application/sparql-results+json',
         ]);
 
+        // BnF Virtuoso endpoint is slower — use dedicated timeout
+        $timeout = ($endpoint === self::ENDPOINTS['rameau'])
+            ? self::TIMEOUT_SECONDS_BNF
+            : self::TIMEOUT_SECONDS;
+
         $context = stream_context_create([
             'http' => [
                 'method' => 'GET',
-                'timeout' => self::TIMEOUT_SECONDS,
+                'timeout' => $timeout,
                 'header' => "Accept: application/sparql-results+json\r\n",
                 'ignore_errors' => true,
             ],
@@ -303,7 +306,7 @@ SPARQL;
                     'notation' => null,
                     'broader_uri' => $row['broader']['value'] ?? null,
                     'broader_label' => $row['broaderLabel']['value'] ?? null,
-                    'scope_note' => $row['scopeNote']['value'] ?? null,
+                    'scope_note' => null, // scopeNote dropped from Rameau query (timeout)
                 ];
             }
         }
