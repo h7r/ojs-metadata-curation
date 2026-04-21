@@ -142,7 +142,40 @@
 	background: #f5f8fc;
 }
 
-/* Bypass warning */
+/* Mode indicator: choice — restricted input styling */
+.nv-mode-choice input[type="text"] {
+	border-left: 3px solid #1a4d8f;
+}
+
+.nv-choice-hint {
+	display: block;
+	margin-top: 0.35rem;
+	padding: 0.35rem 0.6rem;
+	background: #e3f2fd;
+	border: 1px solid #90caf9;
+	border-radius: 3px;
+	color: #1565c0;
+	font-size: 0.8125rem;
+}
+
+/* Mode indicator: bypass — permissive input styling */
+.nv-mode-bypass input[type="text"] {
+	border-left: 3px solid #f57f17;
+}
+
+.nv-bypass-notice {
+	display: block;
+	margin-top: 0.35rem;
+	padding: 0.25rem 0.6rem;
+	background: #fff8e1;
+	border: 1px solid #ffe082;
+	border-radius: 3px;
+	color: #e65100;
+	font-size: 0.75rem;
+	font-style: italic;
+}
+
+/* Bypass warning (shown after free-text commit) */
 .nv-bypass-warning {
 	display: block;
 	margin-top: 0.35rem;

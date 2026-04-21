@@ -18,8 +18,10 @@
 namespace APP\plugins\generic\nvMetadataCuration;
 
 use APP\core\Application;
+use APP\facades\Repo;
 use APP\plugins\generic\nvMetadataCuration\classes\forms\SettingsForm;
 use PKP\core\JSONMessage;
+use PKP\db\DAORegistry;
 use PKP\linkAction\LinkAction;
 use PKP\linkAction\request\AjaxModal;
 use PKP\plugins\GenericPlugin;
@@ -51,6 +53,10 @@ class NvMetadataCurationPlugin extends GenericPlugin
 
             // Register page handler for /suggest and /audit endpoints
             Hook::add('LoadHandler', [$this, 'callbackLoadHandler']);
+
+            // Merge NV keywords into Publication::keywords on every publication save,
+            // so keywords survive OJS form overwrites.
+            Hook::add('Publication::edit', [$this, 'syncNvKeywordsAfterEdit']);
         }
 
         return $success;
@@ -284,6 +290,81 @@ class NvMetadataCurationPlugin extends GenericPlugin
         if ($page === 'nv-metadata-audit') {
             define('HANDLER_CLASS', 'APP\plugins\generic\nvMetadataCuration\classes\handlers\AuditHandler');
             return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Hook callback: merge NV keywords into Publication::keywords after any
+     * publication edit. Ensures keywords selected via the NV widget survive
+     * OJS form saves that overwrite the keywords field.
+     */
+    public function syncNvKeywordsAfterEdit(string $hookName, array $args): bool
+    {
+        static $syncing = false;
+        if ($syncing) {
+            return false;
+        }
+
+        $publication = $args[0] ?? null;
+        if (!$publication || !method_exists($publication, 'getData')) {
+            return false;
+        }
+
+        $submissionId = $publication->getData('submissionId');
+        if (!$submissionId) {
+            return false;
+        }
+
+        $submissionDao = DAORegistry::getDAO('SubmissionDAO');
+        $submission = $submissionDao->getById($submissionId);
+        if (!$submission) {
+            return false;
+        }
+
+        $nvKeywordsJson = $submission->getData('nvKeywords');
+        if (empty($nvKeywordsJson)) {
+            return false;
+        }
+
+        $nvKeywords = json_decode($nvKeywordsJson, true);
+        if (!is_array($nvKeywords) || empty($nvKeywords)) {
+            return false;
+        }
+
+        $langMap = ['es' => 'es', 'fr' => 'fr_FR', 'en' => 'en'];
+
+        $nvByLocale = [];
+        foreach ($nvKeywords as $kwd) {
+            if (empty($kwd['kwd_value'])) {
+                continue;
+            }
+            $lang = $kwd['kwd_lang'] ?? 'es';
+            $locale = $langMap[$lang] ?? $lang;
+            $nvByLocale[$locale][] = $kwd['kwd_value'];
+        }
+
+        $existingKeywords = $publication->getData('keywords') ?? [];
+        $changed = false;
+
+        foreach ($nvByLocale as $locale => $labels) {
+            $existing = $existingKeywords[$locale] ?? [];
+            $merged = array_values(array_unique(array_merge($existing, $labels)));
+            if ($merged !== $existing) {
+                $existingKeywords[$locale] = $merged;
+                $changed = true;
+            }
+        }
+
+        if ($changed) {
+            $syncing = true;
+            try {
+                Repo::publication()->edit($publication, ['keywords' => $existingKeywords]);
+            } catch (\Throwable $e) {
+                error_log('[nvMetadataCuration] syncNvKeywordsAfterEdit failed: ' . $e->getMessage());
+            }
+            $syncing = false;
         }
 
         return false;

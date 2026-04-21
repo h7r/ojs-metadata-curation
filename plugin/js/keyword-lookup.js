@@ -30,6 +30,7 @@
 	var activeInput = null;
 	var activeIndex = -1; // keyboard navigation index
 	var activeResults = []; // current result set for keyboard selection
+	var _injectingKeyword = false; // guard: programmatic Enter for OJS field injection
 
 	// Accumulate selected keywords per submission for batch save
 	var selectedKeywords = [];
@@ -213,10 +214,9 @@
 
 	/**
 	 * Handle selection of a thesaurus concept.
-	 * Adds the keyword to the selection list and persists via /save endpoint.
+	 * Injects the keyword into the OJS native field and persists NV metadata.
 	 */
 	function selectItem(input, item) {
-		input.value = item.label_primary;
 		hideDropdown();
 		clearBypassWarning(input);
 
@@ -236,16 +236,17 @@
 			selectedKeywords.push(kwdEntry);
 		}
 
-		// Visual feedback: add a tag chip next to the input
-		addTagChip(input, kwdEntry);
+		// Inject into OJS native keyword field (Publication::keywords)
+		// so keywords appear in OAI-PMH, Crossref, and the public view.
+		commitToOjsField(input, item.label_primary);
 
-		// Clear the input for next keyword entry
-		input.value = '';
+		// Persist NV metadata to server
+		autoSave();
 	}
 
 	/**
 	 * Handle free-text keyword entry (bypass mode).
-	 * Adds an unvalidated keyword and shows a warning.
+	 * Injects into OJS native field and shows an unvalidated warning.
 	 */
 	function addFreeTextKeyword(input) {
 		var value = input.value.trim();
@@ -268,9 +269,41 @@
 			selectedKeywords.push(kwdEntry);
 		}
 
-		addTagChip(input, kwdEntry);
 		showBypassWarning(input);
-		input.value = '';
+		// Inject into OJS native keyword field
+		commitToOjsField(input, value);
+		// Persist NV metadata to server
+		autoSave();
+	}
+
+	/**
+	 * Commit a keyword value into the OJS native keyword field.
+	 * Sets the input value and dispatches Enter so the Vue.js
+	 * FieldControlledVocab component captures the keyword in its own state.
+	 */
+	function commitToOjsField(input, value) {
+		_injectingKeyword = true;
+		input.value = value;
+		input.dispatchEvent(new Event('input', { bubbles: true }));
+		setTimeout(function () {
+			input.dispatchEvent(new KeyboardEvent('keydown', {
+				key: 'Enter', code: 'Enter', keyCode: 13, which: 13,
+				bubbles: true, cancelable: true
+			}));
+			input.dispatchEvent(new KeyboardEvent('keyup', {
+				key: 'Enter', code: 'Enter', keyCode: 13, which: 13,
+				bubbles: true
+			}));
+			_injectingKeyword = false;
+		}, 50);
+	}
+
+	/**
+	 * Auto-save NV keyword metadata to the server immediately.
+	 */
+	function autoSave() {
+		var subId = getSubmissionId();
+		if (subId) saveKeywords(subId);
 	}
 
 	/**
@@ -420,6 +453,8 @@
 			input.setAttribute('aria-haspopup', 'listbox');
 			input.addEventListener('input', onInput);
 			input.addEventListener('keydown', function (e) {
+				// Skip mode enforcement for programmatic keyword injection
+				if (_injectingKeyword) return;
 				// Mode-dependent Enter behavior (when no dropdown item is active)
 				if (e.key === 'Enter' && (!activeDropdown || activeIndex < 0)) {
 					if (INTERACTION_MODE === 'choice') {
@@ -438,6 +473,7 @@
 			input.addEventListener('blur', function () {
 				// Delay to allow click on dropdown items
 				setTimeout(function () {
+					if (_injectingKeyword) return;
 					hideDropdown();
 					// In bypass mode, commit free text on blur
 					if (INTERACTION_MODE === 'bypass' && input.value.trim()) {
@@ -445,6 +481,41 @@
 					}
 				}, 200);
 			});
+
+			// Mode indicator: CSS class + mode-specific UI
+			var modeContainer = input.closest('.pkpFormField') || input.parentNode;
+			modeContainer.classList.add('nv-mode-' + INTERACTION_MODE);
+			input.dataset.nvMode = INTERACTION_MODE;
+
+			if (INTERACTION_MODE === 'choice') {
+				if (!input.getAttribute('placeholder')) {
+					input.setAttribute('placeholder', 'S\u00e9lectionnez un terme du th\u00e9saurus\u2026');
+				}
+				// Block paste of free text that bypasses autocomplete
+				input.addEventListener('paste', function (pe) {
+					// Allow paste for search triggering, but visually signal restriction
+					var container = input.closest('.pkpFormField') || input.parentNode;
+					if (!container.querySelector('.nv-choice-hint')) {
+						var hint = document.createElement('span');
+						hint.className = 'nv-choice-hint';
+						hint.setAttribute('role', 'status');
+						hint.textContent = 'S\u00e9lection obligatoire depuis le th\u00e9saurus.';
+						container.appendChild(hint);
+						setTimeout(function () {
+							if (hint.parentNode) hint.parentNode.removeChild(hint);
+						}, 3000);
+					}
+				});
+			}
+
+			if (INTERACTION_MODE === 'bypass') {
+				if (!modeContainer.querySelector('.nv-bypass-notice')) {
+					var notice = document.createElement('span');
+					notice.className = 'nv-bypass-notice';
+					notice.textContent = 'Mode libre \u2014 les termes non valid\u00e9s seront signal\u00e9s.';
+					modeContainer.appendChild(notice);
+				}
+			}
 		});
 
 		// Hook into OJS form save to persist keywords

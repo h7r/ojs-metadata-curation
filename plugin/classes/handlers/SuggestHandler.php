@@ -199,18 +199,18 @@ class SuggestHandler extends PKPHandler
             $this->sendJsonError('Invalid keywords JSON');
         }
 
-        // Validate each keyword entry
+        // Validate each keyword entry (bypass keywords have empty kwd_uri)
         $validated = [];
         foreach ($keywords as $kwd) {
-            if (empty($kwd['kwd_uri']) || empty($kwd['kwd_value'])) {
+            if (empty($kwd['kwd_value'])) {
                 continue;
             }
             $validated[] = [
                 'kwd_value' => (string) $kwd['kwd_value'],
-                'kwd_uri' => (string) $kwd['kwd_uri'],
+                'kwd_uri' => (string) ($kwd['kwd_uri'] ?? ''),
                 'kwd_lang' => (string) ($kwd['kwd_lang'] ?? 'es'),
-                'kwd_thesaurus' => (string) ($kwd['kwd_thesaurus'] ?? 'unesco'),
-                'kwd_validated' => true,
+                'kwd_thesaurus' => (string) ($kwd['kwd_thesaurus'] ?? ''),
+                'kwd_validated' => !empty($kwd['kwd_uri']),
             ];
         }
 
