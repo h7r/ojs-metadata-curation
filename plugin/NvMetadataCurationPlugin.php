@@ -30,6 +30,9 @@ class NvMetadataCurationPlugin extends GenericPlugin
     /** @var ?self Singleton for template access from handlers */
     private static ?self $instance = null;
 
+    /** @var bool Guard against duplicate asset injection across template renders */
+    private bool $assetsInjected = false;
+
     /**
      * @copydoc Plugin::register()
      */
@@ -136,28 +139,23 @@ class NvMetadataCurationPlugin extends GenericPlugin
 
     /**
      * Hook callback: inject the keyword-lookup JS, ORCID/ROR widget,
-     * and config into the submission metadata form template.
+     * and config into backend pages.
+     *
+     * OJS 3.3 rendered the submission form via Smarty (step3.tpl).
+     * OJS 3.4 uses a Vue.js submission wizard — no Smarty template to
+     * match.  We inject assets on every backend TemplateManager::display
+     * and let the JS activate only when keyword / ORCID / ROR fields
+     * exist in the DOM (via MutationObserver).  The `contexts => backend`
+     * parameter already restricts assets to editorial pages.
      */
     public function injectKeywordLookup(string $hookName, array $args): bool
     {
-        $templateMgr = $args[0];
-        $template = $args[1] ?? '';
-
-        $metadataTemplates = [
-            'submission/form/metadata.tpl',
-            'submission/submit/step3.tpl',
-            'submission/submissionMetadataForm',
-        ];
-        $isMetadataForm = false;
-        foreach ($metadataTemplates as $target) {
-            if (strpos($template, $target) !== false) {
-                $isMetadataForm = true;
-                break;
-            }
-        }
-        if (!$isMetadataForm) {
+        if ($this->assetsInjected) {
             return false;
         }
+        $this->assetsInjected = true;
+
+        $templateMgr = $args[0];
 
         $request = Application::get()->getRequest();
         $dispatcher = $request->getDispatcher();

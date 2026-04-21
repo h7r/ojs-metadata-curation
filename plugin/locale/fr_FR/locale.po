@@ -1,0 +1,107 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: nvMetadataCuration 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-04-21T00:00:00+00:00\n"
+"PO-Revision-Date: 2026-04-21T00:00:00+00:00\n"
+"Last-Translator: Ne Varietur <contact@nevarietur.com>\n"
+"Language: fr_FR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "plugins.generic.nvMetadataCuration.displayName"
+msgstr "NV Curation des métadonnées"
+
+msgid "plugins.generic.nvMetadataCuration.description"
+msgstr "Consultation de vocabulaires contrôlés pour les champs de métadonnées OJS via des thésaurus SKOS/SPARQL (UNESCO, Rameau, Eurovoc). Inclut la recherche ORCID/ROR avec validation humaine."
+
+msgid "plugins.generic.nvMetadataCuration.settings.thesauri"
+msgstr "Thésaurus"
+
+msgid "plugins.generic.nvMetadataCuration.settings.thesauriDescription"
+msgstr "Sélectionnez les thésaurus disponibles pour la recherche de mots-clés dans cette revue."
+
+msgid "plugins.generic.nvMetadataCuration.thesaurus.unesco"
+msgstr "Thésaurus UNESCO"
+
+msgid "plugins.generic.nvMetadataCuration.thesaurus.rameau"
+msgstr "Rameau (BnF)"
+
+msgid "plugins.generic.nvMetadataCuration.thesaurus.eurovoc"
+msgstr "Eurovoc (UE)"
+
+msgid "plugins.generic.nvMetadataCuration.settings.interactionMode"
+msgstr "Mode d'interaction"
+
+msgid "plugins.generic.nvMetadataCuration.settings.interactionModeDescription"
+msgstr "Contrôle la présentation des suggestions de mots-clés aux auteurs."
+
+msgid "plugins.generic.nvMetadataCuration.mode.suggestion"
+msgstr "Suggestion (proposé, modifiable)"
+
+msgid "plugins.generic.nvMetadataCuration.mode.choice"
+msgstr "Choix (sélection obligatoire dans le thésaurus)"
+
+msgid "plugins.generic.nvMetadataCuration.mode.bypass"
+msgstr "Libre (texte libre avec avertissement)"
+
+msgid "plugins.generic.nvMetadataCuration.settings.apiKey"
+msgstr "Clé API NV"
+
+msgid "plugins.generic.nvMetadataCuration.settings.apiKeyLabel"
+msgstr "Clé API"
+
+msgid "plugins.generic.nvMetadataCuration.settings.apiKeyDescription"
+msgstr "Saisissez votre clé API Ne Varietur pour un accès illimité. Sans clé, le plugin est limité à 50 requêtes par jour."
+
+msgid "plugins.generic.nvMetadataCuration.audit.title"
+msgstr "Audit des métadonnées"
+
+msgid "plugins.generic.nvMetadataCuration.audit.description"
+msgstr "Vue d'ensemble de la conformité des champs de métadonnées par soumission. Vert = complet, orange = partiel, rouge = manquant."
+
+msgid "plugins.generic.nvMetadataCuration.audit.noSubmissions"
+msgstr "Aucune soumission trouvée pour cette revue."
+
+msgid "plugins.generic.nvMetadataCuration.audit.tableLabel"
+msgstr "Conformité des métadonnées par soumission"
+
+msgid "plugins.generic.nvMetadataCuration.audit.colTitle"
+msgstr "Soumission"
+
+msgid "plugins.generic.nvMetadataCuration.audit.colKwdCurated"
+msgstr "Mots-clés contrôlés"
+
+msgid "plugins.generic.nvMetadataCuration.audit.colKwdOjs"
+msgstr "Mots-clés OJS"
+
+msgid "plugins.generic.nvMetadataCuration.audit.colOrcid"
+msgstr "ORCID"
+
+msgid "plugins.generic.nvMetadataCuration.audit.colAffiliation"
+msgstr "Affiliations"
+
+msgid "plugins.generic.nvMetadataCuration.widget.searchKeywords"
+msgstr "Rechercher dans le vocabulaire contrôlé…"
+
+msgid "plugins.generic.nvMetadataCuration.widget.noResults"
+msgstr "Aucun terme correspondant."
+
+msgid "plugins.generic.nvMetadataCuration.widget.loading"
+msgstr "Recherche en cours…"
+
+msgid "plugins.generic.nvMetadataCuration.widget.rateLimited"
+msgstr "Limite quotidienne atteinte. Ajoutez une clé API dans les paramètres du plugin."
+
+msgid "plugins.generic.nvMetadataCuration.widget.validationRequired"
+msgstr "Nécessite une validation humaine"
+
+msgid "plugins.generic.nvMetadataCuration.widget.confirm"
+msgstr "Confirmer"
+
+msgid "plugins.generic.nvMetadataCuration.widget.remove"
+msgstr "Supprimer"
+
+msgid "plugins.generic.nvMetadataCuration.widget.bypassWarning"
+msgstr "Saisie libre — ne provient pas d'un vocabulaire contrôlé."
