@@ -187,6 +187,22 @@ class OrcidRorManager
             return null;
         }
 
+        if (!self::isHttpSuccess($http_response_header ?? [])) {
+            error_log('[nvMetadataCuration] HTTP error: ' . ($http_response_header[0] ?? 'unknown') . ' — ' . $url);
+            return null;
+        }
+
         return $body;
+    }
+
+    /**
+     * Check whether the HTTP response status line indicates a 2xx success.
+     */
+    private static function isHttpSuccess(array $headers): bool
+    {
+        if (empty($headers[0])) {
+            return false;
+        }
+        return (bool) preg_match('/\bHTTP\/[\d.]+ 2\d{2}\b/', $headers[0]);
     }
 }

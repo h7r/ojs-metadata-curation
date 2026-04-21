@@ -19,6 +19,7 @@ use APP\plugins\generic\nvMetadataCuration\classes\managers\SparqlLookupManager;
 use PKP\db\DAORegistry;
 use PKP\handler\PKPHandler;
 use PKP\security\authorization\ContextRequiredPolicy;
+use PKP\security\authorization\UserRequiredPolicy;
 use PKP\security\Role;
 
 class SuggestHandler extends PKPHandler
@@ -41,6 +42,7 @@ class SuggestHandler extends PKPHandler
     public function authorize($request, &$args, $roleAssignments): bool
     {
         $this->addPolicy(new ContextRequiredPolicy($request));
+        $this->addPolicy(new UserRequiredPolicy($request));
         return parent::authorize($request, $args, $roleAssignments);
     }
 

@@ -362,7 +362,20 @@ class NvMetadataCurationPlugin extends GenericPlugin
         if ($changed) {
             $syncing = true;
             try {
-                Repo::publication()->edit($publication, ['keywords' => $existingKeywords]);
+                // Acquire row-level lock to prevent concurrent lost-update race
+                $publicationDao = DAORegistry::getDAO('PublicationDAO');
+                $publicationDao->update(
+                    'SELECT 1 FROM publications WHERE publication_id = ? FOR UPDATE',
+                    [$publication->getId()]
+                );
+                // Re-read keywords after lock to guarantee freshness
+                $freshPub = Repo::publication()->get($publication->getId());
+                $freshKeywords = $freshPub->getData('keywords') ?? [];
+                foreach ($nvByLocale as $locale => $labels) {
+                    $existing = $freshKeywords[$locale] ?? [];
+                    $freshKeywords[$locale] = array_values(array_unique(array_merge($existing, $labels)));
+                }
+                Repo::publication()->edit($freshPub, ['keywords' => $freshKeywords]);
             } catch (\Throwable $e) {
                 error_log('[nvMetadataCuration] syncNvKeywordsAfterEdit failed: ' . $e->getMessage());
             }

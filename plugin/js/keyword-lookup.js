@@ -385,17 +385,47 @@
 			return;
 		}
 
-		var saveUrl = SAVE_URL;
 		var params = new URLSearchParams({
 			submissionId: submissionId,
 			keywords: JSON.stringify(selectedKeywords)
 		});
 
 		var xhr = new XMLHttpRequest();
-		xhr.open('POST', saveUrl);
+		xhr.open('POST', SAVE_URL);
 		xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 		xhr.timeout = 5000;
+
+		xhr.onload = function () {
+			if (xhr.status === 200) {
+				showSaveStatus('success');
+			} else {
+				showSaveStatus('error');
+			}
+		};
+		xhr.onerror = function () { showSaveStatus('error'); };
+		xhr.ontimeout = function () { showSaveStatus('error'); };
+
 		xhr.send(params.toString());
+	}
+
+	/**
+	 * Display a brief save-status toast next to the keyword tag zone.
+	 * Auto-removes after 4 seconds. Accessible via role="status".
+	 */
+	function showSaveStatus(type) {
+		var tagZone = document.querySelector('.nvKeywordTagZone');
+		if (!tagZone) return;
+		var existing = tagZone.querySelector('.nv-save-status');
+		if (existing) existing.remove();
+		var msg = document.createElement('span');
+		msg.className = 'nv-save-status nv-save-' + type;
+		msg.setAttribute('role', 'status');
+		msg.setAttribute('aria-live', 'polite');
+		msg.textContent = type === 'success'
+			? '\u2713 Keywords saved'
+			: '\u2717 Save failed \u2014 please retry';
+		tagZone.appendChild(msg);
+		setTimeout(function () { if (msg.parentNode) msg.remove(); }, 4000);
 	}
 
 	/**
