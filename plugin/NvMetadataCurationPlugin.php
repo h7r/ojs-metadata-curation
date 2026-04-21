@@ -9,12 +9,17 @@
  * @class NvMetadataCurationPlugin
  *
  * @brief Controlled vocabulary lookup for OJS metadata fields
- *        using SKOS/SPARQL thesauri (UNESCO, ISOC, Rameau).
+ *        using SKOS/SPARQL thesauri (UNESCO, Rameau).
+ *
+ *        Phase 2: autocomplete widget on submission form,
+ *        SPARQL proxy endpoint, submission_settings storage.
  */
 
 namespace APP\plugins\generic\nvMetadataCuration;
 
+use APP\core\Application;
 use PKP\plugins\GenericPlugin;
+use PKP\plugins\Hook;
 
 class NvMetadataCurationPlugin extends GenericPlugin
 {
@@ -26,8 +31,11 @@ class NvMetadataCurationPlugin extends GenericPlugin
         $success = parent::register($category, $path, $mainContextId);
 
         if ($success && $this->getEnabled()) {
-            // Phase 2 : hook registrations for SPARQL lookup
-            // and submission form augmentation will go here.
+            // Inject JS autocomplete widget into the submission metadata form
+            Hook::add('TemplateManager::display', [$this, 'injectKeywordLookup']);
+
+            // Register page handler for /suggest endpoint
+            Hook::add('LoadHandler', [$this, 'callbackLoadHandler']);
         }
 
         return $success;
@@ -55,5 +63,88 @@ class NvMetadataCurationPlugin extends GenericPlugin
     public function getInstallSitePluginSettingsFile(): ?string
     {
         return $this->getPluginPath() . '/settings.xml';
+    }
+
+    /**
+     * Hook callback: inject the keyword-lookup JS and suggest URL
+     * into the submission metadata form template.
+     *
+     * Targets TemplateManager::display (OJS 3.4.x).
+     * SPECS.md section 6.1.
+     */
+    public function injectKeywordLookup(string $hookName, array $args): bool
+    {
+        $templateMgr = $args[0];
+        $template = $args[1] ?? '';
+
+        // Only inject on the submission metadata form
+        if (strpos($template, 'submission/') === false) {
+            return false;
+        }
+
+        $request = Application::get()->getRequest();
+
+        // Build the suggest endpoint URL
+        $suggestUrl = $request->getDispatcher()->url(
+            $request,
+            Application::ROUTE_PAGE,
+            null,
+            'nv-metadata-suggest',
+            'suggest'
+        );
+
+        // Pass config to JS via data attributes
+        $thesaurus = $this->getSetting($request->getContext()?->getId(), 'thesaurus') ?: 'unesco';
+
+        $templateMgr->addJavaScript(
+            'nvKeywordLookupConfig',
+            'window.nvMetadataCuration = ' . json_encode([
+                'suggestUrl' => $suggestUrl,
+                'thesaurus' => $thesaurus,
+                'minChars' => 3,
+            ], JSON_UNESCAPED_UNICODE) . ';',
+            [
+                'inline' => true,
+                'contexts' => 'backend',
+                'priority' => STYLE_SEQUENCE_CORE,
+            ]
+        );
+
+        $templateMgr->addJavaScript(
+            'nvKeywordLookup',
+            $request->getBaseUrl() . '/' . $this->getPluginPath() . '/js/keyword-lookup.js',
+            [
+                'inline' => false,
+                'contexts' => 'backend',
+                'priority' => STYLE_SEQUENCE_LAST,
+            ]
+        );
+
+        $templateMgr->addStyleSheet(
+            'nvKeywordLookup',
+            $request->getBaseUrl() . '/' . $this->getPluginPath() . '/css/keyword-lookup.css',
+            [
+                'contexts' => 'backend',
+                'priority' => STYLE_SEQUENCE_LAST,
+            ]
+        );
+
+        return false; // Don't interrupt the hook chain
+    }
+
+    /**
+     * Hook callback: intercept page requests for 'nv-metadata-suggest'
+     * and route them to our SuggestHandler.
+     */
+    public function callbackLoadHandler(string $hookName, array $args): bool
+    {
+        $page = $args[0] ?? '';
+
+        if ($page === 'nv-metadata-suggest') {
+            define('HANDLER_CLASS', 'APP\plugins\generic\nvMetadataCuration\classes\handlers\SuggestHandler');
+            return true;
+        }
+
+        return false;
     }
 }
