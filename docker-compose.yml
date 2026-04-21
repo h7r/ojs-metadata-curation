@@ -27,7 +27,7 @@ services:
       retries: 5
 
   ojs:
-    image: pkpofficial/ojs:3_4_0
+    image: pkpofficial/ojs:stable-3_4_0
     restart: unless-stopped
     ports:
       - "8080:80"
@@ -39,6 +39,8 @@ services:
       OJS_DB_USER: ojs
       OJS_DB_PASSWORD: ojs
       OJS_DB_NAME: ojs
+      # Disable opcache for dev — bind-mounted PHP changes are picked up immediately
+      PHP_OPCACHE_ENABLE: 0
     volumes:
       # Bind-mount the plugin source into OJS plugin directory
       - ./plugin:/var/www/html/plugins/generic/nvMetadataCuration

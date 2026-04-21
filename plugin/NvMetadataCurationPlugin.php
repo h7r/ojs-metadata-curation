@@ -43,7 +43,10 @@ class NvMetadataCurationPlugin extends GenericPlugin
         if ($success && $this->getEnabled()) {
             self::$instance = $this;
 
-            // Inject JS autocomplete widget into the submission metadata form
+            // OJS 3.4 submission wizard: inject directly into the Vue.js SPA section
+            Hook::add('Template::SubmissionWizard::Section', [$this, 'injectSubmissionWizardAssets']);
+
+            // Fallback for non-wizard backend pages (audit, metadata editing)
             Hook::add('TemplateManager::display', [$this, 'injectKeywordLookup']);
 
             // Register page handler for /suggest and /audit endpoints
@@ -138,25 +141,12 @@ class NvMetadataCurationPlugin extends GenericPlugin
     }
 
     /**
-     * Hook callback: inject the keyword-lookup JS, ORCID/ROR widget,
-     * and config into backend pages.
+     * Build the JS config and asset URLs used by both injection hooks.
      *
-     * OJS 3.3 rendered the submission form via Smarty (step3.tpl).
-     * OJS 3.4 uses a Vue.js submission wizard — no Smarty template to
-     * match.  We inject assets on every backend TemplateManager::display
-     * and let the JS activate only when keyword / ORCID / ROR fields
-     * exist in the DOM (via MutationObserver).  The `contexts => backend`
-     * parameter already restricts assets to editorial pages.
+     * @return array{config: string, jsUrls: string[], cssUrl: string}
      */
-    public function injectKeywordLookup(string $hookName, array $args): bool
+    private function getAssetPayload(): array
     {
-        if ($this->assetsInjected) {
-            return false;
-        }
-        $this->assetsInjected = true;
-
-        $templateMgr = $args[0];
-
         $request = Application::get()->getRequest();
         $dispatcher = $request->getDispatcher();
         $contextId = $request->getContext()?->getId();
@@ -169,25 +159,85 @@ class NvMetadataCurationPlugin extends GenericPlugin
         $thesaurus = $this->getSetting($contextId, 'thesaurus') ?: 'unesco';
         $interactionMode = $this->getSetting($contextId, 'interactionMode') ?: 'suggestion';
 
-        // Multi-thesaurus: load full list
         $thesauriRaw = $this->getSetting($contextId, 'thesauri');
         $thesauri = $thesauriRaw ? json_decode($thesauriRaw, true) : [$thesaurus];
         if (!is_array($thesauri) || empty($thesauri)) {
             $thesauri = [$thesaurus];
         }
 
+        $configJson = json_encode([
+            'suggestUrl' => $suggestUrl,
+            'saveUrl' => $saveUrl,
+            'orcidUrl' => $orcidUrl,
+            'rorUrl' => $rorUrl,
+            'thesaurus' => $thesaurus,
+            'thesauri' => $thesauri,
+            'interactionMode' => $interactionMode,
+            'minChars' => 3,
+        ], JSON_UNESCAPED_UNICODE);
+
+        $baseUrl = $request->getBaseUrl() . '/' . $this->getPluginPath();
+
+        return [
+            'config' => $configJson,
+            'jsUrls' => [
+                $baseUrl . '/js/keyword-lookup.js',
+                $baseUrl . '/js/orcid-ror-lookup.js',
+            ],
+            'cssUrl' => $baseUrl . '/css/keyword-lookup.css',
+        ];
+    }
+
+    /**
+     * Hook callback: inject assets into the OJS 3.4 submission wizard.
+     *
+     * The Template::SubmissionWizard::Section hook passes
+     * [$step, $templateMgr, &$output].  We append raw HTML (script/style
+     * tags) directly into $output since the Vue.js SPA does not honour
+     * TemplateManager::addJavaScript.
+     */
+    public function injectSubmissionWizardAssets(string $hookName, array $args): bool
+    {
+        if ($this->assetsInjected) {
+            return false;
+        }
+        $this->assetsInjected = true;
+
+        $output =& $args[2];
+        $payload = $this->getAssetPayload();
+
+        $html = '<script>window.nvMetadataCuration = ' . $payload['config'] . ';</script>';
+        $html .= '<link rel="stylesheet" href="' . htmlspecialchars($payload['cssUrl'], ENT_QUOTES, 'UTF-8') . '">';
+        foreach ($payload['jsUrls'] as $jsUrl) {
+            $html .= '<script src="' . htmlspecialchars($jsUrl, ENT_QUOTES, 'UTF-8') . '"></script>';
+        }
+
+        $output .= $html;
+
+        return false;
+    }
+
+    /**
+     * Hook callback: inject assets into non-wizard backend pages
+     * (metadata editing, audit, etc.) via TemplateManager.
+     *
+     * Skipped when assets were already injected by the wizard hook.
+     */
+    public function injectKeywordLookup(string $hookName, array $args): bool
+    {
+        if ($this->assetsInjected) {
+            return false;
+        }
+        $this->assetsInjected = true;
+
+        $templateMgr = $args[0];
+        $payload = $this->getAssetPayload();
+
+        $request = Application::get()->getRequest();
+
         $templateMgr->addJavaScript(
             'nvKeywordLookupConfig',
-            'window.nvMetadataCuration = ' . json_encode([
-                'suggestUrl' => $suggestUrl,
-                'saveUrl' => $saveUrl,
-                'orcidUrl' => $orcidUrl,
-                'rorUrl' => $rorUrl,
-                'thesaurus' => $thesaurus,
-                'thesauri' => $thesauri,
-                'interactionMode' => $interactionMode,
-                'minChars' => 3,
-            ], JSON_UNESCAPED_UNICODE) . ';',
+            'window.nvMetadataCuration = ' . $payload['config'] . ';',
             [
                 'inline' => true,
                 'contexts' => 'backend',
@@ -195,29 +245,21 @@ class NvMetadataCurationPlugin extends GenericPlugin
             ]
         );
 
-        $templateMgr->addJavaScript(
-            'nvKeywordLookup',
-            $request->getBaseUrl() . '/' . $this->getPluginPath() . '/js/keyword-lookup.js',
-            [
-                'inline' => false,
-                'contexts' => 'backend',
-                'priority' => STYLE_SEQUENCE_LAST,
-            ]
-        );
-
-        $templateMgr->addJavaScript(
-            'nvOrcidRorLookup',
-            $request->getBaseUrl() . '/' . $this->getPluginPath() . '/js/orcid-ror-lookup.js',
-            [
-                'inline' => false,
-                'contexts' => 'backend',
-                'priority' => STYLE_SEQUENCE_LAST,
-            ]
-        );
+        foreach ($payload['jsUrls'] as $i => $jsUrl) {
+            $templateMgr->addJavaScript(
+                'nvKeywordLookup' . $i,
+                $jsUrl,
+                [
+                    'inline' => false,
+                    'contexts' => 'backend',
+                    'priority' => STYLE_SEQUENCE_LAST,
+                ]
+            );
+        }
 
         $templateMgr->addStyleSheet(
             'nvKeywordLookup',
-            $request->getBaseUrl() . '/' . $this->getPluginPath() . '/css/keyword-lookup.css',
+            $payload['cssUrl'],
             [
                 'contexts' => 'backend',
                 'priority' => STYLE_SEQUENCE_LAST,
@@ -246,4 +288,10 @@ class NvMetadataCurationPlugin extends GenericPlugin
 
         return false;
     }
+}
+
+// PKP_STRICT_MODE compatibility: OJS 3.4 VersionDAO expects the short
+// class name when resolving product_class_name from the DB.
+if (!class_exists('NvMetadataCurationPlugin')) {
+    class_alias('\APP\plugins\generic\nvMetadataCuration\NvMetadataCurationPlugin', 'NvMetadataCurationPlugin');
 }
