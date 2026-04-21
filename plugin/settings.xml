@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pluginSettings SYSTEM "../../../lib/pkp/dtd/pluginSettings.dtd">
+<!--
+  Default plugin settings installed on first activation.
+  Phase 2 will add thesaurus, mode, and API key settings here.
+-->
+<pluginSettings>
+	<setting name="thesaurus" type="string">unesco</setting>
+	<setting name="interactionMode" type="string">suggestion</setting>
+</pluginSettings>

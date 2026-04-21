@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE locale SYSTEM "../../../../lib/pkp/dtd/locale.dtd">
+<locale name="es" full_name="Español">
+	<message key="plugins.generic.nvMetadataCuration.displayName">NV Curación de metadatos</message>
+	<message key="plugins.generic.nvMetadataCuration.description">Búsqueda en vocabularios controlados para campos de metadatos OJS mediante tesauros SKOS/SPARQL (UNESCO, ISOC, Rameau).</message>
+</locale>
