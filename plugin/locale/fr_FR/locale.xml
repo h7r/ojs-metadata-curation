@@ -1,6 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE locale SYSTEM "../../../../lib/pkp/dtd/locale.dtd">
 <locale name="fr_FR" full_name="Français">
+	<!-- Identité plugin -->
 	<message key="plugins.generic.nvMetadataCuration.displayName">NV Curation des métadonnées</message>
-	<message key="plugins.generic.nvMetadataCuration.description">Consultation de vocabulaires contrôlés pour les champs de métadonnées OJS via des thésaurus SKOS/SPARQL (UNESCO, ISOC, Rameau).</message>
+	<message key="plugins.generic.nvMetadataCuration.description">Consultation de vocabulaires contrôlés pour les champs de métadonnées OJS via des thésaurus SKOS/SPARQL (UNESCO, Rameau, Eurovoc). Inclut la recherche ORCID/ROR avec validation humaine.</message>
+
+	<!-- Formulaire de paramétrage -->
+	<message key="plugins.generic.nvMetadataCuration.settings.thesauri">Thésaurus</message>
+	<message key="plugins.generic.nvMetadataCuration.settings.thesauriDescription">Sélectionnez les thésaurus disponibles pour la recherche de mots-clés dans cette revue.</message>
+	<message key="plugins.generic.nvMetadataCuration.thesaurus.unesco">Thésaurus UNESCO</message>
+	<message key="plugins.generic.nvMetadataCuration.thesaurus.rameau">Rameau (BnF)</message>
+	<message key="plugins.generic.nvMetadataCuration.thesaurus.eurovoc">Eurovoc (UE)</message>
+	<message key="plugins.generic.nvMetadataCuration.settings.interactionMode">Mode d'interaction</message>
+	<message key="plugins.generic.nvMetadataCuration.settings.interactionModeDescription">Contrôle la présentation des suggestions de mots-clés aux auteurs.</message>
+	<message key="plugins.generic.nvMetadataCuration.mode.suggestion">Suggestion (proposé, modifiable)</message>
+	<message key="plugins.generic.nvMetadataCuration.mode.choice">Choix (sélection obligatoire dans le thésaurus)</message>
+	<message key="plugins.generic.nvMetadataCuration.mode.bypass">Libre (texte libre avec avertissement)</message>
+	<message key="plugins.generic.nvMetadataCuration.settings.apiKey">Clé API NV</message>
+	<message key="plugins.generic.nvMetadataCuration.settings.apiKeyLabel">Clé API</message>
+	<message key="plugins.generic.nvMetadataCuration.settings.apiKeyDescription">Saisissez votre clé API Ne Varietur pour un accès illimité. Sans clé, le plugin est limité à {$limit} requêtes par jour.</message>
+
+	<!-- Backoffice audit -->
+	<message key="plugins.generic.nvMetadataCuration.audit.title">Audit des métadonnées</message>
+	<message key="plugins.generic.nvMetadataCuration.audit.description">Vue d'ensemble de la conformité des champs de métadonnées par soumission. Vert = complet, orange = partiel, rouge = manquant.</message>
+	<message key="plugins.generic.nvMetadataCuration.audit.noSubmissions">Aucune soumission trouvée pour cette revue.</message>
+	<message key="plugins.generic.nvMetadataCuration.audit.tableLabel">Conformité des métadonnées par soumission</message>
+	<message key="plugins.generic.nvMetadataCuration.audit.colTitle">Soumission</message>
+	<message key="plugins.generic.nvMetadataCuration.audit.colKwdCurated">Mots-clés contrôlés</message>
+	<message key="plugins.generic.nvMetadataCuration.audit.colKwdOjs">Mots-clés OJS</message>
+	<message key="plugins.generic.nvMetadataCuration.audit.colOrcid">ORCID</message>
+	<message key="plugins.generic.nvMetadataCuration.audit.colAffiliation">Affiliations</message>
+
+	<!-- Labels widget -->
+	<message key="plugins.generic.nvMetadataCuration.widget.searchKeywords">Rechercher dans le vocabulaire contrôlé…</message>
+	<message key="plugins.generic.nvMetadataCuration.widget.noResults">Aucun terme correspondant.</message>
+	<message key="plugins.generic.nvMetadataCuration.widget.loading">Recherche en cours…</message>
+	<message key="plugins.generic.nvMetadataCuration.widget.rateLimited">Limite quotidienne atteinte. Ajoutez une clé API dans les paramètres du plugin.</message>
+	<message key="plugins.generic.nvMetadataCuration.widget.validationRequired">Nécessite une validation humaine</message>
+	<message key="plugins.generic.nvMetadataCuration.widget.confirm">Confirmer</message>
+	<message key="plugins.generic.nvMetadataCuration.widget.remove">Supprimer</message>
+	<message key="plugins.generic.nvMetadataCuration.widget.bypassWarning">Saisie libre — ne provient pas d'un vocabulaire contrôlé.</message>
 </locale>

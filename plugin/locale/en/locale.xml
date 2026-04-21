@@ -1,6 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE locale SYSTEM "../../../../lib/pkp/dtd/locale.dtd">
 <locale name="en" full_name="English">
+	<!-- Plugin identity -->
 	<message key="plugins.generic.nvMetadataCuration.displayName">NV Metadata Curation</message>
-	<message key="plugins.generic.nvMetadataCuration.description">Controlled vocabulary lookup for OJS metadata fields using SKOS/SPARQL thesauri (UNESCO, ISOC, Rameau).</message>
+	<message key="plugins.generic.nvMetadataCuration.description">Controlled vocabulary lookup for OJS metadata fields using SKOS/SPARQL thesauri (UNESCO, Rameau, Eurovoc). Includes ORCID/ROR contributor lookup with human validation.</message>
+
+	<!-- Settings form -->
+	<message key="plugins.generic.nvMetadataCuration.settings.thesauri">Thesauri</message>
+	<message key="plugins.generic.nvMetadataCuration.settings.thesauriDescription">Select which thesauri are available for keyword lookup in this journal.</message>
+	<message key="plugins.generic.nvMetadataCuration.thesaurus.unesco">UNESCO Thesaurus</message>
+	<message key="plugins.generic.nvMetadataCuration.thesaurus.rameau">Rameau (BnF)</message>
+	<message key="plugins.generic.nvMetadataCuration.thesaurus.eurovoc">Eurovoc (EU)</message>
+	<message key="plugins.generic.nvMetadataCuration.settings.interactionMode">Interaction Mode</message>
+	<message key="plugins.generic.nvMetadataCuration.settings.interactionModeDescription">Controls how keyword suggestions are presented to authors.</message>
+	<message key="plugins.generic.nvMetadataCuration.mode.suggestion">Suggestion (proposed, editable)</message>
+	<message key="plugins.generic.nvMetadataCuration.mode.choice">Choice (mandatory thesaurus selection)</message>
+	<message key="plugins.generic.nvMetadataCuration.mode.bypass">Bypass (free text with warning)</message>
+	<message key="plugins.generic.nvMetadataCuration.settings.apiKey">NV API Key</message>
+	<message key="plugins.generic.nvMetadataCuration.settings.apiKeyLabel">API Key</message>
+	<message key="plugins.generic.nvMetadataCuration.settings.apiKeyDescription">Enter your Ne Varietur API key for unlimited access. Without a key, the plugin is limited to {$limit} requests per day.</message>
+
+	<!-- Audit backoffice -->
+	<message key="plugins.generic.nvMetadataCuration.audit.title">Metadata Audit</message>
+	<message key="plugins.generic.nvMetadataCuration.audit.description">Conformity overview of metadata fields across submissions. Green = complete, orange = partial, red = missing.</message>
+	<message key="plugins.generic.nvMetadataCuration.audit.noSubmissions">No submissions found for this journal.</message>
+	<message key="plugins.generic.nvMetadataCuration.audit.tableLabel">Metadata conformity by submission</message>
+	<message key="plugins.generic.nvMetadataCuration.audit.colTitle">Submission</message>
+	<message key="plugins.generic.nvMetadataCuration.audit.colKwdCurated">Curated Keywords</message>
+	<message key="plugins.generic.nvMetadataCuration.audit.colKwdOjs">OJS Keywords</message>
+	<message key="plugins.generic.nvMetadataCuration.audit.colOrcid">ORCID</message>
+	<message key="plugins.generic.nvMetadataCuration.audit.colAffiliation">Affiliations</message>
+
+	<!-- Widget labels -->
+	<message key="plugins.generic.nvMetadataCuration.widget.searchKeywords">Search controlled vocabulary…</message>
+	<message key="plugins.generic.nvMetadataCuration.widget.noResults">No matching terms found.</message>
+	<message key="plugins.generic.nvMetadataCuration.widget.loading">Searching…</message>
+	<message key="plugins.generic.nvMetadataCuration.widget.rateLimited">Daily limit reached. Add an API key in plugin settings.</message>
+	<message key="plugins.generic.nvMetadataCuration.widget.validationRequired">Requires human validation</message>
+	<message key="plugins.generic.nvMetadataCuration.widget.confirm">Confirm</message>
+	<message key="plugins.generic.nvMetadataCuration.widget.remove">Remove</message>
+	<message key="plugins.generic.nvMetadataCuration.widget.bypassWarning">Free text entry — not from a controlled vocabulary.</message>
 </locale>

@@ -83,6 +83,107 @@
 	padding: 0 0.15rem;
 }
 
-.nv-tag-remove:hover {
+.nv-tag-remove:hover,
+.nv-tag-remove:focus {
 	color: #c0392b;
+	outline: 2px solid #c0392b;
+	outline-offset: 1px;
+}
+
+/* Validation chips (ORCID/ROR) */
+.nv-validation-chip {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.25rem;
+	margin-top: 0.35rem;
+	padding: 0.25rem 0.5rem;
+	border-radius: 3px;
+	font-size: 0.8125rem;
+}
+
+.nv-validation-pending-chip {
+	background: #fff3e0;
+	color: #e65100;
+	border: 1px solid #ffcc80;
+}
+
+.nv-validation-confirmed-chip {
+	background: #e8f5e9;
+	color: #2e7d32;
+	border: 1px solid #a5d6a7;
+}
+
+.nv-validation-icon {
+	font-size: 0.875rem;
+}
+
+.nv-validation-confirm {
+	background: none;
+	border: 1px solid currentColor;
+	border-radius: 2px;
+	color: inherit;
+	cursor: pointer;
+	font-size: 0.875rem;
+	padding: 0 0.25rem;
+	margin-left: 0.25rem;
+}
+
+.nv-validation-confirm:hover,
+.nv-validation-confirm:focus {
+	background: #2e7d32;
+	color: #fff;
+	outline: none;
+}
+
+/* Focus styles for keyboard navigation */
+.nv-suggest-item:focus {
+	outline: 2px solid #1a4d8f;
+	outline-offset: -2px;
+	background: #f5f8fc;
+}
+
+/* Bypass warning */
+.nv-bypass-warning {
+	display: block;
+	margin-top: 0.35rem;
+	padding: 0.35rem 0.6rem;
+	background: #fff8e1;
+	border: 1px solid #ffe082;
+	border-radius: 3px;
+	color: #f57f17;
+	font-size: 0.8125rem;
+}
+
+/* Screen reader only */
+.nv-sr-only {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	white-space: nowrap;
+	border: 0;
+}
+
+/* High contrast mode support */
+@media (forced-colors: active) {
+	.nv-suggest-item--active,
+	.nv-suggest-item:hover {
+		forced-color-adjust: none;
+		background: Highlight;
+		color: HighlightText;
+	}
+
+	.nv-tag-chip {
+		border: 1px solid ButtonText;
+	}
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+	.nv-suggest-dropdown {
+		transition: none;
+	}
 }

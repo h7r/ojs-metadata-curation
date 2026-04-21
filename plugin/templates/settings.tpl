@@ -1,0 +1,61 @@
+<script>
+	$(function() {ldelim}
+		$('#nvMetadataCurationSettings').pkpHandler('$.pkp.controllers.form.AjaxFormHandler');
+	{rdelim});
+</script>
+
+<form
+	class="pkp_form"
+	id="nvMetadataCurationSettings"
+	method="post"
+	action="{url router=$smarty.const.ROUTE_COMPONENT op="manage" category="generic" plugin=$pluginName verb="settings" save=true}"
+>
+	{csrf}
+
+	{fbvFormArea id="nvSettingsThesauri" title="plugins.generic.nvMetadataCuration.settings.thesauri"}
+		{fbvFormSection description="plugins.generic.nvMetadataCuration.settings.thesauriDescription" list="true"}
+			{foreach from=$validThesauri item=t}
+				{assign var="checked" value=false}
+				{if is_array($thesauri) && in_array($t, $thesauri)}
+					{assign var="checked" value=true}
+				{/if}
+				{fbvElement
+					type="checkbox"
+					id="thesauri[]"
+					name="thesauri[]"
+					value=$t
+					checked=$checked
+					label="plugins.generic.nvMetadataCuration.thesaurus.$t"
+				}
+			{/foreach}
+		{/fbvFormSection}
+	{/fbvFormArea}
+
+	{fbvFormArea id="nvSettingsMode" title="plugins.generic.nvMetadataCuration.settings.interactionMode"}
+		{fbvFormSection description="plugins.generic.nvMetadataCuration.settings.interactionModeDescription"}
+			{fbvElement
+				type="select"
+				id="interactionMode"
+				from=$validModes
+				selected=$interactionMode
+				translate=true
+				label="plugins.generic.nvMetadataCuration.settings.interactionMode"
+				size=$fbvStyles.size.MEDIUM
+			}
+		{/fbvFormSection}
+	{/fbvFormArea}
+
+	{fbvFormArea id="nvSettingsApiKey" title="plugins.generic.nvMetadataCuration.settings.apiKey"}
+		{fbvFormSection description="plugins.generic.nvMetadataCuration.settings.apiKeyDescription"}
+			{fbvElement
+				type="text"
+				id="nvApiKey"
+				value=$nvApiKey
+				label="plugins.generic.nvMetadataCuration.settings.apiKeyLabel"
+				size=$fbvStyles.size.MEDIUM
+			}
+		{/fbvFormSection}
+	{/fbvFormArea}
+
+	{fbvFormButtons submitText="common.save"}
+</form>

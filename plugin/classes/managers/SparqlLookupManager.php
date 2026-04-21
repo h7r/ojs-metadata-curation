@@ -33,6 +33,7 @@ class SparqlLookupManager
     private const ENDPOINTS = [
         'unesco' => 'https://vocabularies.unesco.org/sparql',
         'rameau' => 'https://data.bnf.fr/sparql',
+        'eurovoc' => 'https://publications.europa.eu/webapi/rdf/sparql',
     ];
 
     /**
@@ -100,6 +101,9 @@ class SparqlLookupManager
 
         if ($thesaurus === 'unesco') {
             return $this->buildUnescoQuery($escaped, $lang);
+        }
+        if ($thesaurus === 'eurovoc') {
+            return $this->buildEurovocQuery($escaped, $lang);
         }
 
         return $this->buildRameauQuery($escaped);
@@ -181,6 +185,45 @@ SPARQL;
     }
 
     /**
+     * Eurovoc query (EU Publications Office).
+     * Multilingual: primary label in $lang, English translation.
+     */
+    private function buildEurovocQuery(string $prefix, string $lang): string
+    {
+        return <<<SPARQL
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX dc: <http://purl.org/dc/elements/1.1/>
+PREFIX ev: <http://eurovoc.europa.eu/>
+
+SELECT DISTINCT ?concept ?labelPrimary ?labelEN ?broader ?broaderLabel ?scopeNote
+WHERE {
+  ?concept a skos:Concept ;
+           skos:inScheme <http://eurovoc.europa.eu/100141> ;
+           skos:prefLabel ?labelPrimary .
+
+  OPTIONAL {
+    ?concept skos:prefLabel ?labelEN .
+    FILTER(lang(?labelEN) = "en")
+  }
+  OPTIONAL {
+    ?concept skos:broader ?broader .
+    ?broader skos:prefLabel ?broaderLabel .
+    FILTER(lang(?broaderLabel) = "{$lang}")
+  }
+  OPTIONAL {
+    ?concept skos:scopeNote ?scopeNote .
+    FILTER(lang(?scopeNote) = "{$lang}")
+  }
+
+  FILTER(lang(?labelPrimary) = "{$lang}")
+  FILTER(strstarts(lcase(str(?labelPrimary)), "{$prefix}"))
+}
+ORDER BY ?labelPrimary
+LIMIT 5
+SPARQL;
+    }
+
+    /**
      * Execute SPARQL query via HTTP GET and return decoded JSON, or null on failure.
      */
     private function executeQuery(string $endpoint, string $sparql): ?array
@@ -233,6 +276,18 @@ SPARQL;
                     'lang_primary' => $lang,
                     'lang_translation' => 'en',
                     'notation' => $row['notation']['value'] ?? null,
+                    'broader_uri' => $row['broader']['value'] ?? null,
+                    'broader_label' => $row['broaderLabel']['value'] ?? null,
+                    'scope_note' => $row['scopeNote']['value'] ?? null,
+                ];
+            } elseif ($thesaurus === 'eurovoc') {
+                $results[] = [
+                    'uri' => $row['concept']['value'] ?? '',
+                    'label_primary' => $row['labelPrimary']['value'] ?? '',
+                    'label_translation' => $row['labelEN']['value'] ?? '',
+                    'lang_primary' => $lang,
+                    'lang_translation' => 'en',
+                    'notation' => null,
                     'broader_uri' => $row['broader']['value'] ?? null,
                     'broader_label' => $row['broaderLabel']['value'] ?? null,
                     'scope_note' => $row['scopeNote']['value'] ?? null,

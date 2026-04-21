@@ -101,6 +101,9 @@
 			var row = document.createElement('div');
 			row.className = 'nv-suggest-item';
 			row.setAttribute('role', 'option');
+			row.setAttribute('tabindex', '-1');
+			row.setAttribute('aria-selected', 'false');
+			row.id = 'nv-suggest-option-' + idx;
 			row.dataset.index = idx;
 
 			var label = document.createElement('span');
@@ -141,6 +144,7 @@
 		document.body.appendChild(dropdown);
 		activeDropdown = dropdown;
 		activeInput = input;
+		input.setAttribute('aria-expanded', 'true');
 	}
 
 	/**
@@ -151,10 +155,16 @@
 		var items = activeDropdown.querySelectorAll('.nv-suggest-item');
 		for (var i = 0; i < items.length; i++) {
 			items[i].classList.toggle('nv-suggest-item--active', i === activeIndex);
+			items[i].setAttribute('aria-selected', i === activeIndex ? 'true' : 'false');
 		}
-		// Scroll active item into view
+		// Scroll active item into view and update aria-activedescendant
 		if (activeIndex >= 0 && items[activeIndex]) {
 			items[activeIndex].scrollIntoView({ block: 'nearest' });
+			if (activeInput) {
+				activeInput.setAttribute('aria-activedescendant', items[activeIndex].id);
+			}
+		} else if (activeInput) {
+			activeInput.removeAttribute('aria-activedescendant');
 		}
 	}
 
@@ -187,6 +197,10 @@
 	 * Hide the active dropdown.
 	 */
 	function hideDropdown() {
+		if (activeInput) {
+			activeInput.setAttribute('aria-expanded', 'false');
+			activeInput.removeAttribute('aria-activedescendant');
+		}
 		if (activeDropdown && activeDropdown.parentNode) {
 			activeDropdown.parentNode.removeChild(activeDropdown);
 		}
@@ -247,6 +261,7 @@
 		removeBtn.type = 'button';
 		removeBtn.className = 'nv-tag-remove';
 		removeBtn.textContent = '\u00d7';
+		removeBtn.setAttribute('aria-label', 'Remove ' + kwdEntry.kwd_value);
 		removeBtn.addEventListener('click', function () {
 			selectedKeywords = selectedKeywords.filter(function (k) {
 				return k.kwd_uri !== kwdEntry.kwd_uri;
@@ -345,6 +360,10 @@
 		inputs.forEach(function (input) {
 			if (input._nvBound) return; // Prevent double-binding on re-init
 			input._nvBound = true;
+			input.setAttribute('role', 'combobox');
+			input.setAttribute('aria-autocomplete', 'list');
+			input.setAttribute('aria-expanded', 'false');
+			input.setAttribute('aria-haspopup', 'listbox');
 			input.addEventListener('input', onInput);
 			input.addEventListener('keydown', handleKeydown);
 			input.addEventListener('blur', function () {

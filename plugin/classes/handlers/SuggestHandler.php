@@ -13,6 +13,7 @@
 namespace APP\plugins\generic\nvMetadataCuration\classes\handlers;
 
 use APP\facades\Repo;
+use APP\plugins\generic\nvMetadataCuration\classes\managers\OrcidRorManager;
 use APP\plugins\generic\nvMetadataCuration\classes\managers\SparqlLookupManager;
 use PKP\db\DAORegistry;
 use PKP\handler\PKPHandler;
@@ -22,13 +23,16 @@ use PKP\security\Role;
 class SuggestHandler extends PKPHandler
 {
     /** @var string[] Allowed thesaurus identifiers */
-    private const ALLOWED_THESAURI = ['unesco', 'rameau'];
+    private const ALLOWED_THESAURI = ['unesco', 'rameau', 'eurovoc'];
 
     /** @var string[] Allowed language codes */
     private const ALLOWED_LANGS = ['es', 'fr', 'en'];
 
     /** @var int Minimum query length */
     private const MIN_QUERY_LENGTH = 3;
+
+    /** @var int Free tier daily request limit per journal */
+    private const FREE_TIER_DAILY_LIMIT = 50;
 
     /**
      * @copydoc PKPHandler::authorize()
@@ -40,6 +44,55 @@ class SuggestHandler extends PKPHandler
     }
 
     /**
+     * Check API key and rate limits (freemium model).
+     * Returns true if request is allowed, sends 429 JSON and exits if not.
+     */
+    private function checkApiGating($request): void
+    {
+        $context = $request->getContext();
+        if (!$context) {
+            return;
+        }
+
+        $plugin = \APP\plugins\generic\nvMetadataCuration\NvMetadataCurationPlugin::getPlugin();
+        if (!$plugin) {
+            return;
+        }
+
+        $contextId = $context->getId();
+        $apiKey = $plugin->getSetting($contextId, 'nvApiKey');
+
+        // With a valid API key, no rate limit
+        if (!empty($apiKey) && mb_strlen($apiKey) >= 16) {
+            return;
+        }
+
+        // Free tier: enforce daily limit per context
+        $cacheKey = 'nv_suggest_count_' . $contextId . '_' . date('Y-m-d');
+        $count = (int) ($GLOBALS[$cacheKey] ?? 0);
+        $GLOBALS[$cacheKey] = $count + 1;
+
+        // Use a simple file-based counter for the free tier
+        $countFile = sys_get_temp_dir() . '/nv_ratelimit_' . $contextId . '_' . date('Ymd');
+        $currentCount = 0;
+        if (file_exists($countFile)) {
+            $currentCount = (int) file_get_contents($countFile);
+        }
+
+        if ($currentCount >= self::FREE_TIER_DAILY_LIMIT) {
+            http_response_code(429);
+            header('Content-Type: application/json; charset=utf-8');
+            echo json_encode([
+                'error' => 'Daily request limit reached. Add an NV API key in plugin settings for unlimited access.',
+                'limit' => self::FREE_TIER_DAILY_LIMIT,
+            ], JSON_UNESCAPED_UNICODE);
+            exit;
+        }
+
+        @file_put_contents($countFile, (string) ($currentCount + 1));
+    }
+
+    /**
      * Handle the suggest request.
      *
      * @param array $args URL path arguments (unused)
@@ -48,6 +101,8 @@ class SuggestHandler extends PKPHandler
      */
     public function suggest($args, $request)
     {
+        $this->checkApiGating($request);
+
         $q = trim((string) $request->getUserVar('q'));
         $lang = trim((string) $request->getUserVar('lang'));
         $thesaurus = trim((string) $request->getUserVar('thesaurus'));
@@ -173,6 +228,52 @@ class SuggestHandler extends PKPHandler
             'submissionId' => $submissionId,
             'savedCount' => count($validated),
         ], JSON_UNESCAPED_UNICODE);
+        exit;
+    }
+
+    /**
+     * ORCID lookup endpoint.
+     * Expects POST with: q (author name query)
+     */
+    public function orcid($args, $request)
+    {
+        $this->checkApiGating($request);
+
+        $q = trim((string) $request->getUserVar('q'));
+        if (mb_strlen($q, 'UTF-8') < 2) {
+            header('Content-Type: application/json; charset=utf-8');
+            echo json_encode(['query' => $q, 'results' => []], JSON_UNESCAPED_UNICODE);
+            exit;
+        }
+
+        $manager = new OrcidRorManager();
+        $result = $manager->searchOrcid($q);
+
+        header('Content-Type: application/json; charset=utf-8');
+        echo json_encode($result, JSON_UNESCAPED_UNICODE);
+        exit;
+    }
+
+    /**
+     * ROR lookup endpoint.
+     * Expects POST with: q (institution name query)
+     */
+    public function ror($args, $request)
+    {
+        $this->checkApiGating($request);
+
+        $q = trim((string) $request->getUserVar('q'));
+        if (mb_strlen($q, 'UTF-8') < 2) {
+            header('Content-Type: application/json; charset=utf-8');
+            echo json_encode(['query' => $q, 'results' => []], JSON_UNESCAPED_UNICODE);
+            exit;
+        }
+
+        $manager = new OrcidRorManager();
+        $result = $manager->searchRor($q);
+
+        header('Content-Type: application/json; charset=utf-8');
+        echo json_encode($result, JSON_UNESCAPED_UNICODE);
         exit;
     }
 
