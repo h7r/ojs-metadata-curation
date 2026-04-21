@@ -45,12 +45,15 @@ Après activation, cliquez sur **Paramètres** à côté du plugin pour :
 
 ### Docker (développement)
 
+Un fichier `docker-compose.yml` est fourni à la racine. Il lance OJS 3.4.x + MariaDB avec le plugin monté en bind-mount :
+
 ```bash
-# Avec l'image officielle PKP :
-docker run -d --name ojs -p 8080:80 pkpofficial/ojs:3_4_0
-# Copier le plugin dans le conteneur :
-docker cp plugin/. ojs:/var/www/html/plugins/generic/nvMetadataCuration/
+docker compose up -d
+# OJS accessible sur http://localhost:8080
+# Le plugin est monté live — toute modification de plugin/ est reflétée sans rebuild.
 ```
+
+Pour arrêter : `docker compose down` (ajouter `-v` pour purger les volumes).
 
 ## Architecture
 

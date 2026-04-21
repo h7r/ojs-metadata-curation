@@ -1,0 +1,23 @@
+{
+    "name": "nevarietur/ojs-nv-metadata-curation",
+    "description": "Controlled vocabulary lookup for OJS metadata fields using SKOS/SPARQL thesauri (UNESCO, Rameau, Eurovoc)",
+    "type": "ojs-plugin",
+    "license": "GPL-3.0-or-later",
+    "authors": [
+        {
+            "name": "Ne Varietur",
+            "homepage": "https://nevarietur.com"
+        }
+    ],
+    "require": {
+        "php": ">=8.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "APP\\plugins\\generic\\nvMetadataCuration\\": ""
+        }
+    },
+    "extra": {
+        "ojs-version": "3.4.0"
+    }
+}

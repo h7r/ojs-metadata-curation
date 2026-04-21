@@ -1,0 +1,55 @@
+##
+# Docker Compose — OJS 3.4.x local dev instance
+#
+# Usage:
+#   docker compose up -d
+#   open http://localhost:8080
+#
+# The plugin directory is bind-mounted into the OJS container.
+# Any changes to plugin/ are reflected live (no rebuild needed).
+##
+
+services:
+  db:
+    image: mariadb:10.11
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ojs
+      MYSQL_DATABASE: ojs
+      MYSQL_USER: ojs
+      MYSQL_PASSWORD: ojs
+    volumes:
+      - db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  ojs:
+    image: pkpofficial/ojs:3_4_0
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+      - "8443:443"
+    environment:
+      OJS_CLI_INSTALL: 1
+      OJS_DB_HOST: db
+      OJS_DB_DRIVER: mysqli
+      OJS_DB_USER: ojs
+      OJS_DB_PASSWORD: ojs
+      OJS_DB_NAME: ojs
+    volumes:
+      # Bind-mount the plugin source into OJS plugin directory
+      - ./plugin:/var/www/html/plugins/generic/nvMetadataCuration
+      # Persist OJS data (uploads, public files)
+      - ojs_data:/var/www/html/public
+      - ojs_files:/var/www/files
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  db_data:
+  ojs_data:
+  ojs_files:
