@@ -67,12 +67,7 @@ class SuggestHandler extends PKPHandler
             return;
         }
 
-        // Free tier: enforce daily limit per context
-        $cacheKey = 'nv_suggest_count_' . $contextId . '_' . date('Y-m-d');
-        $count = (int) ($GLOBALS[$cacheKey] ?? 0);
-        $GLOBALS[$cacheKey] = $count + 1;
-
-        // Use a simple file-based counter for the free tier
+        // Free tier: enforce daily limit per context via file-based counter
         $countFile = sys_get_temp_dir() . '/nv_ratelimit_' . $contextId . '_' . date('Ymd');
         $currentCount = 0;
         if (file_exists($countFile)) {

@@ -18,7 +18,7 @@
 	<message key="plugins.generic.nvMetadataCuration.mode.bypass">Libre (texte libre avec avertissement)</message>
 	<message key="plugins.generic.nvMetadataCuration.settings.apiKey">Clé API NV</message>
 	<message key="plugins.generic.nvMetadataCuration.settings.apiKeyLabel">Clé API</message>
-	<message key="plugins.generic.nvMetadataCuration.settings.apiKeyDescription">Saisissez votre clé API Ne Varietur pour un accès illimité. Sans clé, le plugin est limité à {$limit} requêtes par jour.</message>
+	<message key="plugins.generic.nvMetadataCuration.settings.apiKeyDescription">Saisissez votre clé API Ne Varietur pour un accès illimité. Sans clé, le plugin est limité à 50 requêtes par jour.</message>
 
 	<!-- Backoffice audit -->
 	<message key="plugins.generic.nvMetadataCuration.audit.title">Audit des métadonnées</message>

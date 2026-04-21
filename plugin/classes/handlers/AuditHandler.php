@@ -15,7 +15,6 @@ namespace APP\plugins\generic\nvMetadataCuration\classes\handlers;
 use APP\core\Application;
 use APP\facades\Repo;
 use APP\template\TemplateManager;
-use PKP\db\DAORegistry;
 use PKP\handler\PKPHandler;
 use PKP\security\authorization\ContextRequiredPolicy;
 use PKP\security\authorization\PolicySet;

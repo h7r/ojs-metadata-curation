@@ -67,10 +67,17 @@ class SettingsForm extends Form
     public function fetch($request, $template = null, $display = false)
     {
         $templateMgr = TemplateManager::getManager($request);
+        // Build associative array [value => i18n_key] for fbvElement select
+        $modeOptions = [];
+        foreach (self::VALID_MODES as $mode) {
+            $modeOptions[$mode] = 'plugins.generic.nvMetadataCuration.mode.' . $mode;
+        }
+
         $templateMgr->assign([
             'pluginName' => $this->plugin->getName(),
             'validThesauri' => self::VALID_THESAURI,
-            'validModes' => self::VALID_MODES,
+            'validModes' => $modeOptions,
+            'freeTierLimit' => 50,
         ]);
         return parent::fetch($request, $template, $display);
     }

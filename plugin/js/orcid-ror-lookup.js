@@ -23,6 +23,7 @@
 	var debounceTimers = {};
 	var activeDropdown = null;
 	var activeInput = null;
+	var activeIndex = -1;
 
 	function debounce(key, fn, ms) {
 		clearTimeout(debounceTimers[key]);
@@ -52,8 +53,56 @@
 		if (activeDropdown && activeDropdown.parentNode) {
 			activeDropdown.parentNode.removeChild(activeDropdown);
 		}
+		if (activeInput) {
+			activeInput.setAttribute('aria-expanded', 'false');
+			activeInput.removeAttribute('aria-activedescendant');
+		}
 		activeDropdown = null;
 		activeInput = null;
+		activeIndex = -1;
+	}
+
+	function navigateDropdown(input, direction) {
+		if (!activeDropdown) return;
+		var items = activeDropdown.querySelectorAll('[role="option"]');
+		if (items.length === 0) return;
+
+		activeIndex += direction;
+		if (activeIndex < 0) activeIndex = items.length - 1;
+		if (activeIndex >= items.length) activeIndex = 0;
+
+		items.forEach(function (item) { item.classList.remove('nv-suggest-item--focused'); });
+		items[activeIndex].classList.add('nv-suggest-item--focused');
+		var itemId = 'nv-orcid-ror-option-' + activeIndex;
+		items[activeIndex].setAttribute('id', itemId);
+		input.setAttribute('aria-activedescendant', itemId);
+	}
+
+	function selectActiveItem() {
+		if (!activeDropdown || activeIndex < 0) return false;
+		var items = activeDropdown.querySelectorAll('[role="option"]');
+		if (items[activeIndex]) {
+			items[activeIndex].click();
+			return true;
+		}
+		return false;
+	}
+
+	function handleKeydown(e) {
+		if (!activeDropdown) return;
+		if (e.key === 'ArrowDown') {
+			e.preventDefault();
+			navigateDropdown(e.target, 1);
+		} else if (e.key === 'ArrowUp') {
+			e.preventDefault();
+			navigateDropdown(e.target, -1);
+		} else if (e.key === 'Enter' && activeIndex >= 0) {
+			e.preventDefault();
+			selectActiveItem();
+		} else if (e.key === 'Escape') {
+			e.preventDefault();
+			hideDropdown();
+		}
 	}
 
 	function showOrcidDropdown(input, results) {
@@ -117,6 +166,8 @@
 		document.body.appendChild(dropdown);
 		activeDropdown = dropdown;
 		activeInput = input;
+		activeIndex = -1;
+		input.setAttribute('aria-expanded', 'true');
 	}
 
 	function showRorDropdown(input, results) {
@@ -174,6 +225,8 @@
 		document.body.appendChild(dropdown);
 		activeDropdown = dropdown;
 		activeInput = input;
+		activeIndex = -1;
+		input.setAttribute('aria-expanded', 'true');
 	}
 
 	function addValidationChip(input, label, identifier, type) {
@@ -246,7 +299,11 @@
 			orcidInputs.forEach(function (input) {
 				if (input._nvOrcidBound) return;
 				input._nvOrcidBound = true;
+				input.setAttribute('role', 'combobox');
 				input.setAttribute('aria-autocomplete', 'list');
+				input.setAttribute('aria-expanded', 'false');
+				input.setAttribute('aria-haspopup', 'listbox');
+				input.addEventListener('keydown', handleKeydown);
 				input.addEventListener('input', function () {
 					var val = input.value.trim();
 					if (val.length < 3) { hideDropdown(); return; }
@@ -267,7 +324,11 @@
 			affInputs.forEach(function (input) {
 				if (input._nvRorBound) return;
 				input._nvRorBound = true;
+				input.setAttribute('role', 'combobox');
 				input.setAttribute('aria-autocomplete', 'list');
+				input.setAttribute('aria-expanded', 'false');
+				input.setAttribute('aria-haspopup', 'listbox');
+				input.addEventListener('keydown', handleKeydown);
 				input.addEventListener('input', function () {
 					var val = (input.value || input.textContent || '').trim();
 					if (val.length < 3) { hideDropdown(); return; }

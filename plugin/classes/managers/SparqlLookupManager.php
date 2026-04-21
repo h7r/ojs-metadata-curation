@@ -41,7 +41,7 @@ class SparqlLookupManager
      *
      * @param string $prefix  User input (>= 3 chars, will be sanitised)
      * @param string $lang    Language code ('es' | 'fr')
-     * @param string $thesaurus  Thesaurus id ('unesco' | 'rameau')
+     * @param string $thesaurus  Thesaurus id ('unesco' | 'rameau' | 'eurovoc')
      * @return array Structured response per SPECS.md section 4.2
      */
     public function suggest(string $prefix, string $lang, string $thesaurus): array

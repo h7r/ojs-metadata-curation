@@ -18,7 +18,7 @@
 	<message key="plugins.generic.nvMetadataCuration.mode.bypass">Bypass (free text with warning)</message>
 	<message key="plugins.generic.nvMetadataCuration.settings.apiKey">NV API Key</message>
 	<message key="plugins.generic.nvMetadataCuration.settings.apiKeyLabel">API Key</message>
-	<message key="plugins.generic.nvMetadataCuration.settings.apiKeyDescription">Enter your Ne Varietur API key for unlimited access. Without a key, the plugin is limited to {$limit} requests per day.</message>
+	<message key="plugins.generic.nvMetadataCuration.settings.apiKeyDescription">Enter your Ne Varietur API key for unlimited access. Without a key, the plugin is limited to 50 requests per day.</message>
 
 	<!-- Audit backoffice -->
 	<message key="plugins.generic.nvMetadataCuration.audit.title">Metadata Audit</message>
