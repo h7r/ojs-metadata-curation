@@ -12,7 +12,9 @@
 
 namespace APP\plugins\generic\nvMetadataCuration\classes\handlers;
 
+use APP\facades\Repo;
 use APP\plugins\generic\nvMetadataCuration\classes\managers\SparqlLookupManager;
+use PKP\db\DAORegistry;
 use PKP\handler\PKPHandler;
 use PKP\security\authorization\ContextRequiredPolicy;
 
@@ -75,6 +77,74 @@ class SuggestHandler extends PKPHandler
 
         header('Content-Type: application/json; charset=utf-8');
         echo json_encode($result, JSON_UNESCAPED_UNICODE);
+        exit;
+    }
+
+    /**
+     * Save selected SKOS keywords to submission_settings.
+     * Stores JSON array under key 'nvKeywords' (SPECS.md section 6.3).
+     *
+     * Expects POST with:
+     *   - submissionId (int)
+     *   - keywords (JSON string — array of keyword objects)
+     */
+    public function save($args, $request)
+    {
+        $submissionId = (int) $request->getUserVar('submissionId');
+        $keywordsRaw = (string) $request->getUserVar('keywords');
+
+        if ($submissionId <= 0) {
+            $this->sendJsonError('Missing or invalid submissionId');
+        }
+
+        $keywords = json_decode($keywordsRaw, true);
+        if (!is_array($keywords)) {
+            $this->sendJsonError('Invalid keywords JSON');
+        }
+
+        // Validate each keyword entry
+        $validated = [];
+        foreach ($keywords as $kwd) {
+            if (empty($kwd['kwd_uri']) || empty($kwd['kwd_value'])) {
+                continue;
+            }
+            $validated[] = [
+                'kwd_value' => (string) $kwd['kwd_value'],
+                'kwd_uri' => (string) $kwd['kwd_uri'],
+                'kwd_lang' => (string) ($kwd['kwd_lang'] ?? 'es'),
+                'kwd_thesaurus' => (string) ($kwd['kwd_thesaurus'] ?? 'unesco'),
+                'kwd_validated' => true,
+            ];
+        }
+
+        // Store in submission_settings via DAO
+        $submissionDao = DAORegistry::getDAO('SubmissionDAO');
+        $submission = $submissionDao->getById($submissionId);
+
+        if (!$submission) {
+            $this->sendJsonError('Submission not found');
+        }
+
+        $submission->setData('nvKeywords', json_encode($validated, JSON_UNESCAPED_UNICODE));
+        $submissionDao->updateObject($submission);
+
+        header('Content-Type: application/json; charset=utf-8');
+        echo json_encode([
+            'status' => 'ok',
+            'submissionId' => $submissionId,
+            'savedCount' => count($validated),
+        ], JSON_UNESCAPED_UNICODE);
+        exit;
+    }
+
+    /**
+     * Send a JSON error response and exit.
+     */
+    private function sendJsonError(string $message, int $httpCode = 400): void
+    {
+        http_response_code($httpCode);
+        header('Content-Type: application/json; charset=utf-8');
+        echo json_encode(['error' => $message], JSON_UNESCAPED_UNICODE);
         exit;
     }
 }

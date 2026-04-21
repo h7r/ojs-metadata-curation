@@ -27,6 +27,9 @@
 	var activeDropdown = null;
 	var activeInput = null;
 
+	// Accumulate selected keywords per submission for batch save
+	var selectedKeywords = [];
+
 	/**
 	 * Debounce helper.
 	 */
@@ -144,30 +147,98 @@
 
 	/**
 	 * Handle selection of a thesaurus concept.
-	 * Stores the URI and metadata in a hidden field for form submission.
+	 * Adds the keyword to the selection list and persists via /save endpoint.
 	 */
 	function selectItem(input, item) {
 		input.value = item.label_primary;
 		hideDropdown();
 
-		// Store structured data in a sibling hidden input
-		var hiddenId = input.id + '_nv_uri';
-		var hidden = document.getElementById(hiddenId);
-		if (!hidden) {
-			hidden = document.createElement('input');
-			hidden.type = 'hidden';
-			hidden.id = hiddenId;
-			hidden.name = input.name + '_nv_meta';
-			input.parentNode.appendChild(hidden);
-		}
-
-		hidden.value = JSON.stringify({
+		var kwdEntry = {
 			kwd_value: item.label_primary,
 			kwd_uri: item.uri,
 			kwd_lang: item.lang_primary,
 			kwd_thesaurus: THESAURUS,
 			kwd_validated: true
+		};
+
+		// Avoid duplicates by URI
+		var exists = selectedKeywords.some(function (k) {
+			return k.kwd_uri === kwdEntry.kwd_uri;
 		});
+		if (!exists) {
+			selectedKeywords.push(kwdEntry);
+		}
+
+		// Visual feedback: add a tag chip next to the input
+		addTagChip(input, kwdEntry);
+
+		// Clear the input for next keyword entry
+		input.value = '';
+	}
+
+	/**
+	 * Add a visible tag chip showing the selected keyword.
+	 */
+	function addTagChip(input, kwdEntry) {
+		var container = input.closest('.pkpFormField') || input.parentNode;
+		var tagZone = container.querySelector('.nv-tag-zone');
+		if (!tagZone) {
+			tagZone = document.createElement('div');
+			tagZone.className = 'nv-tag-zone';
+			container.appendChild(tagZone);
+		}
+
+		var chip = document.createElement('span');
+		chip.className = 'nv-tag-chip';
+		chip.textContent = kwdEntry.kwd_value;
+
+		var removeBtn = document.createElement('button');
+		removeBtn.type = 'button';
+		removeBtn.className = 'nv-tag-remove';
+		removeBtn.textContent = '\u00d7';
+		removeBtn.addEventListener('click', function () {
+			selectedKeywords = selectedKeywords.filter(function (k) {
+				return k.kwd_uri !== kwdEntry.kwd_uri;
+			});
+			chip.parentNode.removeChild(chip);
+		});
+
+		chip.appendChild(removeBtn);
+		tagZone.appendChild(chip);
+	}
+
+	/**
+	 * Save accumulated keywords to submission_settings via the plugin endpoint.
+	 * Called when the user saves the metadata form.
+	 */
+	function saveKeywords(submissionId) {
+		if (selectedKeywords.length === 0 || !submissionId) {
+			return;
+		}
+
+		var saveUrl = SUGGEST_URL.replace('/suggest', '/save');
+		var params = new URLSearchParams({
+			submissionId: submissionId,
+			keywords: JSON.stringify(selectedKeywords)
+		});
+
+		var xhr = new XMLHttpRequest();
+		xhr.open('POST', saveUrl);
+		xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+		xhr.timeout = 5000;
+		xhr.send(params.toString());
+	}
+
+	/**
+	 * Try to extract submissionId from the current OJS page URL or form data.
+	 */
+	function getSubmissionId() {
+		// OJS 3.4.x URL pattern: /index.php/{journal}/submission/{id}/...
+		var match = window.location.pathname.match(/\/submission\/(\d+)/);
+		if (match) return match[1];
+		// Fallback: look for a hidden input
+		var el = document.querySelector('input[name="submissionId"]');
+		return el ? el.value : null;
 	}
 
 	/**
@@ -221,10 +292,25 @@
 		}, DEBOUNCE_MS);
 
 		inputs.forEach(function (input) {
+			if (input._nvBound) return; // Prevent double-binding on re-init
+			input._nvBound = true;
 			input.addEventListener('input', onInput);
 			input.addEventListener('blur', function () {
 				// Delay to allow click on dropdown items
 				setTimeout(hideDropdown, 200);
+			});
+		});
+
+		// Hook into OJS form save to persist keywords
+		var saveButtons = document.querySelectorAll(
+			'button[type="submit"], .pkpFormField--keywords button, [id*="submitFormButton"]'
+		);
+		saveButtons.forEach(function (btn) {
+			if (btn._nvSaveBound) return;
+			btn._nvSaveBound = true;
+			btn.addEventListener('click', function () {
+				var subId = getSubmissionId();
+				if (subId) saveKeywords(subId);
 			});
 		});
 	}

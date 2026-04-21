@@ -53,3 +53,35 @@
 	font-size: 0.8125rem;
 	font-style: italic;
 }
+
+.nv-tag-zone {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.35rem;
+	margin-top: 0.5rem;
+}
+
+.nv-tag-chip {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.25rem;
+	background: #e8f0fe;
+	color: #1a4d8f;
+	border-radius: 3px;
+	padding: 0.2rem 0.5rem;
+	font-size: 0.8125rem;
+}
+
+.nv-tag-remove {
+	background: none;
+	border: none;
+	color: #1a4d8f;
+	cursor: pointer;
+	font-size: 1rem;
+	line-height: 1;
+	padding: 0 0.15rem;
+}
+
+.nv-tag-remove:hover {
+	color: #c0392b;
+}
