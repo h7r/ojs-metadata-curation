@@ -17,6 +17,7 @@ use APP\plugins\generic\nvMetadataCuration\classes\managers\SparqlLookupManager;
 use PKP\db\DAORegistry;
 use PKP\handler\PKPHandler;
 use PKP\security\authorization\ContextRequiredPolicy;
+use PKP\security\Role;
 
 class SuggestHandler extends PKPHandler
 {
@@ -97,6 +98,52 @@ class SuggestHandler extends PKPHandler
             $this->sendJsonError('Missing or invalid submissionId');
         }
 
+        // Authorization: verify the current user is author or editor of this submission
+        $user = $request->getUser();
+        if (!$user) {
+            $this->sendJsonError('Authentication required', 401);
+        }
+
+        $submissionDao = DAORegistry::getDAO('SubmissionDAO');
+        $submission = $submissionDao->getById($submissionId);
+
+        if (!$submission) {
+            $this->sendJsonError('Submission not found', 404);
+        }
+
+        // Check context match: submission must belong to the current journal
+        $context = $request->getContext();
+        if (!$context || $submission->getData('contextId') !== $context->getId()) {
+            $this->sendJsonError('Submission not in current context', 403);
+        }
+
+        // Check user role: must be a participant on this submission
+        // (author, editor, section editor) or a journal manager
+        $stageAssignmentDao = DAORegistry::getDAO('StageAssignmentDAO');
+        $assignments = $stageAssignmentDao->getBySubmissionAndStageId(
+            $submissionId,
+            null, // all stages
+            null, // all group IDs
+            $user->getId()
+        );
+
+        $isParticipant = !$assignments->wasEmpty();
+
+        if (!$isParticipant) {
+            // Fallback: check if user is a journal manager for this context
+            $userRoles = $user->getRoles($context->getId());
+            $isManager = false;
+            foreach ($userRoles as $role) {
+                if ($role->getId() === Role::ROLE_ID_MANAGER) {
+                    $isManager = true;
+                    break;
+                }
+            }
+            if (!$isManager) {
+                $this->sendJsonError('Not authorized to modify this submission', 403);
+            }
+        }
+
         $keywords = json_decode($keywordsRaw, true);
         if (!is_array($keywords)) {
             $this->sendJsonError('Invalid keywords JSON');
@@ -115,14 +162,6 @@ class SuggestHandler extends PKPHandler
                 'kwd_thesaurus' => (string) ($kwd['kwd_thesaurus'] ?? 'unesco'),
                 'kwd_validated' => true,
             ];
-        }
-
-        // Store in submission_settings via DAO
-        $submissionDao = DAORegistry::getDAO('SubmissionDAO');
-        $submission = $submissionDao->getById($submissionId);
-
-        if (!$submission) {
-            $this->sendJsonError('Submission not found');
         }
 
         $submission->setData('nvKeywords', json_encode($validated, JSON_UNESCAPED_UNICODE));

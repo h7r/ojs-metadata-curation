@@ -77,29 +77,49 @@ class NvMetadataCurationPlugin extends GenericPlugin
         $templateMgr = $args[0];
         $template = $args[1] ?? '';
 
-        // Only inject on the submission metadata form
-        if (strpos($template, 'submission/') === false) {
+        // Only inject on the submission metadata form, not all submission/* templates
+        $metadataTemplates = [
+            'submission/form/metadata.tpl',
+            'submission/submit/step3.tpl',       // OJS 3.4.x step 3 (metadata)
+            'submission/submissionMetadataForm',  // Vue component wrapper
+        ];
+        $isMetadataForm = false;
+        foreach ($metadataTemplates as $target) {
+            if (strpos($template, $target) !== false) {
+                $isMetadataForm = true;
+                break;
+            }
+        }
+        if (!$isMetadataForm) {
             return false;
         }
 
         $request = Application::get()->getRequest();
 
-        // Build the suggest endpoint URL
-        $suggestUrl = $request->getDispatcher()->url(
+        // Build endpoint URLs
+        $dispatcher = $request->getDispatcher();
+        $suggestUrl = $dispatcher->url(
             $request,
             Application::ROUTE_PAGE,
             null,
             'nv-metadata-suggest',
             'suggest'
         );
+        $saveUrl = $dispatcher->url(
+            $request,
+            Application::ROUTE_PAGE,
+            null,
+            'nv-metadata-suggest',
+            'save'
+        );
 
-        // Pass config to JS via data attributes
         $thesaurus = $this->getSetting($request->getContext()?->getId(), 'thesaurus') ?: 'unesco';
 
         $templateMgr->addJavaScript(
             'nvKeywordLookupConfig',
             'window.nvMetadataCuration = ' . json_encode([
                 'suggestUrl' => $suggestUrl,
+                'saveUrl' => $saveUrl,
                 'thesaurus' => $thesaurus,
                 'minChars' => 3,
             ], JSON_UNESCAPED_UNICODE) . ';',

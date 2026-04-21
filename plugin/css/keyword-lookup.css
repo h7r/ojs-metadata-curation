@@ -34,7 +34,8 @@
 	border-bottom: none;
 }
 
-.nv-suggest-item:hover {
+.nv-suggest-item:hover,
+.nv-suggest-item--active {
 	background: #f5f8fc;
 }
 

@@ -23,9 +23,12 @@
 		return;
 	}
 
+	var SAVE_URL = config.saveUrl || '';
 	var debounceTimer = null;
 	var activeDropdown = null;
 	var activeInput = null;
+	var activeIndex = -1; // keyboard navigation index
+	var activeResults = []; // current result set for keyboard selection
 
 	// Accumulate selected keywords per submission for batch save
 	var selectedKeywords = [];
@@ -87,12 +90,18 @@
 			return;
 		}
 
+		activeResults = results;
+		activeIndex = -1;
+
 		var dropdown = document.createElement('div');
 		dropdown.className = 'nv-suggest-dropdown';
+		dropdown.setAttribute('role', 'listbox');
 
-		results.forEach(function (item) {
+		results.forEach(function (item, idx) {
 			var row = document.createElement('div');
 			row.className = 'nv-suggest-item';
+			row.setAttribute('role', 'option');
+			row.dataset.index = idx;
 
 			var label = document.createElement('span');
 			label.className = 'nv-suggest-label';
@@ -135,6 +144,46 @@
 	}
 
 	/**
+	 * Update visual highlight on the active dropdown item.
+	 */
+	function updateHighlight() {
+		if (!activeDropdown) return;
+		var items = activeDropdown.querySelectorAll('.nv-suggest-item');
+		for (var i = 0; i < items.length; i++) {
+			items[i].classList.toggle('nv-suggest-item--active', i === activeIndex);
+		}
+		// Scroll active item into view
+		if (activeIndex >= 0 && items[activeIndex]) {
+			items[activeIndex].scrollIntoView({ block: 'nearest' });
+		}
+	}
+
+	/**
+	 * Handle keyboard navigation in the dropdown.
+	 * ArrowDown/ArrowUp to move, Enter to select, Escape to close.
+	 */
+	function handleKeydown(e) {
+		if (!activeDropdown || !activeResults.length) return;
+
+		if (e.key === 'ArrowDown') {
+			e.preventDefault();
+			activeIndex = (activeIndex + 1) % activeResults.length;
+			updateHighlight();
+		} else if (e.key === 'ArrowUp') {
+			e.preventDefault();
+			activeIndex = activeIndex <= 0 ? activeResults.length - 1 : activeIndex - 1;
+			updateHighlight();
+		} else if (e.key === 'Enter') {
+			if (activeIndex >= 0 && activeIndex < activeResults.length) {
+				e.preventDefault();
+				selectItem(activeInput, activeResults[activeIndex]);
+			}
+		} else if (e.key === 'Escape') {
+			hideDropdown();
+		}
+	}
+
+	/**
 	 * Hide the active dropdown.
 	 */
 	function hideDropdown() {
@@ -143,6 +192,8 @@
 		}
 		activeDropdown = null;
 		activeInput = null;
+		activeIndex = -1;
+		activeResults = [];
 	}
 
 	/**
@@ -212,11 +263,11 @@
 	 * Called when the user saves the metadata form.
 	 */
 	function saveKeywords(submissionId) {
-		if (selectedKeywords.length === 0 || !submissionId) {
+		if (selectedKeywords.length === 0 || !submissionId || !SAVE_URL) {
 			return;
 		}
 
-		var saveUrl = SUGGEST_URL.replace('/suggest', '/save');
+		var saveUrl = SAVE_URL;
 		var params = new URLSearchParams({
 			submissionId: submissionId,
 			keywords: JSON.stringify(selectedKeywords)
@@ -295,6 +346,7 @@
 			if (input._nvBound) return; // Prevent double-binding on re-init
 			input._nvBound = true;
 			input.addEventListener('input', onInput);
+			input.addEventListener('keydown', handleKeydown);
 			input.addEventListener('blur', function () {
 				// Delay to allow click on dropdown items
 				setTimeout(hideDropdown, 200);
