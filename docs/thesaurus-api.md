@@ -26,7 +26,6 @@ Saisie auteur → SPARQL query → Termes candidats valides (avec URI)
 | Thésaurus | Organisme | Endpoint SPARQL public | Langues |
 |-----------|-----------|----------------------|---------|
 | UNESCO Thésaurus | UNESCO | `https://vocabularies.unesco.org/sparql` | EN, ES, FR, AR, RU, ZH |
-| ISOC Tesauro | CSIC | `https://tesauros.mecd.es/tesauros/sparql` | ES |
 | Rameau | BnF | `https://data.bnf.fr/sparql` | FR |
 | Eurovoc | Publications Office EU | `https://publications.europa.eu/webapi/rdf/sparql` | 24 langues |
 

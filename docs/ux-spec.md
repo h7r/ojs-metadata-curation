@@ -108,7 +108,7 @@ Période : [Jan 2023 ▼] — [Déc 2025 ▼]   [Exporter CSV]
 Paramètres NV Metadata
 ──────────────────────────────────────────────────────
 Thésaurus principal :   [UNESCO (Thésaurus) ▼]
-Thésaurus secondaire :  [ISOC CSIC ▼]            [+ Ajouter]
+Thésaurus secondaire :  [Eurovoc (UE) ▼]         [+ Ajouter]
 Mode formulaire auteur : [Suggestion ▼]
 API key NV :            [••••••••••••]  [Tester]
 Langue par défaut :     [Espagnol (ES) ▼]

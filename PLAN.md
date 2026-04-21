@@ -35,7 +35,7 @@
 #### `docs/thesaurus-api.md` — Spec SKOS/SPARQL
 - Interface attendue par le plugin (côté PHP OJS)
 - Protocole de lookup : endpoint SPARQL → requête → réponse (termes + URI)
-- Gestion des 3 thésaurus (UNESCO, ISOC, Rameau) — configurable par revue
+- Gestion des 3 thésaurus (UNESCO, Eurovoc, Rameau) — configurable par revue
 - Fallback si endpoint indisponible
 
 #### `design/wireframes/` — Maquettes
@@ -78,7 +78,7 @@ Plugin PHP OJS fonctionnel minimal, sur instance locale.
 ## Phase 3 — Implémentation complète
 
 - Multilingue ES/FR (toutes surfaces)
-- Thésaurus : UNESCO + ISOC + Rameau (configurable par revue dans plugin settings)
+- Thésaurus : UNESCO + Eurovoc + Rameau (configurable par revue dans plugin settings)
 - Surface backoffice éditeur (audit arrière-stock)
 - Intégration ORCID/ROR (C1b, validation humaine obligatoire)
 - API key NV — modèle freemium (plugin gratuit, service payant via clé)
