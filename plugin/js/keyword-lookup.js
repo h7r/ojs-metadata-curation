@@ -307,6 +307,22 @@
 	}
 
 	/**
+	 * Show transient hint in choice mode when free text entry is blocked.
+	 */
+	function showChoiceBlockedHint(input) {
+		var container = input.closest('.pkpFormField') || input.parentNode;
+		if (container.querySelector('.nv-choice-hint')) return;
+		var hint = document.createElement('span');
+		hint.className = 'nv-choice-hint';
+		hint.setAttribute('role', 'status');
+		hint.textContent = 'S\u00e9lection obligatoire depuis le th\u00e9saurus.';
+		container.appendChild(hint);
+		setTimeout(function () {
+			if (hint.parentNode) hint.parentNode.removeChild(hint);
+		}, 3000);
+	}
+
+	/**
 	 * Show bypass warning below the input.
 	 */
 	function showBypassWarning(input) {
@@ -458,12 +474,17 @@
 				// Mode-dependent Enter behavior (when no dropdown item is active)
 				if (e.key === 'Enter' && (!activeDropdown || activeIndex < 0)) {
 					if (INTERACTION_MODE === 'choice') {
-						// Block free text — must select from dropdown
+						// Block free text — must select from dropdown.
+						// stopImmediatePropagation prevents OJS Vue.js
+						// FieldControlledVocab from capturing the Enter.
 						e.preventDefault();
+						e.stopImmediatePropagation();
+						showChoiceBlockedHint(input);
 						return;
 					}
 					if (INTERACTION_MODE === 'bypass' && input.value.trim()) {
 						e.preventDefault();
+						e.stopImmediatePropagation();
 						addFreeTextKeyword(input);
 						return;
 					}
@@ -474,6 +495,12 @@
 				// Delay to allow click on dropdown items
 				setTimeout(function () {
 					if (_injectingKeyword) return;
+					if (INTERACTION_MODE === 'choice') {
+						// Clear uncommitted free text so OJS cannot
+						// capture it through its own blur handler.
+						input.value = '';
+						input.dispatchEvent(new Event('input', { bubbles: true }));
+					}
 					hideDropdown();
 					// In bypass mode, commit free text on blur
 					if (INTERACTION_MODE === 'bypass' && input.value.trim()) {
@@ -491,20 +518,9 @@
 				if (!input.getAttribute('placeholder')) {
 					input.setAttribute('placeholder', 'S\u00e9lectionnez un terme du th\u00e9saurus\u2026');
 				}
-				// Block paste of free text that bypasses autocomplete
-				input.addEventListener('paste', function (pe) {
-					// Allow paste for search triggering, but visually signal restriction
-					var container = input.closest('.pkpFormField') || input.parentNode;
-					if (!container.querySelector('.nv-choice-hint')) {
-						var hint = document.createElement('span');
-						hint.className = 'nv-choice-hint';
-						hint.setAttribute('role', 'status');
-						hint.textContent = 'S\u00e9lection obligatoire depuis le th\u00e9saurus.';
-						container.appendChild(hint);
-						setTimeout(function () {
-							if (hint.parentNode) hint.parentNode.removeChild(hint);
-						}, 3000);
-					}
+				// Allow paste for search triggering, but visually signal restriction
+				input.addEventListener('paste', function () {
+					showChoiceBlockedHint(input);
 				});
 			}
 
