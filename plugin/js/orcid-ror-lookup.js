@@ -244,9 +244,12 @@
 				e.preventDefault();
 				e.stopPropagation();
 				input.value = item.orcid_uri;
-				input.dataset.nvOrcidValidated = 'false';
+				// Dispatch input event so Vue.js FieldText picks up the value
+				input.dispatchEvent(new Event('input', { bubbles: true }));
+				input.dispatchEvent(new Event('change', { bubbles: true }));
 				input.dataset.nvOrcidName = item.display_name;
-				addValidationChip(input, item.display_name, item.orcid_uri, 'orcid');
+				// Single-step validation: selection IS the human validation act (C1b)
+				addConfirmedChip(input, item.display_name, item.orcid_uri, 'orcid');
 				hideDropdown();
 			});
 
@@ -303,9 +306,12 @@
 				e.preventDefault();
 				e.stopPropagation();
 				input.value = item.name;
+				// Dispatch input event so Vue.js FieldText picks up the value
+				input.dispatchEvent(new Event('input', { bubbles: true }));
+				input.dispatchEvent(new Event('change', { bubbles: true }));
 				input.dataset.nvRorId = item.ror_id;
-				input.dataset.nvRorValidated = 'false';
-				addValidationChip(input, item.name, item.ror_id, 'ror');
+				// Single-step validation: selection IS the human validation act (C1b)
+				addConfirmedChip(input, item.name, item.ror_id, 'ror');
 				hideDropdown();
 			});
 
@@ -324,38 +330,22 @@
 		input.setAttribute('aria-expanded', 'true');
 	}
 
-	function addValidationChip(input, label, identifier, type) {
+	/**
+	 * Single-step validation chip: selection from the lookup dropdown
+	 * IS the human validation act (C1b). Validates server-side immediately
+	 * and shows a confirmed chip. No separate confirm button needed.
+	 */
+	function addConfirmedChip(input, label, identifier, type) {
 		var container = input.closest('.pkpFormField') || input.closest('.pkpFormGroup') || input.parentNode;
 		var existing = container.querySelector('.nv-validation-chip[data-type="' + type + '"]');
 		if (existing) existing.parentNode.removeChild(existing);
 
 		var chip = document.createElement('span');
-		chip.className = 'nv-tag-chip nv-validation-chip nv-validation-pending-chip';
+		chip.className = 'nv-tag-chip nv-validation-chip nv-validation-confirmed-chip';
 		chip.dataset.type = type;
-		chip.innerHTML = '<span class="nv-validation-icon">\u26A0</span> ' +
+		chip.innerHTML = '<span class="nv-validation-icon">\u2713</span> ' +
 			'<span class="nv-validation-label">' + escapeHtml(label) + '</span>' +
 			' <small>(' + escapeHtml(identifier) + ')</small>';
-
-		var confirmBtn = document.createElement('button');
-		confirmBtn.type = 'button';
-		confirmBtn.className = 'nv-validation-confirm';
-		confirmBtn.textContent = '\u2713';
-		confirmBtn.title = i18n.confirm || 'Confirm';
-		confirmBtn.setAttribute('aria-label', (i18n.confirmAriaLabel || 'Confirm {type} for {label}').replace('{type}', type).replace('{label}', label));
-		confirmBtn.addEventListener('click', function () {
-			confirmBtn.disabled = true;
-			validateOnServer(input, identifier, label, type, function () {
-				chip.classList.remove('nv-validation-pending-chip');
-				chip.classList.add('nv-validation-confirmed-chip');
-				chip.querySelector('.nv-validation-icon').textContent = '\u2713';
-				input.dataset['nv' + capitalize(type) + 'Validated'] = 'true';
-				confirmBtn.disabled = false;
-			}, function (errorMsg) {
-				chip.querySelector('.nv-validation-icon').textContent = '\u2717';
-				chip.title = errorMsg;
-				confirmBtn.disabled = false;
-			});
-		});
 
 		var removeBtn = document.createElement('button');
 		removeBtn.type = 'button';
@@ -365,12 +355,26 @@
 		removeBtn.addEventListener('click', function () {
 			chip.parentNode.removeChild(chip);
 			input.value = '';
+			input.dispatchEvent(new Event('input', { bubbles: true }));
 			delete input.dataset['nv' + capitalize(type) + 'Validated'];
 		});
 
-		chip.appendChild(confirmBtn);
 		chip.appendChild(removeBtn);
 		container.appendChild(chip);
+
+		// Mark validated optimistically, then persist server-side
+		input.dataset['nv' + capitalize(type) + 'Validated'] = 'true';
+
+		validateOnServer(input, identifier, label, type, function () {
+			// Server confirmed — chip stays green
+		}, function (errorMsg) {
+			// Server rejected — revert to error state
+			chip.classList.remove('nv-validation-confirmed-chip');
+			chip.classList.add('nv-validation-pending-chip');
+			chip.querySelector('.nv-validation-icon').textContent = '\u2717';
+			chip.title = errorMsg;
+			input.dataset['nv' + capitalize(type) + 'Validated'] = 'false';
+		});
 	}
 
 	function capitalize(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
