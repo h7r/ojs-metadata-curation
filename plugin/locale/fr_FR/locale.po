@@ -105,3 +105,54 @@ msgstr "Supprimer"
 
 msgid "plugins.generic.nvMetadataCuration.widget.bypassWarning"
 msgstr "Saisie libre — ne provient pas d'un vocabulaire contrôlé."
+
+msgid "plugins.generic.nvMetadataCuration.js.errorHttp"
+msgstr "HTTP {status}"
+
+msgid "plugins.generic.nvMetadataCuration.js.errorNetwork"
+msgstr "Erreur réseau"
+
+msgid "plugins.generic.nvMetadataCuration.js.errorTimeout"
+msgstr "Délai dépassé"
+
+msgid "plugins.generic.nvMetadataCuration.js.choiceRequired"
+msgstr "Sélection obligatoire depuis le thésaurus."
+
+msgid "plugins.generic.nvMetadataCuration.js.bypassWarning"
+msgstr "Mot-clé libre — non validé par un thésaurus contrôlé."
+
+msgid "plugins.generic.nvMetadataCuration.js.removeKeyword"
+msgstr "Supprimer {value}"
+
+msgid "plugins.generic.nvMetadataCuration.js.saveSuccess"
+msgstr "Mots-clés enregistrés"
+
+msgid "plugins.generic.nvMetadataCuration.js.saveFailed"
+msgstr "Échec — veuillez réessayer"
+
+msgid "plugins.generic.nvMetadataCuration.js.choicePlaceholder"
+msgstr "Sélectionnez un terme du thésaurus…"
+
+msgid "plugins.generic.nvMetadataCuration.js.bypassNotice"
+msgstr "Mode libre — les termes non validés seront signalés."
+
+msgid "plugins.generic.nvMetadataCuration.js.orcidResults"
+msgstr "Résultats ORCID"
+
+msgid "plugins.generic.nvMetadataCuration.js.rorResults"
+msgstr "Résultats ROR"
+
+msgid "plugins.generic.nvMetadataCuration.js.validationRequired"
+msgstr "Nécessite une validation"
+
+msgid "plugins.generic.nvMetadataCuration.js.validationRequiredTitle"
+msgstr "Nécessite une validation humaine"
+
+msgid "plugins.generic.nvMetadataCuration.js.confirm"
+msgstr "Confirmer"
+
+msgid "plugins.generic.nvMetadataCuration.js.confirmAriaLabel"
+msgstr "Confirmer {type} pour {label}"
+
+msgid "plugins.generic.nvMetadataCuration.js.removeType"
+msgstr "Supprimer {type}"

@@ -40,4 +40,23 @@
 	<message key="plugins.generic.nvMetadataCuration.widget.confirm">Confirmar</message>
 	<message key="plugins.generic.nvMetadataCuration.widget.remove">Eliminar</message>
 	<message key="plugins.generic.nvMetadataCuration.widget.bypassWarning">Texto libre — no proviene de un vocabulario controlado.</message>
+
+	<!-- Cadenas JS runtime (inyectadas via window.nvMetadataCuration.i18n) -->
+	<message key="plugins.generic.nvMetadataCuration.js.errorHttp">HTTP {status}</message>
+	<message key="plugins.generic.nvMetadataCuration.js.errorNetwork">Error de red</message>
+	<message key="plugins.generic.nvMetadataCuration.js.errorTimeout">Tiempo agotado</message>
+	<message key="plugins.generic.nvMetadataCuration.js.choiceRequired">Selección obligatoria del tesauro.</message>
+	<message key="plugins.generic.nvMetadataCuration.js.bypassWarning">Palabra clave libre — no validada por un vocabulario controlado.</message>
+	<message key="plugins.generic.nvMetadataCuration.js.removeKeyword">Eliminar {value}</message>
+	<message key="plugins.generic.nvMetadataCuration.js.saveSuccess">Palabras clave guardadas</message>
+	<message key="plugins.generic.nvMetadataCuration.js.saveFailed">Error — inténtelo de nuevo</message>
+	<message key="plugins.generic.nvMetadataCuration.js.choicePlaceholder">Seleccione un término del tesauro…</message>
+	<message key="plugins.generic.nvMetadataCuration.js.bypassNotice">Modo libre — los términos no validados serán señalados.</message>
+	<message key="plugins.generic.nvMetadataCuration.js.orcidResults">Resultados ORCID</message>
+	<message key="plugins.generic.nvMetadataCuration.js.rorResults">Resultados ROR</message>
+	<message key="plugins.generic.nvMetadataCuration.js.validationRequired">Requiere validación</message>
+	<message key="plugins.generic.nvMetadataCuration.js.validationRequiredTitle">Requiere validación humana</message>
+	<message key="plugins.generic.nvMetadataCuration.js.confirm">Confirmar</message>
+	<message key="plugins.generic.nvMetadataCuration.js.confirmAriaLabel">Confirmar {type} para {label}</message>
+	<message key="plugins.generic.nvMetadataCuration.js.removeType">Eliminar {type}</message>
 </locale>

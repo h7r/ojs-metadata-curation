@@ -14,6 +14,7 @@
 	'use strict';
 
 	var config = window.nvMetadataCuration || {};
+	var i18n = config.i18n || {};
 	var SUGGEST_URL = config.suggestUrl || '';
 	var THESAURUS = config.thesaurus || 'unesco';
 	var INTERACTION_MODE = config.interactionMode || 'suggestion';
@@ -73,11 +74,11 @@
 					callback(e, null);
 				}
 			} else {
-				callback(new Error('HTTP ' + xhr.status), null);
+				callback(new Error((i18n.errorHttp || 'HTTP {status}').replace('{status}', xhr.status)), null);
 			}
 		};
-		xhr.onerror = function () { callback(new Error('Network error'), null); };
-		xhr.ontimeout = function () { callback(new Error('Timeout'), null); };
+		xhr.onerror = function () { callback(new Error(i18n.errorNetwork || 'Network error'), null); };
+		xhr.ontimeout = function () { callback(new Error(i18n.errorTimeout || 'Timeout'), null); };
 
 		xhr.send(params.toString());
 	}
@@ -315,7 +316,7 @@
 		var hint = document.createElement('span');
 		hint.className = 'nv-choice-hint';
 		hint.setAttribute('role', 'status');
-		hint.textContent = 'S\u00e9lection obligatoire depuis le th\u00e9saurus.';
+		hint.textContent = i18n.choiceRequired || 'Selection required from the thesaurus.';
 		container.appendChild(hint);
 		setTimeout(function () {
 			if (hint.parentNode) hint.parentNode.removeChild(hint);
@@ -331,7 +332,7 @@
 		var warning = document.createElement('span');
 		warning.className = 'nv-bypass-warning';
 		warning.setAttribute('role', 'alert');
-		warning.textContent = 'Mot-cl\u00e9 libre \u2014 non valid\u00e9 par un th\u00e9saurus contr\u00f4l\u00e9.';
+		warning.textContent = i18n.bypassWarning || 'Free keyword — not validated by a controlled vocabulary.';
 		container.appendChild(warning);
 	}
 
@@ -364,7 +365,7 @@
 		removeBtn.type = 'button';
 		removeBtn.className = 'nv-tag-remove';
 		removeBtn.textContent = '\u00d7';
-		removeBtn.setAttribute('aria-label', 'Remove ' + kwdEntry.kwd_value);
+		removeBtn.setAttribute('aria-label', (i18n.removeKeyword || 'Remove {value}').replace('{value}', kwdEntry.kwd_value));
 		removeBtn.addEventListener('click', function () {
 			selectedKeywords = selectedKeywords.filter(function (k) {
 				return k.kwd_uri !== kwdEntry.kwd_uri;
@@ -422,8 +423,8 @@
 		msg.setAttribute('role', 'status');
 		msg.setAttribute('aria-live', 'polite');
 		msg.textContent = type === 'success'
-			? '\u2713 Keywords saved'
-			: '\u2717 Save failed \u2014 please retry';
+			? '\u2713 ' + (i18n.saveSuccess || 'Keywords saved')
+			: '\u2717 ' + (i18n.saveFailed || 'Save failed — please retry');
 		tagZone.appendChild(msg);
 		setTimeout(function () { if (msg.parentNode) msg.remove(); }, 4000);
 	}
@@ -546,7 +547,7 @@
 
 			if (INTERACTION_MODE === 'choice') {
 				if (!input.getAttribute('placeholder')) {
-					input.setAttribute('placeholder', 'S\u00e9lectionnez un terme du th\u00e9saurus\u2026');
+					input.setAttribute('placeholder', i18n.choicePlaceholder || 'Select a term from the thesaurus\u2026');
 				}
 				// Allow paste for search triggering, but visually signal restriction
 				input.addEventListener('paste', function () {
@@ -558,7 +559,7 @@
 				if (!modeContainer.querySelector('.nv-bypass-notice')) {
 					var notice = document.createElement('span');
 					notice.className = 'nv-bypass-notice';
-					notice.textContent = 'Mode libre \u2014 les termes non valid\u00e9s seront signal\u00e9s.';
+					notice.textContent = i18n.bypassNotice || 'Free mode — unvalidated terms will be flagged.';
 					modeContainer.appendChild(notice);
 				}
 			}

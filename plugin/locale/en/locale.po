@@ -105,3 +105,54 @@ msgstr "Remove"
 
 msgid "plugins.generic.nvMetadataCuration.widget.bypassWarning"
 msgstr "Free text entry — not from a controlled vocabulary."
+
+msgid "plugins.generic.nvMetadataCuration.js.errorHttp"
+msgstr "HTTP {status}"
+
+msgid "plugins.generic.nvMetadataCuration.js.errorNetwork"
+msgstr "Network error"
+
+msgid "plugins.generic.nvMetadataCuration.js.errorTimeout"
+msgstr "Timeout"
+
+msgid "plugins.generic.nvMetadataCuration.js.choiceRequired"
+msgstr "Selection required from the thesaurus."
+
+msgid "plugins.generic.nvMetadataCuration.js.bypassWarning"
+msgstr "Free keyword — not validated by a controlled vocabulary."
+
+msgid "plugins.generic.nvMetadataCuration.js.removeKeyword"
+msgstr "Remove {value}"
+
+msgid "plugins.generic.nvMetadataCuration.js.saveSuccess"
+msgstr "Keywords saved"
+
+msgid "plugins.generic.nvMetadataCuration.js.saveFailed"
+msgstr "Save failed — please retry"
+
+msgid "plugins.generic.nvMetadataCuration.js.choicePlaceholder"
+msgstr "Select a term from the thesaurus…"
+
+msgid "plugins.generic.nvMetadataCuration.js.bypassNotice"
+msgstr "Free mode — unvalidated terms will be flagged."
+
+msgid "plugins.generic.nvMetadataCuration.js.orcidResults"
+msgstr "ORCID results"
+
+msgid "plugins.generic.nvMetadataCuration.js.rorResults"
+msgstr "ROR results"
+
+msgid "plugins.generic.nvMetadataCuration.js.validationRequired"
+msgstr "Requires validation"
+
+msgid "plugins.generic.nvMetadataCuration.js.validationRequiredTitle"
+msgstr "Requires human validation"
+
+msgid "plugins.generic.nvMetadataCuration.js.confirm"
+msgstr "Confirm"
+
+msgid "plugins.generic.nvMetadataCuration.js.confirmAriaLabel"
+msgstr "Confirm {type} for {label}"
+
+msgid "plugins.generic.nvMetadataCuration.js.removeType"
+msgstr "Remove {type}"

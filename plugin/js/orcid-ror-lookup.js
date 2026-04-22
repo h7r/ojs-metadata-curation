@@ -14,6 +14,7 @@
 	'use strict';
 
 	var config = window.nvMetadataCuration || {};
+	var i18n = config.i18n || {};
 	var ORCID_URL = config.orcidUrl || '';
 	var ROR_URL = config.rorUrl || '';
 	var SAVE_CONTRIBUTOR_IDS_URL = config.saveContributorIdsUrl || '';
@@ -42,11 +43,11 @@
 				try { callback(null, JSON.parse(xhr.responseText)); }
 				catch (e) { callback(e, null); }
 			} else {
-				callback(new Error('HTTP ' + xhr.status), null);
+				callback(new Error((i18n.errorHttp || 'HTTP {status}').replace('{status}', xhr.status)), null);
 			}
 		};
-		xhr.onerror = function () { callback(new Error('Network error'), null); };
-		xhr.ontimeout = function () { callback(new Error('Timeout'), null); };
+		xhr.onerror = function () { callback(new Error(i18n.errorNetwork || 'Network error'), null); };
+		xhr.ontimeout = function () { callback(new Error(i18n.errorTimeout || 'Timeout'), null); };
 		xhr.send(params.toString());
 	}
 
@@ -206,7 +207,7 @@
 		var dropdown = document.createElement('div');
 		dropdown.className = 'nv-suggest-dropdown nv-orcid-dropdown';
 		dropdown.setAttribute('role', 'listbox');
-		dropdown.setAttribute('aria-label', 'ORCID results');
+		dropdown.setAttribute('aria-label', i18n.orcidResults || 'ORCID results');
 
 		results.forEach(function (item) {
 			var row = document.createElement('div');
@@ -235,8 +236,8 @@
 			var badge = document.createElement('span');
 			badge.className = 'nv-validation-badge nv-validation-pending';
 			badge.textContent = '\u26A0';
-			badge.setAttribute('aria-label', 'Requires validation');
-			badge.title = 'Requires human validation';
+			badge.setAttribute('aria-label', i18n.validationRequired || 'Requires validation');
+			badge.title = i18n.validationRequiredTitle || 'Requires human validation';
 			row.appendChild(badge);
 
 			row.addEventListener('click', function (e) {
@@ -271,7 +272,7 @@
 		var dropdown = document.createElement('div');
 		dropdown.className = 'nv-suggest-dropdown nv-ror-dropdown';
 		dropdown.setAttribute('role', 'listbox');
-		dropdown.setAttribute('aria-label', 'ROR results');
+		dropdown.setAttribute('aria-label', i18n.rorResults || 'ROR results');
 
 		results.forEach(function (item) {
 			var row = document.createElement('div');
@@ -294,8 +295,8 @@
 			var badge = document.createElement('span');
 			badge.className = 'nv-validation-badge nv-validation-pending';
 			badge.textContent = '\u26A0';
-			badge.setAttribute('aria-label', 'Requires validation');
-			badge.title = 'Requires human validation';
+			badge.setAttribute('aria-label', i18n.validationRequired || 'Requires validation');
+			badge.title = i18n.validationRequiredTitle || 'Requires human validation';
 			row.appendChild(badge);
 
 			row.addEventListener('click', function (e) {
@@ -339,8 +340,8 @@
 		confirmBtn.type = 'button';
 		confirmBtn.className = 'nv-validation-confirm';
 		confirmBtn.textContent = '\u2713';
-		confirmBtn.title = 'Confirm';
-		confirmBtn.setAttribute('aria-label', 'Confirm ' + type + ' for ' + label);
+		confirmBtn.title = i18n.confirm || 'Confirm';
+		confirmBtn.setAttribute('aria-label', (i18n.confirmAriaLabel || 'Confirm {type} for {label}').replace('{type}', type).replace('{label}', label));
 		confirmBtn.addEventListener('click', function () {
 			confirmBtn.disabled = true;
 			validateOnServer(input, identifier, label, type, function () {
@@ -360,7 +361,7 @@
 		removeBtn.type = 'button';
 		removeBtn.className = 'nv-tag-remove';
 		removeBtn.textContent = '\u00D7';
-		removeBtn.setAttribute('aria-label', 'Remove ' + type);
+		removeBtn.setAttribute('aria-label', (i18n.removeType || 'Remove {type}').replace('{type}', type));
 		removeBtn.addEventListener('click', function () {
 			chip.parentNode.removeChild(chip);
 			input.value = '';

@@ -40,4 +40,23 @@
 	<message key="plugins.generic.nvMetadataCuration.widget.confirm">Confirm</message>
 	<message key="plugins.generic.nvMetadataCuration.widget.remove">Remove</message>
 	<message key="plugins.generic.nvMetadataCuration.widget.bypassWarning">Free text entry — not from a controlled vocabulary.</message>
+
+	<!-- JS runtime strings (injected via window.nvMetadataCuration.i18n) -->
+	<message key="plugins.generic.nvMetadataCuration.js.errorHttp">HTTP {status}</message>
+	<message key="plugins.generic.nvMetadataCuration.js.errorNetwork">Network error</message>
+	<message key="plugins.generic.nvMetadataCuration.js.errorTimeout">Timeout</message>
+	<message key="plugins.generic.nvMetadataCuration.js.choiceRequired">Selection required from the thesaurus.</message>
+	<message key="plugins.generic.nvMetadataCuration.js.bypassWarning">Free keyword — not validated by a controlled vocabulary.</message>
+	<message key="plugins.generic.nvMetadataCuration.js.removeKeyword">Remove {value}</message>
+	<message key="plugins.generic.nvMetadataCuration.js.saveSuccess">Keywords saved</message>
+	<message key="plugins.generic.nvMetadataCuration.js.saveFailed">Save failed — please retry</message>
+	<message key="plugins.generic.nvMetadataCuration.js.choicePlaceholder">Select a term from the thesaurus…</message>
+	<message key="plugins.generic.nvMetadataCuration.js.bypassNotice">Free mode — unvalidated terms will be flagged.</message>
+	<message key="plugins.generic.nvMetadataCuration.js.orcidResults">ORCID results</message>
+	<message key="plugins.generic.nvMetadataCuration.js.rorResults">ROR results</message>
+	<message key="plugins.generic.nvMetadataCuration.js.validationRequired">Requires validation</message>
+	<message key="plugins.generic.nvMetadataCuration.js.validationRequiredTitle">Requires human validation</message>
+	<message key="plugins.generic.nvMetadataCuration.js.confirm">Confirm</message>
+	<message key="plugins.generic.nvMetadataCuration.js.confirmAriaLabel">Confirm {type} for {label}</message>
+	<message key="plugins.generic.nvMetadataCuration.js.removeType">Remove {type}</message>
 </locale>
