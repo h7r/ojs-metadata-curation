@@ -138,10 +138,10 @@
 			dropdown.appendChild(row);
 		});
 
-		// Position relative to input
+		// Position fixed relative to viewport (stable on scroll)
 		var rect = input.getBoundingClientRect();
-		dropdown.style.top = (rect.bottom + window.scrollY) + 'px';
-		dropdown.style.left = (rect.left + window.scrollX) + 'px';
+		dropdown.style.top = rect.bottom + 'px';
+		dropdown.style.left = rect.left + 'px';
 		dropdown.style.width = rect.width + 'px';
 
 		document.body.appendChild(dropdown);
@@ -595,6 +595,11 @@
 			hideDropdown();
 		}
 	});
+
+	// Close dropdown on scroll (position: fixed doesn't track scroll)
+	window.addEventListener('scroll', function () {
+		if (activeDropdown) hideDropdown();
+	}, true);
 
 	// Init when DOM is ready
 	if (document.readyState === 'loading') {

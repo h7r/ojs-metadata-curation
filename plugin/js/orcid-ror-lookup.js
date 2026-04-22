@@ -256,9 +256,10 @@
 			dropdown.appendChild(row);
 		});
 
+		// Position fixed relative to viewport (stable on scroll)
 		var rect = input.getBoundingClientRect();
-		dropdown.style.top = (rect.bottom + window.scrollY) + 'px';
-		dropdown.style.left = (rect.left + window.scrollX) + 'px';
+		dropdown.style.top = rect.bottom + 'px';
+		dropdown.style.left = rect.left + 'px';
 		dropdown.style.width = Math.max(rect.width, 320) + 'px';
 
 		document.body.appendChild(dropdown);
@@ -318,9 +319,10 @@
 			dropdown.appendChild(row);
 		});
 
+		// Position fixed relative to viewport (stable on scroll)
 		var rect = input.getBoundingClientRect();
-		dropdown.style.top = (rect.bottom + window.scrollY) + 'px';
-		dropdown.style.left = (rect.left + window.scrollX) + 'px';
+		dropdown.style.top = rect.bottom + 'px';
+		dropdown.style.left = rect.left + 'px';
 		dropdown.style.width = Math.max(rect.width, 320) + 'px';
 
 		document.body.appendChild(dropdown);
@@ -481,6 +483,11 @@
 			hideDropdown();
 		}
 	});
+
+	// Close dropdown on scroll (position: fixed doesn't track scroll)
+	window.addEventListener('scroll', function () {
+		if (activeDropdown) hideDropdown();
+	}, true);
 
 	if (document.readyState === 'loading') {
 		document.addEventListener('DOMContentLoaded', initOrcidRor);
