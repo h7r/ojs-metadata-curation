@@ -134,7 +134,7 @@ class SuggestHandler extends PKPHandler
      * submission must exist in the current context, and user must be
      * a participant or journal manager.
      *
-     * @return array{user: \PKP\user\User, submission: \APP\submission\Submission, submissionDao: \PKP\db\DAO}
+     * @return array{user: \PKP\user\User, submission: \APP\submission\Submission}
      */
     private function authorizeSubmissionAccess($request, int $submissionId): array
     {
@@ -147,8 +147,7 @@ class SuggestHandler extends PKPHandler
             $this->sendJsonError('Authentication required', 401);
         }
 
-        $submissionDao = DAORegistry::getDAO('SubmissionDAO');
-        $submission = $submissionDao->getById($submissionId);
+        $submission = Repo::submission()->get($submissionId);
 
         if (!$submission) {
             $this->sendJsonError('Submission not found', 404);
@@ -159,7 +158,7 @@ class SuggestHandler extends PKPHandler
             $this->sendJsonError('Submission not in current context', 403);
         }
 
-        $stageAssignmentDao = DAORegistry::getDAO('StageAssignmentDAO');
+        $stageAssignmentDao = DAORegistry::getDAO('StageAssignment');
         $assignments = $stageAssignmentDao->getBySubmissionAndStageId(
             $submissionId,
             null,
@@ -183,7 +182,7 @@ class SuggestHandler extends PKPHandler
             }
         }
 
-        return ['user' => $user, 'submission' => $submission, 'submissionDao' => $submissionDao];
+        return ['user' => $user, 'submission' => $submission];
     }
 
     /**
@@ -199,7 +198,7 @@ class SuggestHandler extends PKPHandler
         $submissionId = (int) $request->getUserVar('submissionId');
         $keywordsRaw = (string) $request->getUserVar('keywords');
 
-        ['submission' => $submission, 'submissionDao' => $submissionDao]
+        ['submission' => $submission]
             = $this->authorizeSubmissionAccess($request, $submissionId);
 
         $keywords = json_decode($keywordsRaw, true);
@@ -223,7 +222,7 @@ class SuggestHandler extends PKPHandler
         }
 
         $submission->setData('nvKeywords', json_encode($validated, JSON_UNESCAPED_UNICODE));
-        $submissionDao->updateObject($submission);
+        Repo::submission()->dao->update($submission);
 
         // Sync validated keywords into OJS native Publication::keywords
         // so they appear in OAI-PMH, Crossref, and the public article view.
@@ -299,7 +298,7 @@ class SuggestHandler extends PKPHandler
         $submissionId = (int) $request->getUserVar('submissionId');
         $contributorsRaw = (string) $request->getUserVar('contributors');
 
-        ['user' => $user, 'submission' => $submission, 'submissionDao' => $submissionDao]
+        ['user' => $user, 'submission' => $submission]
             = $this->authorizeSubmissionAccess($request, $submissionId);
 
         $contributors = json_decode($contributorsRaw, true);
@@ -381,7 +380,7 @@ class SuggestHandler extends PKPHandler
         }
 
         $submission->setData('nvContributorValidation', json_encode($existing, JSON_UNESCAPED_UNICODE));
-        $submissionDao->updateObject($submission);
+        Repo::submission()->dao->update($submission);
 
         header('Content-Type: application/json; charset=utf-8');
         echo json_encode([

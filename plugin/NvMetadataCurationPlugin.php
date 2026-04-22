@@ -21,7 +21,6 @@ use APP\core\Application;
 use APP\facades\Repo;
 use APP\plugins\generic\nvMetadataCuration\classes\forms\SettingsForm;
 use PKP\core\JSONMessage;
-use PKP\db\DAORegistry;
 use PKP\linkAction\LinkAction;
 use PKP\linkAction\request\AjaxModal;
 use PKP\plugins\GenericPlugin;
@@ -320,8 +319,7 @@ class NvMetadataCurationPlugin extends GenericPlugin
             return false;
         }
 
-        $submissionDao = DAORegistry::getDAO('SubmissionDAO');
-        $submission = $submissionDao->getById($submissionId);
+        $submission = Repo::submission()->get($submissionId);
         if (!$submission) {
             return false;
         }
@@ -365,8 +363,7 @@ class NvMetadataCurationPlugin extends GenericPlugin
             DB::beginTransaction();
             try {
                 // Acquire row-level lock to prevent concurrent lost-update race
-                $publicationDao = DAORegistry::getDAO('PublicationDAO');
-                $publicationDao->update(
+                DB::select(
                     'SELECT 1 FROM publications WHERE publication_id = ? FOR UPDATE',
                     [$publication->getId()]
                 );
