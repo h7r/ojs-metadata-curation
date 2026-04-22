@@ -456,12 +456,22 @@
 	 * Attach autocomplete behaviour to keyword input fields.
 	 */
 	function init() {
-		// OJS keyword fields: look for inputs within keyword-related containers
+		// OJS 3.4 Vue.js FieldControlledVocab renders via Autosuggest:
+		//   <div class="pkpFormField pkpAutosuggest">
+		//     <input class="pkpAutosuggest__input" id="{group}-keywords-control">
+		// No name attribute, no .pkpFormField--keywords class.
 		var selectors = [
+			// OJS 3.4 Autosuggest rendered input (primary)
+			'input.pkpAutosuggest__input',
+			'.pkpAutosuggest input[type="text"]',
+			// By id pattern (OJS generates "metadata-keywords-control" etc.)
+			'input[id*="keyword"]',
+			'[id*="keyword"] input',
+			// Legacy / fallback selectors
 			'input[name="keywords"]',
 			'input[name*="keyword"]',
 			'.pkpFormField--keywords input[type="text"]',
-			'[id*="keyword"] input[type="text"]'
+			'.pkpFormField--keywords input',
 		];
 
 		var inputs = [];
@@ -593,14 +603,14 @@
 		init();
 	}
 
-	// Re-init on dynamic form loads (OJS SPA-like navigation)
-	var observer = new MutationObserver(function (mutations) {
-		for (var i = 0; i < mutations.length; i++) {
-			if (mutations[i].addedNodes.length > 0) {
-				init();
-				break;
-			}
-		}
+	// Re-init on dynamic form loads (OJS SPA-like navigation).
+	// Debounce: Vue.js components finish rendering asynchronously
+	// after the wrapper node is added to the DOM.
+	var initTimer = null;
+	var observer = new MutationObserver(function () {
+		clearTimeout(initTimer);
+		initTimer = setTimeout(init, 150);
 	});
-	observer.observe(document.body, { childList: true, subtree: true });
+	var target = document.body || document.documentElement;
+	observer.observe(target, { childList: true, subtree: true });
 })();

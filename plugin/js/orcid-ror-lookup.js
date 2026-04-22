@@ -325,7 +325,7 @@
 	}
 
 	function addValidationChip(input, label, identifier, type) {
-		var container = input.closest('.pkpFormField') || input.parentNode;
+		var container = input.closest('.pkpFormField') || input.closest('.pkpFormGroup') || input.parentNode;
 		var existing = container.querySelector('.nv-validation-chip[data-type="' + type + '"]');
 		if (existing) existing.parentNode.removeChild(existing);
 
@@ -381,19 +381,34 @@
 		return d.innerHTML;
 	}
 
-	// ORCID field selectors
+	// ORCID field selectors — OJS 3.4 Vue.js contributor modal renders:
+	//   <div class="pkpFormField pkpFormField--text">
+	//     <input id="{group}-orcid-control" name="orcid" class="pkpFormField__input">
+	// The modal is dynamically injected when user clicks "Edit contributor".
 	var orcidSelectors = [
-		'input[name*="orcid"]',
+		// By id pattern (OJS generates "{group}-orcid-control")
 		'input[id*="orcid"]',
-		'.pkpFormField--orcid input[type="text"]'
+		// By name attribute (may or may not be present in Vue rendering)
+		'input[name*="orcid"]',
+		// PKP form field wrapper variants
+		'.pkpFormField--orcid input[type="text"]',
+		'.pkpFormField--orcid input',
+		// Inside containers with orcid in id
+		'[id*="orcid"] input',
+		// PKP standard input class inside orcid-related field
+		'[class*="orcid"] input.pkpFormField__input',
 	];
 
-	// Affiliation field selectors
+	// Affiliation field selectors — similar dynamic modal rendering
 	var affiliationSelectors = [
-		'input[name*="affiliation"]',
 		'input[id*="affiliation"]',
+		'input[name*="affiliation"]',
 		'.pkpFormField--affiliation input[type="text"]',
-		'textarea[name*="affiliation"]'
+		'.pkpFormField--affiliation input',
+		'.pkpFormField--affiliation textarea',
+		'[id*="affiliation"] input',
+		'[id*="affiliation"] textarea',
+		'textarea[name*="affiliation"]',
 	];
 
 	function initOrcidRor() {
@@ -469,10 +484,13 @@
 		initOrcidRor();
 	}
 
-	var observer = new MutationObserver(function (mutations) {
-		for (var i = 0; i < mutations.length; i++) {
-			if (mutations[i].addedNodes.length > 0) { initOrcidRor(); break; }
-		}
+	// Debounce MutationObserver: Vue.js finishes rendering async
+	// after the wrapper node is injected (contributor modal, etc.)
+	var initTimer = null;
+	var observer = new MutationObserver(function () {
+		clearTimeout(initTimer);
+		initTimer = setTimeout(initOrcidRor, 150);
 	});
-	observer.observe(document.body, { childList: true, subtree: true });
+	var target = document.body || document.documentElement;
+	observer.observe(target, { childList: true, subtree: true });
 })();
