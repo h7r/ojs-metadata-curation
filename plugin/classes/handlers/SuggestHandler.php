@@ -158,7 +158,7 @@ class SuggestHandler extends PKPHandler
             $this->sendJsonError('Submission not in current context', 403);
         }
 
-        $stageAssignmentDao = DAORegistry::getDAO('StageAssignment');
+        $stageAssignmentDao = DAORegistry::getDAO('StageAssignmentDAO');
         $assignments = $stageAssignmentDao->getBySubmissionAndStageId(
             $submissionId,
             null,
@@ -221,8 +221,9 @@ class SuggestHandler extends PKPHandler
             ];
         }
 
-        $submission->setData('nvKeywords', json_encode($validated, JSON_UNESCAPED_UNICODE));
-        Repo::submission()->dao->update($submission);
+        Repo::submission()->edit($submission, [
+            'nvKeywords' => json_encode($validated, JSON_UNESCAPED_UNICODE),
+        ]);
 
         // Sync validated keywords into OJS native Publication::keywords
         // so they appear in OAI-PMH, Crossref, and the public article view.
@@ -379,8 +380,9 @@ class SuggestHandler extends PKPHandler
             $existing[$authorId] = array_merge($existing[$authorId] ?? [], $entry);
         }
 
-        $submission->setData('nvContributorValidation', json_encode($existing, JSON_UNESCAPED_UNICODE));
-        Repo::submission()->dao->update($submission);
+        Repo::submission()->edit($submission, [
+            'nvContributorValidation' => json_encode($existing, JSON_UNESCAPED_UNICODE),
+        ]);
 
         header('Content-Type: application/json; charset=utf-8');
         echo json_encode([
