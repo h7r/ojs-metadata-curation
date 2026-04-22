@@ -1,0 +1,10 @@
+# Build artifacts
+node_modules/
+plugin/vendor/
+plugin/.phpunit.cache/
+
+# Release tarballs
+*.tar.gz
+
+# IDE / OS
+.gstack/
