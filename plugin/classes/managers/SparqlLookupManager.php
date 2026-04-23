@@ -6,7 +6,7 @@
  * Copyright (c) 2026 Ne Varietur
  * Distributed under the GNU GPL v3. For full terms see the file LICENSE.
  *
- * @brief SPARQL lookup against SKOS thesauri (UNESCO Thesaurus, Rameau/BnF).
+ * @brief SPARQL lookup against controlled-vocabulary thesauri (UNESCO, Rameau/BnF, Eurovoc).
  *        Implements the suggest interface defined in SPECS.md sections 3-5.
  */
 
@@ -40,7 +40,7 @@ class SparqlLookupManager
     ];
 
     /**
-     * Lookup SKOS concepts matching a prefix.
+     * Lookup thesaurus concepts matching a prefix.
      *
      * @param string $prefix  User input (>= 3 chars, will be sanitised)
      * @param string $lang    Language code ('es' | 'fr')

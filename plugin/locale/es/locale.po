@@ -14,7 +14,7 @@ msgid "plugins.generic.nvMetadataCuration.displayName"
 msgstr "NV Curación de metadatos"
 
 msgid "plugins.generic.nvMetadataCuration.description"
-msgstr "Búsqueda en vocabularios controlados para campos de metadatos OJS mediante tesauros SKOS/SPARQL (UNESCO, Rameau, Eurovoc). Incluye búsqueda de ORCID/ROR con validación humana."
+msgstr "Búsqueda en vocabularios controlados para campos de metadatos OJS mediante tesauros SPARQL (UNESCO, Rameau, Eurovoc). Incluye búsqueda de ORCID/ROR con validación humana."
 
 msgid "plugins.generic.nvMetadataCuration.settings.thesauri"
 msgstr "Tesauros"

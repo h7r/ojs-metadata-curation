@@ -1,6 +1,6 @@
 # NV Metadata Curation — Plugin OJS
 
-Plugin OJS open source de curation de métadonnées par vocabulaires contrôlés (SKOS/SPARQL).
+Plugin OJS open source de curation de métadonnées par vocabulaires contrôlés (SPARQL).
 Distribution via **PKP Plugin Gallery**. Modèle freemium : plugin gratuit, service NV payant via clé API.
 
 **Version :** 1.0.0 · **OJS :** 3.4.x · **Licence :** GPL v3
@@ -9,7 +9,7 @@ Distribution via **PKP Plugin Gallery**. Modèle freemium : plugin gratuit, serv
 
 | Fonctionnalité | Description |
 |----------------|-------------|
-| **Autocomplete thésaurus** | Recherche SKOS/SPARQL dans UNESCO, Rameau (BnF), Eurovoc (UE) |
+| **Autocomplete thésaurus** | Recherche SPARQL dans UNESCO, Rameau (BnF), Eurovoc (UE) |
 | **Multi-thésaurus** | Configurable par revue dans les paramètres du plugin |
 | **3 modes d'interaction** | Suggestion (proposé, modifiable) · Choix (sélection obligatoire) · Bypass (texte libre + avertissement) |
 | **ORCID lookup** | Recherche dans le registre ORCID public, validation humaine obligatoire |
@@ -59,7 +59,7 @@ Pour arrêter : `docker compose down` (ajouter `-v` pour purger les volumes).
 
 ```
 Formulaire auteur OJS (métadonnées, step 3)
-  ├── kwd-group : autocomplete SKOS/SPARQL (UNESCO · Rameau · Eurovoc)
+  ├── kwd-group : autocomplete SPARQL (UNESCO · Rameau · Eurovoc)
   ├── ORCID : lookup registre public + validation humaine
   └── Affiliation : lookup ROR + validation humaine
 

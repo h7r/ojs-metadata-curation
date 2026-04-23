@@ -1,4 +1,4 @@
-# SPECS.md — Vocabulaires SKOS cibles et API de suggestion métadonnées
+# SPECS.md — Vocabulaires SPARQL cibles et API de suggestion métadonnées
 
 *Nuria, Research Engineer — Ne Varietur · v1.0 · 2026-04-21*
 *Issue : NEV-187 · Destinataire : Étienne (implémentation Phase 2)*

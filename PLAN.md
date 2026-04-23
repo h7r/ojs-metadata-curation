@@ -13,7 +13,7 @@
 | Livrable | Chemin | Statut |
 |----------|--------|--------|
 | Architecture UX complète | `docs/ux-spec.md` | **Produit** |
-| Spécification SKOS/SPARQL | `docs/thesaurus-api.md` | **Produit** |
+| Spécification SPARQL | `docs/thesaurus-api.md` | **Produit** |
 | Wireframe formulaire auteur | `design/wireframes/formulaire-auteur.excalidraw` | **Produit** |
 | Wireframe backoffice éditeur | `design/wireframes/backoffice-editeur.excalidraw` | **Produit** |
 | Résultat benchmark C1a-β | `docs/benchmark-c1ab.md` | À produire |
@@ -32,7 +32,7 @@
   - Export rapport (CSV / affichage OJS)
   - Priorité : champs les plus défaillants en premier (kwd-group, aff, contrib-id)
 
-#### `docs/thesaurus-api.md` — Spec SKOS/SPARQL
+#### `docs/thesaurus-api.md` — Spec SPARQL
 - Interface attendue par le plugin (côté PHP OJS)
 - Protocole de lookup : endpoint SPARQL → requête → réponse (termes + URI)
 - Gestion des 3 thésaurus (UNESCO, Eurovoc, Rameau) — configurable par revue
@@ -51,7 +51,7 @@
 ### Critères de passage Phase 2
 
 - [ ] Architecture UX validée par le CEO
-- [x] Spec SKOS/SPARQL produite — en attente relecture Étienne
+- [x] Spec SPARQL produite — en attente relecture Étienne
 - [x] Wireframes formulaire auteur + backoffice produits
 - [ ] C1a-β décidé (benchmark LLM terminé)
 

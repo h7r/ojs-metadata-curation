@@ -157,7 +157,7 @@ Auteur démarre soumission OJS
     ├── Focus champ kwd-group
     │       │
     │       ▼
-    │   [Plugin NV] Lookup SKOS/SPARQL → termes candidats
+    │   [Plugin NV] Lookup SPARQL → termes candidats
     │       │
     │       ▼
     │   Panneau suggestions inline (≤ 5 termes)

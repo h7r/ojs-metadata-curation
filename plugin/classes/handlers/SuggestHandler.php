@@ -187,7 +187,7 @@ class SuggestHandler extends PKPHandler
     }
 
     /**
-     * Save selected SKOS keywords to submission_settings.
+     * Save selected curated keywords to submission_settings.
      * Stores JSON array under key 'nvKeywords' (SPECS.md section 6.3).
      *
      * Expects POST with:

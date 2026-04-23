@@ -1,6 +1,6 @@
 {
     "name": "nevarietur/ojs-nv-metadata-curation",
-    "description": "Controlled vocabulary lookup for OJS metadata fields using SKOS/SPARQL thesauri (UNESCO, Rameau, Eurovoc)",
+    "description": "Controlled vocabulary lookup for OJS metadata fields using SPARQL thesauri (UNESCO, Rameau, Eurovoc)",
     "type": "ojs-plugin",
     "license": "GPL-3.0-or-later",
     "authors": [

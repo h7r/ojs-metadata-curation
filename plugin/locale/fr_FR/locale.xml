@@ -3,7 +3,7 @@
 <locale name="fr_FR" full_name="Français">
 	<!-- Identité plugin -->
 	<message key="plugins.generic.nvMetadataCuration.displayName">NV Curation des métadonnées</message>
-	<message key="plugins.generic.nvMetadataCuration.description">Consultation de vocabulaires contrôlés pour les champs de métadonnées OJS via des thésaurus SKOS/SPARQL (UNESCO, Rameau, Eurovoc). Inclut la recherche ORCID/ROR avec validation humaine.</message>
+	<message key="plugins.generic.nvMetadataCuration.description">Consultation de vocabulaires contrôlés pour les champs de métadonnées OJS via des thésaurus SPARQL (UNESCO, Rameau, Eurovoc). Inclut la recherche ORCID/ROR avec validation humaine.</message>
 
 	<!-- Formulaire de paramétrage -->
 	<message key="plugins.generic.nvMetadataCuration.settings.thesauri">Thésaurus</message>

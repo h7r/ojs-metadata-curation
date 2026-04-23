@@ -14,7 +14,7 @@ msgid "plugins.generic.nvMetadataCuration.displayName"
 msgstr "NV Metadata Curation"
 
 msgid "plugins.generic.nvMetadataCuration.description"
-msgstr "Controlled vocabulary lookup for OJS metadata fields using SKOS/SPARQL thesauri (UNESCO, Rameau, Eurovoc). Includes ORCID/ROR contributor lookup with human validation."
+msgstr "Controlled vocabulary lookup for OJS metadata fields using SPARQL thesauri (UNESCO, Rameau, Eurovoc). Includes ORCID/ROR contributor lookup with human validation."
 
 msgid "plugins.generic.nvMetadataCuration.settings.thesauri"
 msgstr "Thesauri"
