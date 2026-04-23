@@ -31,21 +31,6 @@ msgstr "Rameau (BnF)"
 msgid "plugins.generic.nvMetadataCuration.thesaurus.eurovoc"
 msgstr "Eurovoc (EU)"
 
-msgid "plugins.generic.nvMetadataCuration.settings.interactionMode"
-msgstr "Interaction Mode"
-
-msgid "plugins.generic.nvMetadataCuration.settings.interactionModeDescription"
-msgstr "Controls how keyword suggestions are presented to authors."
-
-msgid "plugins.generic.nvMetadataCuration.mode.suggestion"
-msgstr "Suggestion (proposed, editable)"
-
-msgid "plugins.generic.nvMetadataCuration.mode.choice"
-msgstr "Choice (mandatory thesaurus selection)"
-
-msgid "plugins.generic.nvMetadataCuration.mode.bypass"
-msgstr "Bypass (free text with warning)"
-
 msgid "plugins.generic.nvMetadataCuration.audit.title"
 msgstr "Metadata Audit"
 
@@ -91,9 +76,6 @@ msgstr "Confirm"
 msgid "plugins.generic.nvMetadataCuration.widget.remove"
 msgstr "Remove"
 
-msgid "plugins.generic.nvMetadataCuration.widget.bypassWarning"
-msgstr "Free text entry — not from a controlled vocabulary."
-
 msgid "plugins.generic.nvMetadataCuration.js.errorHttp"
 msgstr "HTTP {status}"
 
@@ -103,12 +85,6 @@ msgstr "Network error"
 msgid "plugins.generic.nvMetadataCuration.js.errorTimeout"
 msgstr "Timeout"
 
-msgid "plugins.generic.nvMetadataCuration.js.choiceRequired"
-msgstr "Selection required from the thesaurus."
-
-msgid "plugins.generic.nvMetadataCuration.js.bypassWarning"
-msgstr "Free keyword — not validated by a controlled vocabulary."
-
 msgid "plugins.generic.nvMetadataCuration.js.removeKeyword"
 msgstr "Remove {value}"
 
@@ -117,12 +93,6 @@ msgstr "Keywords saved"
 
 msgid "plugins.generic.nvMetadataCuration.js.saveFailed"
 msgstr "Save failed — please retry"
-
-msgid "plugins.generic.nvMetadataCuration.js.choicePlaceholder"
-msgstr "Select a term from the thesaurus…"
-
-msgid "plugins.generic.nvMetadataCuration.js.bypassNotice"
-msgstr "Free mode — unvalidated terms will be flagged."
 
 msgid "plugins.generic.nvMetadataCuration.js.orcidResults"
 msgstr "ORCID results"

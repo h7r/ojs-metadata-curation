@@ -11,11 +11,6 @@
 	<message key="plugins.generic.nvMetadataCuration.thesaurus.unesco">UNESCO Thesaurus</message>
 	<message key="plugins.generic.nvMetadataCuration.thesaurus.rameau">Rameau (BnF)</message>
 	<message key="plugins.generic.nvMetadataCuration.thesaurus.eurovoc">Eurovoc (EU)</message>
-	<message key="plugins.generic.nvMetadataCuration.settings.interactionMode">Interaction Mode</message>
-	<message key="plugins.generic.nvMetadataCuration.settings.interactionModeDescription">Controls how keyword suggestions are presented to authors.</message>
-	<message key="plugins.generic.nvMetadataCuration.mode.suggestion">Suggestion (proposed, editable)</message>
-	<message key="plugins.generic.nvMetadataCuration.mode.choice">Choice (mandatory thesaurus selection)</message>
-	<message key="plugins.generic.nvMetadataCuration.mode.bypass">Bypass (free text with warning)</message>
 
 	<!-- Audit backoffice -->
 	<message key="plugins.generic.nvMetadataCuration.audit.title">Metadata Audit</message>
@@ -35,19 +30,14 @@
 	<message key="plugins.generic.nvMetadataCuration.widget.validationRequired">Requires human validation</message>
 	<message key="plugins.generic.nvMetadataCuration.widget.confirm">Confirm</message>
 	<message key="plugins.generic.nvMetadataCuration.widget.remove">Remove</message>
-	<message key="plugins.generic.nvMetadataCuration.widget.bypassWarning">Free text entry — not from a controlled vocabulary.</message>
 
 	<!-- JS runtime strings (injected via window.nvMetadataCuration.i18n) -->
 	<message key="plugins.generic.nvMetadataCuration.js.errorHttp">HTTP {status}</message>
 	<message key="plugins.generic.nvMetadataCuration.js.errorNetwork">Network error</message>
 	<message key="plugins.generic.nvMetadataCuration.js.errorTimeout">Timeout</message>
-	<message key="plugins.generic.nvMetadataCuration.js.choiceRequired">Selection required from the thesaurus.</message>
-	<message key="plugins.generic.nvMetadataCuration.js.bypassWarning">Free keyword — not validated by a controlled vocabulary.</message>
 	<message key="plugins.generic.nvMetadataCuration.js.removeKeyword">Remove {value}</message>
 	<message key="plugins.generic.nvMetadataCuration.js.saveSuccess">Keywords saved</message>
 	<message key="plugins.generic.nvMetadataCuration.js.saveFailed">Save failed — please retry</message>
-	<message key="plugins.generic.nvMetadataCuration.js.choicePlaceholder">Select a term from the thesaurus…</message>
-	<message key="plugins.generic.nvMetadataCuration.js.bypassNotice">Free mode — unvalidated terms will be flagged.</message>
 	<message key="plugins.generic.nvMetadataCuration.js.orcidResults">ORCID results</message>
 	<message key="plugins.generic.nvMetadataCuration.js.rorResults">ROR results</message>
 	<message key="plugins.generic.nvMetadataCuration.js.validationRequired">Requires validation</message>

@@ -31,19 +31,5 @@
 		{/fbvFormSection}
 	{/fbvFormArea}
 
-	{fbvFormArea id="nvSettingsMode" title="plugins.generic.nvMetadataCuration.settings.interactionMode"}
-		{fbvFormSection description="plugins.generic.nvMetadataCuration.settings.interactionModeDescription"}
-			{fbvElement
-				type="select"
-				id="interactionMode"
-				from=$validModes
-				selected=$interactionMode
-				translate=true
-				label="plugins.generic.nvMetadataCuration.settings.interactionMode"
-				size=$fbvStyles.size.MEDIUM
-			}
-		{/fbvFormSection}
-	{/fbvFormArea}
-
 	{fbvFormButtons submitText="common.save"}
 </form>

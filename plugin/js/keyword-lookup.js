@@ -17,7 +17,6 @@
 	var i18n = config.i18n || {};
 	var SUGGEST_URL = config.suggestUrl || '';
 	var THESAURUS = config.thesaurus || 'unesco';
-	var INTERACTION_MODE = config.interactionMode || 'suggestion';
 	var MIN_CHARS = config.minChars || 3;
 	var DEBOUNCE_MS = 300;
 
@@ -119,7 +118,7 @@
 			if (item.broader_label) {
 				var broader = document.createElement('span');
 				broader.className = 'nv-suggest-broader';
-				broader.textContent = ' \u2190 ' + item.broader_label;
+				broader.textContent = ' ← ' + item.broader_label;
 				row.appendChild(broader);
 			}
 
@@ -220,7 +219,6 @@
 	 */
 	function selectItem(input, item) {
 		hideDropdown();
-		clearBypassWarning(input);
 
 		var kwdEntry = {
 			kwd_value: item.label_primary,
@@ -242,38 +240,6 @@
 		// so keywords appear in OAI-PMH, Crossref, and the public view.
 		commitToOjsField(input, item.label_primary);
 
-		// Persist NV metadata to server
-		autoSave();
-	}
-
-	/**
-	 * Handle free-text keyword entry (bypass mode).
-	 * Injects into OJS native field and shows an unvalidated warning.
-	 */
-	function addFreeTextKeyword(input) {
-		var value = input.value.trim();
-		if (!value) return;
-
-		hideDropdown();
-
-		var kwdEntry = {
-			kwd_value: value,
-			kwd_uri: '',
-			kwd_lang: detectLang(),
-			kwd_thesaurus: '',
-			kwd_validated: false
-		};
-
-		var exists = selectedKeywords.some(function (k) {
-			return k.kwd_value === kwdEntry.kwd_value && !k.kwd_uri;
-		});
-		if (!exists) {
-			selectedKeywords.push(kwdEntry);
-		}
-
-		showBypassWarning(input);
-		// Inject into OJS native keyword field
-		commitToOjsField(input, value);
 		// Persist NV metadata to server
 		autoSave();
 	}
@@ -309,44 +275,6 @@
 	}
 
 	/**
-	 * Show transient hint in choice mode when free text entry is blocked.
-	 */
-	function showChoiceBlockedHint(input) {
-		var container = input.closest('.pkpFormField') || input.parentNode;
-		if (container.querySelector('.nv-choice-hint')) return;
-		var hint = document.createElement('span');
-		hint.className = 'nv-choice-hint';
-		hint.setAttribute('role', 'status');
-		hint.textContent = i18n.choiceRequired || 'Selection required from the thesaurus.';
-		container.appendChild(hint);
-		setTimeout(function () {
-			if (hint.parentNode) hint.parentNode.removeChild(hint);
-		}, 3000);
-	}
-
-	/**
-	 * Show bypass warning below the input.
-	 */
-	function showBypassWarning(input) {
-		var container = input.closest('.pkpFormField') || input.parentNode;
-		if (container.querySelector('.nv-bypass-warning')) return;
-		var warning = document.createElement('span');
-		warning.className = 'nv-bypass-warning';
-		warning.setAttribute('role', 'alert');
-		warning.textContent = i18n.bypassWarning || 'Free keyword — not validated by a controlled vocabulary.';
-		container.appendChild(warning);
-	}
-
-	/**
-	 * Clear bypass warning.
-	 */
-	function clearBypassWarning(input) {
-		var container = input.closest('.pkpFormField') || input.parentNode;
-		var warning = container.querySelector('.nv-bypass-warning');
-		if (warning) warning.parentNode.removeChild(warning);
-	}
-
-	/**
 	 * Add a visible tag chip showing the selected keyword.
 	 */
 	function addTagChip(input, kwdEntry) {
@@ -365,7 +293,7 @@
 		var removeBtn = document.createElement('button');
 		removeBtn.type = 'button';
 		removeBtn.className = 'nv-tag-remove';
-		removeBtn.textContent = '\u00d7';
+		removeBtn.textContent = '×';
 		removeBtn.setAttribute('aria-label', (i18n.removeKeyword || 'Remove {value}').replace('{value}', kwdEntry.kwd_value));
 		removeBtn.addEventListener('click', function () {
 			selectedKeywords = selectedKeywords.filter(function (k) {
@@ -425,8 +353,8 @@
 		msg.setAttribute('role', 'status');
 		msg.setAttribute('aria-live', 'polite');
 		msg.textContent = type === 'success'
-			? '\u2713 ' + (i18n.saveSuccess || 'Keywords saved')
-			: '\u2717 ' + (i18n.saveFailed || 'Save failed — please retry');
+			? '✓ ' + (i18n.saveSuccess || 'Keywords saved')
+			: '✗ ' + (i18n.saveFailed || 'Save failed — please retry');
 		tagZone.appendChild(msg);
 		setTimeout(function () { if (msg.parentNode) msg.remove(); }, 4000);
 	}
@@ -512,69 +440,14 @@
 			input.setAttribute('aria-haspopup', 'listbox');
 			input.addEventListener('input', onInput);
 			input.addEventListener('keydown', function (e) {
-				// Skip mode enforcement for programmatic keyword injection
+				// Skip handler for programmatic keyword injection (commitToOjsField)
 				if (_injectingKeyword) return;
-				// Mode-dependent Enter behavior (when no dropdown item is active)
-				if (e.key === 'Enter' && (!activeDropdown || activeIndex < 0)) {
-					if (INTERACTION_MODE === 'choice') {
-						// Block free text — must select from dropdown.
-						// stopImmediatePropagation prevents OJS Vue.js
-						// FieldControlledVocab from capturing the Enter.
-						e.preventDefault();
-						e.stopImmediatePropagation();
-						showChoiceBlockedHint(input);
-						return;
-					}
-					if (INTERACTION_MODE === 'bypass' && input.value.trim()) {
-						e.preventDefault();
-						e.stopImmediatePropagation();
-						addFreeTextKeyword(input);
-						return;
-					}
-				}
 				handleKeydown(e);
 			});
 			input.addEventListener('blur', function () {
 				// Delay to allow click on dropdown items
-				setTimeout(function () {
-					if (_injectingKeyword) return;
-					if (INTERACTION_MODE === 'choice') {
-						// Clear uncommitted free text so OJS cannot
-						// capture it through its own blur handler.
-						input.value = '';
-						input.dispatchEvent(new Event('input', { bubbles: true }));
-					}
-					hideDropdown();
-					// In bypass mode, commit free text on blur
-					if (INTERACTION_MODE === 'bypass' && input.value.trim()) {
-						addFreeTextKeyword(input);
-					}
-				}, 200);
+				setTimeout(hideDropdown, 200);
 			});
-
-			// Mode indicator: CSS class + mode-specific UI
-			var modeContainer = input.closest('.pkpFormField') || input.parentNode;
-			modeContainer.classList.add('nv-mode-' + INTERACTION_MODE);
-			input.dataset.nvMode = INTERACTION_MODE;
-
-			if (INTERACTION_MODE === 'choice') {
-				if (!input.getAttribute('placeholder')) {
-					input.setAttribute('placeholder', i18n.choicePlaceholder || 'Select a term from the thesaurus\u2026');
-				}
-				// Allow paste for search triggering, but visually signal restriction
-				input.addEventListener('paste', function () {
-					showChoiceBlockedHint(input);
-				});
-			}
-
-			if (INTERACTION_MODE === 'bypass') {
-				if (!modeContainer.querySelector('.nv-bypass-notice')) {
-					var notice = document.createElement('span');
-					notice.className = 'nv-bypass-notice';
-					notice.textContent = i18n.bypassNotice || 'Free mode — unvalidated terms will be flagged.';
-					modeContainer.appendChild(notice);
-				}
-			}
 		});
 
 		// Hook into OJS form save to persist keywords

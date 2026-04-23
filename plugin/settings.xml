@@ -6,5 +6,4 @@
 <pluginSettings>
 	<setting name="thesaurus" type="string">unesco</setting>
 	<setting name="thesauri" type="string">["unesco"]</setting>
-	<setting name="interactionMode" type="string">suggestion</setting>
 </pluginSettings>
