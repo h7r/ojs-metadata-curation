@@ -122,7 +122,10 @@ class SuggestHandler extends PKPHandler
             $user->getId()
         );
 
-        $isParticipant = !$assignments->wasEmpty();
+        // Do not call wasEmpty()/getCount(): StageAssignmentDAO builds the
+        // DAOResultFactory without $countSql, so those throw. Peek instead.
+        $firstAssignment = $assignments->next();
+        $isParticipant = $firstAssignment !== null;
 
         if (!$isParticipant) {
             $userRoles = $user->getRoles($context->getId());
