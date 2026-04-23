@@ -18,6 +18,7 @@
 	var ORCID_URL = config.orcidUrl || '';
 	var ROR_URL = config.rorUrl || '';
 	var SAVE_CONTRIBUTOR_IDS_URL = config.saveContributorIdsUrl || '';
+	var CSRF_TOKEN = config.csrfToken || '';
 	var DEBOUNCE_MS = 400;
 
 	if (!ORCID_URL && !ROR_URL) return;
@@ -114,6 +115,7 @@
 		var xhr = new XMLHttpRequest();
 		xhr.open('POST', SAVE_CONTRIBUTOR_IDS_URL);
 		xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+		if (CSRF_TOKEN) xhr.setRequestHeader('X-Csrf-Token', CSRF_TOKEN);
 		xhr.timeout = 5000;
 		xhr.onload = function () {
 			if (xhr.status === 200) {

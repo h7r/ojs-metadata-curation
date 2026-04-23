@@ -16,6 +16,7 @@ use APP\facades\Repo;
 use APP\plugins\generic\nvMetadataCuration\classes\managers\OrcidRorManager;
 use APP\plugins\generic\nvMetadataCuration\classes\managers\RateLimitManager;
 use APP\plugins\generic\nvMetadataCuration\classes\managers\SparqlLookupManager;
+use APP\plugins\generic\nvMetadataCuration\classes\security\CsrfGuard;
 use PKP\db\DAORegistry;
 use PKP\handler\PKPHandler;
 use PKP\security\authorization\ContextRequiredPolicy;
@@ -195,6 +196,10 @@ class SuggestHandler extends PKPHandler
      */
     public function save($args, $request)
     {
+        // Raw AJAX handler: FormValidatorCSRF does not apply. Gate on the
+        // per-session token + Origin/Referer before any state change.
+        CsrfGuard::assertValid($request);
+
         $submissionId = (int) $request->getUserVar('submissionId');
         $keywordsRaw = (string) $request->getUserVar('keywords');
 
@@ -296,6 +301,10 @@ class SuggestHandler extends PKPHandler
      */
     public function saveContributorIds($args, $request)
     {
+        // Raw AJAX handler: FormValidatorCSRF does not apply. Gate on the
+        // per-session token + Origin/Referer before any state change.
+        CsrfGuard::assertValid($request);
+
         $submissionId = (int) $request->getUserVar('submissionId');
         $contributorsRaw = (string) $request->getUserVar('contributors');
 

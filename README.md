@@ -144,6 +144,15 @@ plugin/
 
 Le compteur se réinitialise chaque jour. La sauvegarde des mots-clés n'est pas soumise à la limite.
 
+## Security posture
+
+- **Zéro dépendance en production** — aucun package Composer ou npm, surface d'attaque minimale (review par le PKP Plugin Gallery facilitée).
+- **Écritures protégées CSRF** — `save` (mots-clés) et `saveContributorIds` (ORCID/ROR) valident un token de session côté serveur et contrôlent Origin/Referer contre `BaseUrl`. Les endpoints lookup (`suggest`, `orcid`, `ror`) restent en lecture seule.
+- **Requêtes SPARQL sanitisées** — échappement strict des littéraux envoyés aux endpoints UNESCO, Rameau et Eurovoc (pas de concaténation directe).
+- **Rate limiting atomique** — `flock()` par fichier, pas de race TOCTOU. Modèle freemium : 50 requêtes/jour/revue en gratuit, illimité avec clé API.
+- **Validation serveur ORCID/ROR** — format + checksum ISO 7064 (C1b) ; aucune confiance au seul frontend.
+- **IDOR** — chaque soumission ciblée est reliée au contexte courant et à un rôle participant / manager avant toute écriture.
+
 ## Licence
 
 GNU General Public License v3.0. Voir [LICENSE](LICENSE).

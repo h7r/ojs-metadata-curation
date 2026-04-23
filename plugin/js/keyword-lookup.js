@@ -26,6 +26,7 @@
 	}
 
 	var SAVE_URL = config.saveUrl || '';
+	var CSRF_TOKEN = config.csrfToken || '';
 	var debounceTimer = null;
 	var activeDropdown = null;
 	var activeInput = null;
@@ -394,6 +395,7 @@
 		var xhr = new XMLHttpRequest();
 		xhr.open('POST', SAVE_URL);
 		xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+		if (CSRF_TOKEN) xhr.setRequestHeader('X-Csrf-Token', CSRF_TOKEN);
 		xhr.timeout = 5000;
 
 		xhr.onload = function () {

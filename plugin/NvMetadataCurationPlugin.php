@@ -172,12 +172,20 @@ class NvMetadataCurationPlugin extends GenericPlugin
             $thesauri = [$thesaurus];
         }
 
+        // Per-session CSRF token. Exposed to JS so save/saveContributorIds
+        // XHRs can send it in X-Csrf-Token — validated server-side by CsrfGuard.
+        $session = $request->getSession();
+        $csrfToken = $session && method_exists($session, 'getCSRFToken')
+            ? (string) $session->getCSRFToken()
+            : '';
+
         $configJson = json_encode([
             'suggestUrl' => $suggestUrl,
             'saveUrl' => $saveUrl,
             'orcidUrl' => $orcidUrl,
             'rorUrl' => $rorUrl,
             'saveContributorIdsUrl' => $saveContributorIdsUrl,
+            'csrfToken' => $csrfToken,
             'thesaurus' => $thesaurus,
             'thesauri' => $thesauri,
             'interactionMode' => $interactionMode,
