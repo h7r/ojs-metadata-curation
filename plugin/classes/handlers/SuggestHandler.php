@@ -169,7 +169,12 @@ class SuggestHandler extends PKPHandler
             $this->sendJsonError('Invalid keywords JSON');
         }
 
-        // Validate each keyword entry (bypass keywords have empty kwd_uri)
+        // Trust boundary: kwd_validated is derived from the client-supplied
+        // kwd_uri without re-querying SPARQL. A non-empty kwd_uri means the
+        // user picked a thesaurus suggestion in the widget; an empty one
+        // means free text. We do not verify the URI resolves to a real
+        // concept here, so kwd_validated reflects "user picked from the
+        // dropdown", not "this URI is authoritative".
         $validated = [];
         foreach ($keywords as $kwd) {
             if (empty($kwd['kwd_value'])) {
