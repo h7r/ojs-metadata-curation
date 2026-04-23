@@ -251,18 +251,29 @@
 	 */
 	function commitToOjsField(input, value) {
 		_injectingKeyword = true;
-		input.value = value;
-		input.dispatchEvent(new Event('input', { bubbles: true }));
-		setTimeout(function () {
-			input.dispatchEvent(new KeyboardEvent('keydown', {
-				key: 'Enter', code: 'Enter', keyCode: 13, which: 13,
-				bubbles: true, cancelable: true
-			}));
-			input.dispatchEvent(new KeyboardEvent('keyup', {
-				key: 'Enter', code: 'Enter', keyCode: 13, which: 13,
-				bubbles: true
-			}));
+		// Two try-blocks: the flag must survive the 50 ms async gap, so the
+		// sync path resets only on throw, and the timeout reliably resets
+		// after the Enter dispatch — including if a listener throws.
+		try {
+			input.value = value;
+			input.dispatchEvent(new Event('input', { bubbles: true }));
+		} catch (e) {
 			_injectingKeyword = false;
+			throw e;
+		}
+		setTimeout(function () {
+			try {
+				input.dispatchEvent(new KeyboardEvent('keydown', {
+					key: 'Enter', code: 'Enter', keyCode: 13, which: 13,
+					bubbles: true, cancelable: true
+				}));
+				input.dispatchEvent(new KeyboardEvent('keyup', {
+					key: 'Enter', code: 'Enter', keyCode: 13, which: 13,
+					bubbles: true
+				}));
+			} finally {
+				_injectingKeyword = false;
+			}
 		}, 50);
 	}
 
