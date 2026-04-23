@@ -1,9 +1,10 @@
 ##
 # Docker Compose — OJS 3.4.x local dev instance
 #
-# Usage:
-#   docker compose up -d
-#   open http://localhost:8080
+# WARNING: `docker compose up -d` alone is NOT enough to get a working
+# OJS instance with this image (pkpofficial/ojs:stable-3_4_0). The image
+# entrypoint has known bugs that prevent auto-install from completing.
+# See docs/local-dev.md for the full bootstrap recipe (tested 2026-04-23).
 #
 # The plugin directory is bind-mounted into the OJS container.
 # Any changes to plugin/ are reflected live (no rebuild needed).

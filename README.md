@@ -41,13 +41,9 @@ Après activation, cliquez sur **Paramètres** à côté du plugin pour :
 
 ### Docker (développement)
 
-Un fichier `docker-compose.yml` est fourni à la racine. Il lance OJS 3.4.x + MariaDB avec le plugin monté en bind-mount :
+Un fichier `docker-compose.yml` est fourni à la racine. Il lance OJS 3.4.x + MariaDB avec le plugin monté en bind-mount.
 
-```bash
-docker compose up -d
-# OJS accessible sur http://localhost:8080
-# Le plugin est monté live — toute modification de plugin/ est reflétée sans rebuild.
-```
+> **Attention** : le bootstrap n'est **pas** idempotent avec l'image `pkpofficial/ojs:stable-3_4_0` actuelle — `docker compose up -d` seul ne suffit pas à obtenir une instance utilisable (voir les bugs d'image connus). Suivre la recette pas-à-pas : **[docs/local-dev.md](docs/local-dev.md)**.
 
 Pour arrêter : `docker compose down` (ajouter `-v` pour purger les volumes).
 
