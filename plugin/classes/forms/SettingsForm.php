@@ -6,7 +6,7 @@
  * Copyright (c) 2026 Ne Varietur
  * Distributed under the GNU GPL v3. For full terms see the file LICENSE.
  *
- * @brief Plugin settings form — thesaurus selection, interaction mode, API key.
+ * @brief Plugin settings form — thesaurus selection, interaction mode.
  */
 
 namespace APP\plugins\generic\nvMetadataCuration\classes\forms;
@@ -50,7 +50,6 @@ class SettingsForm extends Form
 
         $this->setData('thesauri', $thesauri);
         $this->setData('interactionMode', $this->plugin->getSetting($this->contextId, 'interactionMode') ?: 'suggestion');
-        $this->setData('nvApiKey', $this->plugin->getSetting($this->contextId, 'nvApiKey') ?: '');
     }
 
     /**
@@ -58,7 +57,7 @@ class SettingsForm extends Form
      */
     public function readInputData(): void
     {
-        $this->readUserVars(['thesauri', 'interactionMode', 'nvApiKey']);
+        $this->readUserVars(['thesauri', 'interactionMode']);
     }
 
     /**
@@ -77,7 +76,6 @@ class SettingsForm extends Form
             'pluginName' => $this->plugin->getName(),
             'validThesauri' => self::VALID_THESAURI,
             'validModes' => $modeOptions,
-            'freeTierLimit' => 50,
         ]);
         return parent::fetch($request, $template, $display);
     }
@@ -105,7 +103,6 @@ class SettingsForm extends Form
         // Keep legacy single thesaurus setting for JS config (first selected)
         $this->plugin->updateSetting($this->contextId, 'thesaurus', $thesauri[0]);
         $this->plugin->updateSetting($this->contextId, 'interactionMode', $mode);
-        $this->plugin->updateSetting($this->contextId, 'nvApiKey', trim((string) $this->getData('nvApiKey')));
 
         parent::execute(...$functionArgs);
     }

@@ -45,17 +45,5 @@
 		{/fbvFormSection}
 	{/fbvFormArea}
 
-	{fbvFormArea id="nvSettingsApiKey" title="plugins.generic.nvMetadataCuration.settings.apiKey"}
-		{fbvFormSection description="plugins.generic.nvMetadataCuration.settings.apiKeyDescription"}
-			{fbvElement
-				type="text"
-				id="nvApiKey"
-				value=$nvApiKey
-				label="plugins.generic.nvMetadataCuration.settings.apiKeyLabel"
-				size=$fbvStyles.size.MEDIUM
-			}
-		{/fbvFormSection}
-	{/fbvFormArea}
-
 	{fbvFormButtons submitText="common.save"}
 </form>

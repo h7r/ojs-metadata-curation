@@ -56,7 +56,6 @@ Features:
 - ORCID/ROR contributor lookup with human validation
 - 3 interaction modes: suggestion, choice, bypass
 - Backoffice metadata audit dashboard
-- Freemium model (50 req/day free, unlimited with API key)
 - Trilingual: EN, ES, FR"
 ```
 
@@ -82,8 +81,8 @@ Features:
 	<summary locale="en">Controlled vocabulary lookup for OJS metadata fields using SPARQL thesauri (UNESCO, Rameau, Eurovoc).</summary>
 	<summary locale="es">Búsqueda de vocabularios controlados para campos de metadatos OJS mediante tesauros SPARQL (UNESCO, Rameau, Eurovoc).</summary>
 	<summary locale="fr_FR">Recherche de vocabulaires contrôlés pour les champs de métadonnées OJS via des thésaurus SPARQL (UNESCO, Rameau, Eurovoc).</summary>
-	<description locale="en"><![CDATA[<p>NV Metadata Curation enriches OJS submission metadata with controlled vocabularies from SPARQL thesauri (UNESCO, Rameau BnF, Eurovoc EU).</p><p>Features: autocomplete keyword suggestions, ORCID/ROR contributor lookup with human validation, 3 interaction modes (suggestion/choice/bypass), backoffice metadata audit dashboard, freemium gating (50 req/day free), and full trilingual support (EN/ES/FR).</p><p>Requires OJS 3.4.x and PHP 8.1+.</p>]]></description>
-	<description locale="fr_FR"><![CDATA[<p>NV Metadata Curation enrichit les métadonnées de soumission OJS avec des vocabulaires contrôlés issus de thésaurus SPARQL (UNESCO, Rameau BnF, Eurovoc UE).</p><p>Fonctionnalités : autocomplétion par thésaurus, recherche ORCID/ROR avec validation humaine, 3 modes d'interaction (suggestion/choix/bypass), tableau d'audit backoffice, modèle freemium (50 req/jour gratuit), support trilingue complet (EN/ES/FR).</p><p>Requiert OJS 3.4.x et PHP 8.1+.</p>]]></description>
+	<description locale="en"><![CDATA[<p>NV Metadata Curation enriches OJS submission metadata with controlled vocabularies from SPARQL thesauri (UNESCO, Rameau BnF, Eurovoc EU).</p><p>Features: autocomplete keyword suggestions, ORCID/ROR contributor lookup with human validation, 3 interaction modes (suggestion/choice/bypass), backoffice metadata audit dashboard, free and unlimited access, and full trilingual support (EN/ES/FR).</p><p>Requires OJS 3.4.x and PHP 8.1+.</p>]]></description>
+	<description locale="fr_FR"><![CDATA[<p>NV Metadata Curation enrichit les métadonnées de soumission OJS avec des vocabulaires contrôlés issus de thésaurus SPARQL (UNESCO, Rameau BnF, Eurovoc UE).</p><p>Fonctionnalités : autocomplétion par thésaurus, recherche ORCID/ROR avec validation humaine, 3 modes d'interaction (suggestion/choix/bypass), tableau d'audit backoffice, accès gratuit et illimité, support trilingue complet (EN/ES/FR).</p><p>Requiert OJS 3.4.x et PHP 8.1+.</p>]]></description>
 	<maintainer>
 		<name>Ne Varietur</name>
 		<institution>Ne Varietur</institution>
@@ -102,7 +101,7 @@ Features:
 			<version>3.4.0.7</version>
 		</compatibility>
 		<certification type="reviewed"/>
-		<description locale="en">Initial release: SPARQL autocomplete, ORCID/ROR lookup, 3 interaction modes, metadata audit, freemium, trilingual EN/ES/FR.</description>
+		<description locale="en">Initial release: SPARQL autocomplete, ORCID/ROR lookup, 3 interaction modes, metadata audit, free and unlimited, trilingual EN/ES/FR.</description>
 	</release>
 </plugin>
 ```

@@ -46,15 +46,6 @@ msgstr "Elección (selección obligatoria del tesauro)"
 msgid "plugins.generic.nvMetadataCuration.mode.bypass"
 msgstr "Libre (texto libre con advertencia)"
 
-msgid "plugins.generic.nvMetadataCuration.settings.apiKey"
-msgstr "Clave API NV"
-
-msgid "plugins.generic.nvMetadataCuration.settings.apiKeyLabel"
-msgstr "Clave API"
-
-msgid "plugins.generic.nvMetadataCuration.settings.apiKeyDescription"
-msgstr "Introduzca su clave API de Ne Varietur para acceso ilimitado. Sin clave, el plugin está limitado a 50 solicitudes por día."
-
 msgid "plugins.generic.nvMetadataCuration.audit.title"
 msgstr "Auditoría de metadatos"
 
@@ -90,9 +81,6 @@ msgstr "No se encontraron términos coincidentes."
 
 msgid "plugins.generic.nvMetadataCuration.widget.loading"
 msgstr "Buscando…"
-
-msgid "plugins.generic.nvMetadataCuration.widget.rateLimited"
-msgstr "Límite diario alcanzado. Añada una clave API en la configuración del plugin."
 
 msgid "plugins.generic.nvMetadataCuration.widget.validationRequired"
 msgstr "Requiere validación humana"

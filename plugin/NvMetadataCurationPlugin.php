@@ -12,7 +12,7 @@
  *        using SPARQL thesauri (UNESCO, Rameau, Eurovoc).
  *
  *        Phase 3: multi-thesaurus, settings form, backoffice audit,
- *        ORCID/ROR lookup, API key freemium gating, full i18n.
+ *        ORCID/ROR lookup, full i18n.
  */
 
 namespace APP\plugins\generic\nvMetadataCuration;

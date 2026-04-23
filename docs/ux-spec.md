@@ -110,7 +110,6 @@ Paramètres NV Metadata
 Thésaurus principal :   [UNESCO (Thésaurus) ▼]
 Thésaurus secondaire :  [Eurovoc (UE) ▼]         [+ Ajouter]
 Mode formulaire auteur : [Suggestion ▼]
-API key NV :            [••••••••••••]  [Tester]
 Langue par défaut :     [Espagnol (ES) ▼]
 ──────────────────────────────────────────────────────
 [Enregistrer]
@@ -129,7 +128,6 @@ Langue par défaut :     [Espagnol (ES) ▼]
 ### 3.2 Dégradation gracieuse
 
 - Si l'endpoint SPARQL est indisponible : le champ fonctionne en mode `bypass` silencieux (pas de suggestion, pas de blocage)
-- Si la key NV est absente ou expirée : mode dégradé visible (bandeau « Compte NV inactif ») sans bloquer la soumission
 
 ### 3.3 Accessibilité
 

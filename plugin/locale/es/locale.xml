@@ -16,9 +16,6 @@
 	<message key="plugins.generic.nvMetadataCuration.mode.suggestion">Sugerencia (propuesta, editable)</message>
 	<message key="plugins.generic.nvMetadataCuration.mode.choice">Elección (selección obligatoria del tesauro)</message>
 	<message key="plugins.generic.nvMetadataCuration.mode.bypass">Libre (texto libre con advertencia)</message>
-	<message key="plugins.generic.nvMetadataCuration.settings.apiKey">Clave API NV</message>
-	<message key="plugins.generic.nvMetadataCuration.settings.apiKeyLabel">Clave API</message>
-	<message key="plugins.generic.nvMetadataCuration.settings.apiKeyDescription">Introduzca su clave API de Ne Varietur para acceso ilimitado. Sin clave, el plugin está limitado a 50 solicitudes por día.</message>
 
 	<!-- Audit backoffice -->
 	<message key="plugins.generic.nvMetadataCuration.audit.title">Auditoría de metadatos</message>
@@ -35,7 +32,6 @@
 	<message key="plugins.generic.nvMetadataCuration.widget.searchKeywords">Buscar en vocabulario controlado…</message>
 	<message key="plugins.generic.nvMetadataCuration.widget.noResults">No se encontraron términos coincidentes.</message>
 	<message key="plugins.generic.nvMetadataCuration.widget.loading">Buscando…</message>
-	<message key="plugins.generic.nvMetadataCuration.widget.rateLimited">Límite diario alcanzado. Añada una clave API en la configuración del plugin.</message>
 	<message key="plugins.generic.nvMetadataCuration.widget.validationRequired">Requiere validación humana</message>
 	<message key="plugins.generic.nvMetadataCuration.widget.confirm">Confirmar</message>
 	<message key="plugins.generic.nvMetadataCuration.widget.remove">Eliminar</message>

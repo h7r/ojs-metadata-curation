@@ -46,15 +46,6 @@ msgstr "Choice (mandatory thesaurus selection)"
 msgid "plugins.generic.nvMetadataCuration.mode.bypass"
 msgstr "Bypass (free text with warning)"
 
-msgid "plugins.generic.nvMetadataCuration.settings.apiKey"
-msgstr "NV API Key"
-
-msgid "plugins.generic.nvMetadataCuration.settings.apiKeyLabel"
-msgstr "API Key"
-
-msgid "plugins.generic.nvMetadataCuration.settings.apiKeyDescription"
-msgstr "Enter your Ne Varietur API key for unlimited access. Without a key, the plugin is limited to 50 requests per day."
-
 msgid "plugins.generic.nvMetadataCuration.audit.title"
 msgstr "Metadata Audit"
 
@@ -90,9 +81,6 @@ msgstr "No matching terms found."
 
 msgid "plugins.generic.nvMetadataCuration.widget.loading"
 msgstr "Searching…"
-
-msgid "plugins.generic.nvMetadataCuration.widget.rateLimited"
-msgstr "Daily limit reached. Add an API key in plugin settings."
 
 msgid "plugins.generic.nvMetadataCuration.widget.validationRequired"
 msgstr "Requires human validation"
