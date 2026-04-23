@@ -14,7 +14,7 @@ msgid "plugins.generic.nvMetadataCuration.displayName"
 msgstr "NV Curation des métadonnées"
 
 msgid "plugins.generic.nvMetadataCuration.description"
-msgstr "Consultation de vocabulaires contrôlés pour les champs de métadonnées OJS via des thésaurus SKOS/SPARQL (UNESCO, Rameau, Eurovoc). Inclut la recherche ORCID/ROR avec validation humaine."
+msgstr "Consultation de vocabulaires contrôlés pour les champs de métadonnées OJS via des thésaurus SPARQL (UNESCO, Rameau, Eurovoc). Inclut la recherche ORCID/ROR avec validation humaine."
 
 msgid "plugins.generic.nvMetadataCuration.settings.thesauri"
 msgstr "Thésaurus"
@@ -45,15 +45,6 @@ msgstr "Choix (sélection obligatoire dans le thésaurus)"
 
 msgid "plugins.generic.nvMetadataCuration.mode.bypass"
 msgstr "Libre (texte libre avec avertissement)"
-
-msgid "plugins.generic.nvMetadataCuration.settings.apiKey"
-msgstr "Clé API NV"
-
-msgid "plugins.generic.nvMetadataCuration.settings.apiKeyLabel"
-msgstr "Clé API"
-
-msgid "plugins.generic.nvMetadataCuration.settings.apiKeyDescription"
-msgstr "Saisissez votre clé API Ne Varietur pour un accès illimité. Sans clé, le plugin est limité à 50 requêtes par jour."
 
 msgid "plugins.generic.nvMetadataCuration.audit.title"
 msgstr "Audit des métadonnées"
@@ -90,9 +81,6 @@ msgstr "Aucun terme correspondant."
 
 msgid "plugins.generic.nvMetadataCuration.widget.loading"
 msgstr "Recherche en cours…"
-
-msgid "plugins.generic.nvMetadataCuration.widget.rateLimited"
-msgstr "Limite quotidienne atteinte. Ajoutez une clé API dans les paramètres du plugin."
 
 msgid "plugins.generic.nvMetadataCuration.widget.validationRequired"
 msgstr "Nécessite une validation humaine"

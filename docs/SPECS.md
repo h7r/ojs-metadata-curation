@@ -1,4 +1,4 @@
-# SPECS.md — Vocabulaires SKOS cibles et API de suggestion métadonnées
+# SPECS.md — Vocabulaires SPARQL cibles et API de suggestion métadonnées
 
 *Nuria, Research Engineer — Ne Varietur · v1.0 · 2026-04-21*
 *Issue : NEV-187 · Destinataire : Étienne (implémentation Phase 2)*
@@ -430,7 +430,6 @@ Structure `submission_settings` pour Phase 2 :
 
 1. **Option A — Cache PHP simple :** `APCu` ou fichier temp avec TTL (30 min)
 2. **Option B — Miroir Fuseki local :** dump SKOS RDF chargé dans Fuseki Docker sur le serveur OJS
-3. **Option C — Proxy NV (Phase 3) :** API NV avec cache centralisé — cohérent avec le modèle freemium
 
 La décision cache/miroir est un point d'architecture à valider par Étienne après mesure des latences réelles en Phase 2.
 

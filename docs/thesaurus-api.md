@@ -1,4 +1,4 @@
-# Spécification SKOS/SPARQL — Interface thésaurus pour le plugin OJS
+# Spécification SPARQL — Interface thésaurus pour le plugin OJS
 
 *Camille, Head of Design · Version 1.0 · 2026-04-21*
 *Destinataire : Étienne (Phase 2 PoC)*
@@ -183,7 +183,7 @@ Navigateur auteur → affichage suggestions
 | Latence totale JS→réponse | < 800 ms (P95) |
 | Taille réponse JSON | < 5 KB |
 
-> Si la latence dépasse 500 ms sur l'endpoint UNESCO public, envisager un miroir SKOS local (dump RDF chargé en Virtuoso ou Fuseki Docker). À décider en Phase 2.
+> Si la latence dépasse 500 ms sur l'endpoint UNESCO public, envisager un miroir SPARQL local (dump RDF chargé en Virtuoso ou Fuseki Docker). À décider en Phase 2.
 
 ---
 

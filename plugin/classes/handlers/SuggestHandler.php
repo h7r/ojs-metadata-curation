@@ -14,7 +14,6 @@ namespace APP\plugins\generic\nvMetadataCuration\classes\handlers;
 
 use APP\facades\Repo;
 use APP\plugins\generic\nvMetadataCuration\classes\managers\OrcidRorManager;
-use APP\plugins\generic\nvMetadataCuration\classes\managers\RateLimitManager;
 use APP\plugins\generic\nvMetadataCuration\classes\managers\SparqlLookupManager;
 use APP\plugins\generic\nvMetadataCuration\classes\security\CsrfGuard;
 use PKP\db\DAORegistry;
@@ -34,9 +33,6 @@ class SuggestHandler extends PKPHandler
     /** @var int Minimum query length */
     private const MIN_QUERY_LENGTH = 3;
 
-    /** @var int Free tier daily request limit per journal */
-    private const FREE_TIER_DAILY_LIMIT = 50;
-
     /**
      * @copydoc PKPHandler::authorize()
      */
@@ -48,45 +44,6 @@ class SuggestHandler extends PKPHandler
     }
 
     /**
-     * Check API key and rate limits (freemium model).
-     * Returns true if request is allowed, sends 429 JSON and exits if not.
-     */
-    private function checkApiGating($request): void
-    {
-        $context = $request->getContext();
-        if (!$context) {
-            return;
-        }
-
-        $plugin = \APP\plugins\generic\nvMetadataCuration\NvMetadataCurationPlugin::getPlugin();
-        if (!$plugin) {
-            return;
-        }
-
-        $contextId = $context->getId();
-        $apiKey = $plugin->getSetting($contextId, 'nvApiKey');
-
-        // With a valid API key, no rate limit
-        if (!empty($apiKey) && mb_strlen($apiKey) >= 16) {
-            return;
-        }
-
-        // Free tier: enforce daily limit per context via RateLimitManager
-        $limiter = new RateLimitManager(self::FREE_TIER_DAILY_LIMIT);
-        $result = $limiter->check($contextId);
-
-        if (!$result['allowed']) {
-            http_response_code(429);
-            header('Content-Type: application/json; charset=utf-8');
-            echo json_encode([
-                'error' => 'Daily request limit reached. Add an NV API key in plugin settings for unlimited access.',
-                'limit' => self::FREE_TIER_DAILY_LIMIT,
-            ], JSON_UNESCAPED_UNICODE);
-            exit;
-        }
-    }
-
-    /**
      * Handle the suggest request.
      *
      * @param array $args URL path arguments (unused)
@@ -95,8 +52,6 @@ class SuggestHandler extends PKPHandler
      */
     public function suggest($args, $request)
     {
-        $this->checkApiGating($request);
-
         $q = trim((string) $request->getUserVar('q'));
         $lang = trim((string) $request->getUserVar('lang'));
         $thesaurus = trim((string) $request->getUserVar('thesaurus'));
@@ -187,7 +142,7 @@ class SuggestHandler extends PKPHandler
     }
 
     /**
-     * Save selected SKOS keywords to submission_settings.
+     * Save selected curated keywords to submission_settings.
      * Stores JSON array under key 'nvKeywords' (SPECS.md section 6.3).
      *
      * Expects POST with:
@@ -249,8 +204,6 @@ class SuggestHandler extends PKPHandler
      */
     public function orcid($args, $request)
     {
-        $this->checkApiGating($request);
-
         $q = trim((string) $request->getUserVar('q'));
         if (mb_strlen($q, 'UTF-8') < 2) {
             header('Content-Type: application/json; charset=utf-8');
@@ -272,8 +225,6 @@ class SuggestHandler extends PKPHandler
      */
     public function ror($args, $request)
     {
-        $this->checkApiGating($request);
-
         $q = trim((string) $request->getUserVar('q'));
         if (mb_strlen($q, 'UTF-8') < 2) {
             header('Content-Type: application/json; charset=utf-8');

@@ -9,10 +9,10 @@
  * @class NvMetadataCurationPlugin
  *
  * @brief Controlled vocabulary lookup for OJS metadata fields
- *        using SKOS/SPARQL thesauri (UNESCO, Rameau, Eurovoc).
+ *        using SPARQL thesauri (UNESCO, Rameau, Eurovoc).
  *
  *        Phase 3: multi-thesaurus, settings form, backoffice audit,
- *        ORCID/ROR lookup, API key freemium gating, full i18n.
+ *        ORCID/ROR lookup, full i18n.
  */
 
 namespace APP\plugins\generic\nvMetadataCuration;

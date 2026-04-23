@@ -1,21 +1,20 @@
 # NV Metadata Curation — Plugin OJS
 
-Plugin OJS open source de curation de métadonnées par vocabulaires contrôlés (SKOS/SPARQL).
-Distribution via **PKP Plugin Gallery**. Modèle freemium : plugin gratuit, service NV payant via clé API.
+Open-source SPARQL-based metadata curation helper for OJS journals. Free and unlimited.
+Distribution via **PKP Plugin Gallery**.
 
-**Version :** 1.0.0 · **OJS :** 3.4.x · **Licence :** GPL v3
+**Version :** 2.0.0 · **OJS :** 3.4.x · **Licence :** GPL v3
 
 ## Fonctionnalités
 
 | Fonctionnalité | Description |
 |----------------|-------------|
-| **Autocomplete thésaurus** | Recherche SKOS/SPARQL dans UNESCO, Rameau (BnF), Eurovoc (UE) |
+| **Autocomplete thésaurus** | Recherche SPARQL dans UNESCO, Rameau (BnF), Eurovoc (UE) |
 | **Multi-thésaurus** | Configurable par revue dans les paramètres du plugin |
 | **3 modes d'interaction** | Suggestion (proposé, modifiable) · Choix (sélection obligatoire) · Bypass (texte libre + avertissement) |
 | **ORCID lookup** | Recherche dans le registre ORCID public, validation humaine obligatoire |
 | **ROR lookup** | Recherche d'affiliations institutionnelles via l'API ROR |
 | **Backoffice audit** | Tableau de conformité des métadonnées par soumission (mots-clés, ORCID, affiliations) |
-| **Freemium** | 50 requêtes/jour gratuit, illimité avec clé API NV |
 | **Trilingue** | Interface EN / ES / FR complète |
 | **Accessible** | Navigation clavier, ARIA, high contrast, reduced motion |
 
@@ -41,7 +40,6 @@ Après activation, cliquez sur **Paramètres** à côté du plugin pour :
 
 1. **Thésaurus** — cocher les vocabulaires actifs (UNESCO, Rameau, Eurovoc)
 2. **Mode d'interaction** — choisir comment les suggestions s'affichent aux auteurs
-3. **Clé API NV** — saisir la clé pour un accès illimité (optionnel)
 
 ### Docker (développement)
 
@@ -59,7 +57,7 @@ Pour arrêter : `docker compose down` (ajouter `-v` pour purger les volumes).
 
 ```
 Formulaire auteur OJS (métadonnées, step 3)
-  ├── kwd-group : autocomplete SKOS/SPARQL (UNESCO · Rameau · Eurovoc)
+  ├── kwd-group : autocomplete SPARQL (UNESCO · Rameau · Eurovoc)
   ├── ORCID : lookup registre public + validation humaine
   └── Affiliation : lookup ROR + validation humaine
 
@@ -137,19 +135,11 @@ plugin/
 | **Rameau** | `data.bnf.fr/sparql` | FR | ~170 000 vedettes-matière |
 | **Eurovoc** | `publications.europa.eu/webapi/rdf/sparql` | 24 langues UE | ~7 000 concepts, multidisciplinaire |
 
-## Modèle freemium
-
-- **Gratuit** : 50 requêtes SPARQL/ORCID/ROR par jour et par revue
-- **Payant** : accès illimité avec une clé API Ne Varietur (saisie dans les paramètres du plugin)
-
-Le compteur se réinitialise chaque jour. La sauvegarde des mots-clés n'est pas soumise à la limite.
-
 ## Security posture
 
 - **Zéro dépendance en production** — aucun package Composer ou npm, surface d'attaque minimale (review par le PKP Plugin Gallery facilitée).
 - **Écritures protégées CSRF** — `save` (mots-clés) et `saveContributorIds` (ORCID/ROR) valident un token de session côté serveur et contrôlent Origin/Referer contre `BaseUrl`. Les endpoints lookup (`suggest`, `orcid`, `ror`) restent en lecture seule.
 - **Requêtes SPARQL sanitisées** — échappement strict des littéraux envoyés aux endpoints UNESCO, Rameau et Eurovoc (pas de concaténation directe).
-- **Rate limiting atomique** — `flock()` par fichier, pas de race TOCTOU. Modèle freemium : 50 requêtes/jour/revue en gratuit, illimité avec clé API.
 - **Validation serveur ORCID/ROR** — format + checksum ISO 7064 (C1b) ; aucune confiance au seul frontend.
 - **IDOR** — chaque soumission ciblée est reliée au contexte courant et à un rôle participant / manager avant toute écriture.
 
