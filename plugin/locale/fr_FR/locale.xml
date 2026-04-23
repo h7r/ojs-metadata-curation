@@ -11,11 +11,6 @@
 	<message key="plugins.generic.nvMetadataCuration.thesaurus.unesco">Thésaurus UNESCO</message>
 	<message key="plugins.generic.nvMetadataCuration.thesaurus.rameau">Rameau (BnF)</message>
 	<message key="plugins.generic.nvMetadataCuration.thesaurus.eurovoc">Eurovoc (UE)</message>
-	<message key="plugins.generic.nvMetadataCuration.settings.interactionMode">Mode d'interaction</message>
-	<message key="plugins.generic.nvMetadataCuration.settings.interactionModeDescription">Contrôle la présentation des suggestions de mots-clés aux auteurs.</message>
-	<message key="plugins.generic.nvMetadataCuration.mode.suggestion">Suggestion (proposé, modifiable)</message>
-	<message key="plugins.generic.nvMetadataCuration.mode.choice">Choix (sélection obligatoire dans le thésaurus)</message>
-	<message key="plugins.generic.nvMetadataCuration.mode.bypass">Libre (texte libre avec avertissement)</message>
 
 	<!-- Backoffice audit -->
 	<message key="plugins.generic.nvMetadataCuration.audit.title">Audit des métadonnées</message>
@@ -35,19 +30,14 @@
 	<message key="plugins.generic.nvMetadataCuration.widget.validationRequired">Nécessite une validation humaine</message>
 	<message key="plugins.generic.nvMetadataCuration.widget.confirm">Confirmer</message>
 	<message key="plugins.generic.nvMetadataCuration.widget.remove">Supprimer</message>
-	<message key="plugins.generic.nvMetadataCuration.widget.bypassWarning">Saisie libre — ne provient pas d'un vocabulaire contrôlé.</message>
 
 	<!-- Chaînes JS runtime (injectées via window.nvMetadataCuration.i18n) -->
 	<message key="plugins.generic.nvMetadataCuration.js.errorHttp">HTTP {status}</message>
 	<message key="plugins.generic.nvMetadataCuration.js.errorNetwork">Erreur réseau</message>
 	<message key="plugins.generic.nvMetadataCuration.js.errorTimeout">Délai dépassé</message>
-	<message key="plugins.generic.nvMetadataCuration.js.choiceRequired">Sélection obligatoire depuis le thésaurus.</message>
-	<message key="plugins.generic.nvMetadataCuration.js.bypassWarning">Mot-clé libre — non validé par un thésaurus contrôlé.</message>
 	<message key="plugins.generic.nvMetadataCuration.js.removeKeyword">Supprimer {value}</message>
 	<message key="plugins.generic.nvMetadataCuration.js.saveSuccess">Mots-clés enregistrés</message>
 	<message key="plugins.generic.nvMetadataCuration.js.saveFailed">Échec — veuillez réessayer</message>
-	<message key="plugins.generic.nvMetadataCuration.js.choicePlaceholder">Sélectionnez un terme du thésaurus…</message>
-	<message key="plugins.generic.nvMetadataCuration.js.bypassNotice">Mode libre — les termes non validés seront signalés.</message>
 	<message key="plugins.generic.nvMetadataCuration.js.orcidResults">Résultats ORCID</message>
 	<message key="plugins.generic.nvMetadataCuration.js.rorResults">Résultats ROR</message>
 	<message key="plugins.generic.nvMetadataCuration.js.validationRequired">Nécessite une validation</message>

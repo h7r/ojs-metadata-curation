@@ -164,7 +164,6 @@ class NvMetadataCurationPlugin extends GenericPlugin
         $saveContributorIdsUrl = $dispatcher->url($request, Application::ROUTE_PAGE, null, 'nv-metadata-suggest', 'saveContributorIds');
 
         $thesaurus = $this->getSetting($contextId, 'thesaurus') ?: 'unesco';
-        $interactionMode = $this->getSetting($contextId, 'interactionMode') ?: 'suggestion';
 
         $thesauriRaw = $this->getSetting($contextId, 'thesauri');
         $thesauri = $thesauriRaw ? json_decode($thesauriRaw, true) : [$thesaurus];
@@ -188,19 +187,14 @@ class NvMetadataCurationPlugin extends GenericPlugin
             'csrfToken' => $csrfToken,
             'thesaurus' => $thesaurus,
             'thesauri' => $thesauri,
-            'interactionMode' => $interactionMode,
             'minChars' => 3,
             'i18n' => [
                 'errorHttp'              => __('plugins.generic.nvMetadataCuration.js.errorHttp'),
                 'errorNetwork'           => __('plugins.generic.nvMetadataCuration.js.errorNetwork'),
                 'errorTimeout'           => __('plugins.generic.nvMetadataCuration.js.errorTimeout'),
-                'choiceRequired'         => __('plugins.generic.nvMetadataCuration.js.choiceRequired'),
-                'bypassWarning'          => __('plugins.generic.nvMetadataCuration.js.bypassWarning'),
                 'removeKeyword'          => __('plugins.generic.nvMetadataCuration.js.removeKeyword'),
                 'saveSuccess'            => __('plugins.generic.nvMetadataCuration.js.saveSuccess'),
                 'saveFailed'             => __('plugins.generic.nvMetadataCuration.js.saveFailed'),
-                'choicePlaceholder'      => __('plugins.generic.nvMetadataCuration.js.choicePlaceholder'),
-                'bypassNotice'           => __('plugins.generic.nvMetadataCuration.js.bypassNotice'),
                 'orcidResults'           => __('plugins.generic.nvMetadataCuration.js.orcidResults'),
                 'rorResults'             => __('plugins.generic.nvMetadataCuration.js.rorResults'),
                 'validationRequired'     => __('plugins.generic.nvMetadataCuration.js.validationRequired'),

@@ -31,21 +31,6 @@ msgstr "Rameau (BnF)"
 msgid "plugins.generic.nvMetadataCuration.thesaurus.eurovoc"
 msgstr "Eurovoc (UE)"
 
-msgid "plugins.generic.nvMetadataCuration.settings.interactionMode"
-msgstr "Modo de interacción"
-
-msgid "plugins.generic.nvMetadataCuration.settings.interactionModeDescription"
-msgstr "Controla cómo se presentan las sugerencias de palabras clave a los autores."
-
-msgid "plugins.generic.nvMetadataCuration.mode.suggestion"
-msgstr "Sugerencia (propuesta, editable)"
-
-msgid "plugins.generic.nvMetadataCuration.mode.choice"
-msgstr "Elección (selección obligatoria del tesauro)"
-
-msgid "plugins.generic.nvMetadataCuration.mode.bypass"
-msgstr "Libre (texto libre con advertencia)"
-
 msgid "plugins.generic.nvMetadataCuration.audit.title"
 msgstr "Auditoría de metadatos"
 
@@ -91,9 +76,6 @@ msgstr "Confirmar"
 msgid "plugins.generic.nvMetadataCuration.widget.remove"
 msgstr "Eliminar"
 
-msgid "plugins.generic.nvMetadataCuration.widget.bypassWarning"
-msgstr "Texto libre — no proviene de un vocabulario controlado."
-
 msgid "plugins.generic.nvMetadataCuration.js.errorHttp"
 msgstr "HTTP {status}"
 
@@ -103,12 +85,6 @@ msgstr "Error de red"
 msgid "plugins.generic.nvMetadataCuration.js.errorTimeout"
 msgstr "Tiempo agotado"
 
-msgid "plugins.generic.nvMetadataCuration.js.choiceRequired"
-msgstr "Selección obligatoria del tesauro."
-
-msgid "plugins.generic.nvMetadataCuration.js.bypassWarning"
-msgstr "Palabra clave libre — no validada por un vocabulario controlado."
-
 msgid "plugins.generic.nvMetadataCuration.js.removeKeyword"
 msgstr "Eliminar {value}"
 
@@ -117,12 +93,6 @@ msgstr "Palabras clave guardadas"
 
 msgid "plugins.generic.nvMetadataCuration.js.saveFailed"
 msgstr "Error — inténtelo de nuevo"
-
-msgid "plugins.generic.nvMetadataCuration.js.choicePlaceholder"
-msgstr "Seleccione un término del tesauro…"
-
-msgid "plugins.generic.nvMetadataCuration.js.bypassNotice"
-msgstr "Modo libre — los términos no validados serán señalados."
 
 msgid "plugins.generic.nvMetadataCuration.js.orcidResults"
 msgstr "Resultados ORCID"
