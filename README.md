@@ -1,9 +1,9 @@
 # NV Metadata Curation — Plugin OJS
 
-Plugin OJS open source de curation de métadonnées par vocabulaires contrôlés (SPARQL).
+Open-source SPARQL-based metadata curation helper for OJS journals. Free and unlimited.
 Distribution via **PKP Plugin Gallery**.
 
-**Version :** 1.0.0 · **OJS :** 3.4.x · **Licence :** GPL v3
+**Version :** 2.0.0 · **OJS :** 3.4.x · **Licence :** GPL v3
 
 ## Fonctionnalités
 
