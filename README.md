@@ -3,15 +3,13 @@
 Open-source SPARQL-based metadata curation helper for OJS journals. Free and unlimited.
 Distribution via **PKP Plugin Gallery**.
 
-**Version :** 2.0.0 · **OJS :** 3.4.x · **Licence :** GPL v3
+**Version :** 2.0.1 · **OJS :** 3.4.x · **Licence :** GPL v3
 
 ## Fonctionnalités
 
 | Fonctionnalité | Description |
 |----------------|-------------|
 | **Autocomplete thésaurus** | Recherche SPARQL dans UNESCO, Rameau (BnF), Eurovoc (UE) |
-| **Multi-thésaurus** | Configurable par revue dans les paramètres du plugin |
-| **3 modes d'interaction** | Suggestion (proposé, modifiable) · Choix (sélection obligatoire) · Bypass (texte libre + avertissement) |
 | **ORCID lookup** | Recherche dans le registre ORCID public, validation humaine obligatoire |
 | **ROR lookup** | Recherche d'affiliations institutionnelles via l'API ROR |
 | **Backoffice audit** | Tableau de conformité des métadonnées par soumission (mots-clés, ORCID, affiliations) |

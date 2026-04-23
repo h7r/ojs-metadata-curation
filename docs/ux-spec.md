@@ -40,7 +40,7 @@ Intégration dans le formulaire de soumission OJS existant, au niveau du champ `
 │ │ ✓ Sociologie du travail (UNESCO 5.3.4) [→ ES]  │  │
 │ │   Autre terme…                                 │  │
 │ └────────────────────────────────────────────────┘  │
-│ Mode : [Suggestion ▼]   Thésaurus : [UNESCO ▼]      │
+│ Thésaurus : [UNESCO ▼]                              │
 └─────────────────────────────────────────────────────┘
 ```
 
@@ -49,15 +49,13 @@ Intégration dans le formulaire de soumission OJS existant, au niveau du champ `
 - Score de confiance : visible uniquement si < 80 % (sinon bruit inutile)
 - Maximum 5 suggestions affichées (charge cognitive)
 
-#### 2.2 Trois modes d'interaction
+#### 2.2 Mode d'interaction : suggestion-only
 
-| Mode | Comportement | Usage recommandé |
-|------|-------------|-----------------|
-| `suggestion` | Termes proposés, l'auteur accepte, modifie ou ignore | Revues avec auteurs libres |
-| `choix` | L'auteur doit choisir dans la liste (champ libre désactivé) | Revues certifiées FECYT |
-| `bypass` | Champ libre, avertissement visible « non conforme thésaurus » | Migration progressive |
+Depuis v2.0.1 le plugin expose un seul mode : **suggestion**. L'auteur voit les termes proposés, peut en accepter un (validation humaine), modifier son texte, ou ignorer la proposition. Le champ OJS natif (Publication::keywords) reçoit le terme sélectionné ; la métadonnée NV (URI, thésaurus, lang, `kwd_validated`) est persistée en parallèle.
 
-Le mode est configuré par la revue (administrateur OJS) dans les paramètres du plugin, pas par l'auteur.
+> **Note de rétractation.** Les versions antérieures exposaient aussi les modes `choice` (sélection obligatoire dans la liste) et `bypass` (texte libre avec avertissement). Ces deux modes ont été retirés en v2.0.1 ([GST-11](../plugin/)) : aucun caller réel n'en avait demandé l'activation, et la surface multi-modes forçait trois branches i18n/CSS/JS à rester en parité avec la branche suggestion. La page de paramétrage du plugin ne propose plus de sélecteur de mode.
+
+> **Multi-thésaurus UI.** L'onglet de bascule entre thésaurus (UNESCO / Rameau / Eurovoc) côté auteur n'a pas été relandé en v2.0.1. Un seul thésaurus est actif par revue, configuré par l'administrateur OJS. L'UI multi-thésaurus est suivie en backlog (GST-32, v2.1+) et sera rouverte seulement sur demande utilisateur réelle post-soumission PKP gallery.
 
 #### 2.3 Gestion bilingue (FECYT)
 
