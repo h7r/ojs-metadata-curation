@@ -160,7 +160,6 @@ Navigateur auteur → affichage suggestions
 **Pourquoi un proxy PHP et non appel direct JS :**
 - Les endpoints SPARQL publics n'envoient pas toujours les headers CORS nécessaires
 - Le proxy centralise la gestion des timeouts et du fallback
-- La clé API NV (Phase 3) sera injectée côté serveur, pas exposée en JS
 
 ---
 

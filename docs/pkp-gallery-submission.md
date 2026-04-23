@@ -116,7 +116,7 @@ Features:
 - [x] Aucune dépendance externe runtime
 - [x] Plugin extends `GenericPlugin` (OJS 3.4)
 - [x] Namespace PSR-4 correct
-- [x] Tests unitaires inclus (4 suites — `RateLimitManagerTest` retiré en v2.0)
+- [x] Tests unitaires inclus (5 suites — `RateLimitManagerTest` retiré en v2.0)
 - [x] Tarball structure : `nvMetadataCuration/` racine unique
 - [ ] MD5 recalculé pour `nvMetadataCuration-2.0.0.0.tar.gz` (post-merge)
 - [ ] GitHub repo public créé

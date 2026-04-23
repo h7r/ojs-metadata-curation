@@ -81,7 +81,7 @@ Backoffice éditeur (/nv-metadata-audit)
 plugin/
 ├── NvMetadataCurationPlugin.php      # Classe principale (GenericPlugin)
 ├── index.php                          # Point d'entrée
-├── version.xml                        # v1.0.0.0
+├── version.xml                        # v2.0.0.0
 ├── settings.xml                       # Réglages par défaut
 ├── classes/
 │   ├── forms/

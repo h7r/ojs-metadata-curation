@@ -81,7 +81,6 @@ Plugin PHP OJS fonctionnel minimal, sur instance locale.
 - Thésaurus : UNESCO + Eurovoc + Rameau (configurable par revue dans plugin settings)
 - Surface backoffice éditeur (audit arrière-stock)
 - Intégration ORCID/ROR (C1b, validation humaine obligatoire)
-- API key NV — modèle freemium (plugin gratuit, service payant via clé)
 - Préparation dossier PKP Plugin Gallery
 
 ---
