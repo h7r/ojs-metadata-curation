@@ -1,8 +1,8 @@
 # PKP Plugin Gallery — Dossier de soumission
 
 **Plugin :** NV Metadata Curation
-**Version :** 2.0.1.0
-**Date :** 2026-04-23
+**Version :** 2.0.2.0
+**Date :** 2026-04-24
 **Catégorie :** generic
 **Licence :** GPL v3
 
@@ -10,12 +10,12 @@
 
 ## 1. Tarball de release
 
-Fichier : `nvMetadataCuration-2.0.1.0.tar.gz`
+Fichier : `nvMetadataCuration-2.0.2.0.tar.gz`
 MD5 : `{RELEASE_MD5}` (à recalculer lors du build post-merge)
 
 Reconstruit avec :
 ```bash
-tar czf nvMetadataCuration-2.0.1.0.tar.gz \
+tar czf nvMetadataCuration-2.0.2.0.tar.gz \
   --transform='s|^plugin|nvMetadataCuration|' \
   --exclude='plugin/vendor' \
   --exclude='plugin/.phpunit.cache' \
@@ -36,25 +36,25 @@ Le tarball doit être hébergé sur une URL publique stable. GitHub Releases est
 
 ```bash
 # Ajouter le remote GitHub (si pas encore fait)
-git remote add origin https://github.com/nevarietur/ojs-nv-metadata-curation.git
+git remote add origin https://github.com/h7r/ojs-metadata-curation.git
 
 # Tag de release
-git tag -a v2.0.1 -m "Release 2.0.1 — bug fix GST-23 + drop modes GST-11 + doc realign"
+git tag -a v2.0.2 -m "Release 2.0.2 — audit backend layout + identity cleanup + doc prune (GST-41)"
 git push origin main --tags
 ```
 
 ### 2b. Créer la GitHub Release
 
 ```bash
-gh release create v2.0.1 \
-  nvMetadataCuration-2.0.1.0.tar.gz \
-  --title "v2.0.1 — Bug fix + scope reduction" \
+gh release create v2.0.2 \
+  nvMetadataCuration-2.0.2.0.tar.gz \
+  --title "v2.0.2 — Audit 500 fix + PKP-gallery readiness" \
   --notes "Patch release.
 
 Changes:
-- Fix: StageAssignment DAO peek iterator (unblocks POST /save and /saveContributorIds — GST-23)
-- Drop: choice/bypass interaction modes — suggestion-only (GST-11)
-- Docs: realign to shipped scope (single thesaurus, suggestion-only)
+- Fix: audit page 500 — AuditHandler uses _isBackendPage + setupTemplate, audit.tpl extends layouts/backend.tpl (GST-41)
+- Chore: replace invented corporate identity with h7r + mozmail alias (GST-41)
+- Docs: drop legacy PLAN.md / docs/SPECS.md and stale README bullet (GST-41)
 
 Features (unchanged):
 - SPARQL autocomplete (UNESCO, Rameau, Eurovoc)
@@ -81,7 +81,7 @@ Features (unchanged):
 	<name locale="en">NV Metadata Curation</name>
 	<name locale="es">NV Curación de Metadatos</name>
 	<name locale="fr_FR">NV Curation des Métadonnées</name>
-	<homepage>https://github.com/nevarietur/ojs-nv-metadata-curation</homepage>
+	<homepage>https://github.com/h7r/ojs-metadata-curation</homepage>
 	<summary locale="en">Controlled vocabulary lookup for OJS metadata fields using SPARQL thesauri (UNESCO, Rameau, Eurovoc).</summary>
 	<summary locale="es">Búsqueda de vocabularios controlados para campos de metadatos OJS mediante tesauros SPARQL (UNESCO, Rameau, Eurovoc).</summary>
 	<summary locale="fr_FR">Recherche de vocabulaires contrôlés pour les champs de métadonnées OJS via des thésaurus SPARQL (UNESCO, Rameau, Eurovoc).</summary>
@@ -92,8 +92,8 @@ Features (unchanged):
 		<institution>Ne Varietur (WIP)</institution>
 		<email>ojs-plugin@ne-varietur.mozmail.com</email>
 	</maintainer>
-	<release date="2026-04-23" version="2.0.1.0" md5="{RELEASE_MD5}">
-		<package>{RELEASE_URL}/nvMetadataCuration-2.0.1.0.tar.gz</package>
+	<release date="2026-04-24" version="2.0.2.0" md5="{RELEASE_MD5}">
+		<package>{RELEASE_URL}/nvMetadataCuration-2.0.2.0.tar.gz</package>
 		<compatibility application="ojs2">
 			<version>3.4.0.0</version>
 			<version>3.4.0.1</version>
@@ -105,7 +105,7 @@ Features (unchanged):
 			<version>3.4.0.7</version>
 		</compatibility>
 		<certification type="reviewed"/>
-		<description locale="en">Patch release: StageAssignment DAO bug fix (GST-23), drop choice/bypass interaction modes (GST-11 — suggestion-only), doc realignment.</description>
+		<description locale="en">Patch release: audit page backend layout fix (GST-41 — HTTP 200 restored for MANAGER/SUB_EDITOR), identity cleanup, and doc prune.</description>
 	</release>
 </plugin>
 ```
@@ -114,7 +114,7 @@ Features (unchanged):
 
 ## 4. Checklist pré-soumission
 
-- [x] `version.xml` conforme DTD `pluginVersion.dtd` (4 chiffres : 2.0.1.0)
+- [x] `version.xml` conforme DTD `pluginVersion.dtd` (4 chiffres : 2.0.2.0)
 - [x] `LICENSE` GPL v3 inclus dans le tarball
 - [x] Locales : en, es, fr_FR
 - [x] Aucune dépendance externe runtime
@@ -122,7 +122,7 @@ Features (unchanged):
 - [x] Namespace PSR-4 correct
 - [x] Tests unitaires inclus (5 suites — `RateLimitManagerTest` retiré en v2.0)
 - [x] Tarball structure : `nvMetadataCuration/` racine unique
-- [ ] MD5 recalculé pour `nvMetadataCuration-2.0.1.0.tar.gz` (post-merge)
+- [ ] MD5 recalculé pour `nvMetadataCuration-2.0.2.0.tar.gz` (post-merge)
 - [ ] GitHub repo public créé
 - [ ] GitHub Release publiée avec tarball
 - [ ] PR ouverte sur `pkp/plugin-gallery`
