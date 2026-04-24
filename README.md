@@ -16,6 +16,16 @@ Distribution via **PKP Plugin Gallery**.
 | **Trilingue** | Interface EN / ES / FR complète |
 | **Accessible** | Navigation clavier, ARIA, high contrast, reduced motion |
 
+## Périmètre de validation humaine
+
+Le plugin interroge des registres publics (thésaurus SPARQL, registre ORCID, registre ROR) et valide côté serveur le **format** des identifiants sélectionnés (checksum ISO 7064 pour ORCID, regex pour ROR). Il **ne croise pas** les sélections entre elles :
+
+- Le profil ORCID choisi pour un contributeur et l'affiliation ROR choisie pour ce même contributeur sont deux sélections indépendantes. Rien ne vérifie que l'ORCID mentionne cette institution dans ses affiliations publiques, ni l'inverse.
+- Les institutions du profil ORCID apparaissent dans le dropdown de suggestions à titre d'information contextuelle, pour aider l'éditeur à trancher — elles ne déclenchent aucune règle automatique.
+- Côté mots-clés, la sélection d'une suggestion stocke son URI thésaurus telle que retournée au moment du lookup ; le plugin ne revalide pas au moment de la soumission que l'URI résout toujours à un concept du thésaurus.
+
+La cohérence métier (*« cet ORCID correspond-il bien à cette affiliation ? »*, *« cette URI pointe-t-elle toujours sur le bon concept ? »*) relève de la validation humaine par l'éditeur. Le plugin est aligné sur FECYT C1b : il propose et valide le format, l'humain est l'autorité finale sur l'identité et la cohérence.
+
 ## Installation
 
 ### Prérequis
