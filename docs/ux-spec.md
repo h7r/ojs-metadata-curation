@@ -1,7 +1,5 @@
 # Architecture UX — Plugin OJS NV
 
-*Camille, Head of Design · Version 1.0 · 2026-04-21*
-
 ---
 
 ## 1. Persona central
@@ -53,24 +51,22 @@ Intégration dans le formulaire de soumission OJS existant, au niveau du champ `
 
 Depuis v2.0.1 le plugin expose un seul mode : **suggestion**. L'auteur voit les termes proposés, peut en accepter un (validation humaine), modifier son texte, ou ignorer la proposition. Le champ OJS natif (Publication::keywords) reçoit le terme sélectionné ; la métadonnée NV (URI, thésaurus, lang, `kwd_validated`) est persistée en parallèle.
 
-> **Note de rétractation.** Les versions antérieures exposaient aussi les modes `choice` (sélection obligatoire dans la liste) et `bypass` (texte libre avec avertissement). Ces deux modes ont été retirés en v2.0.1 ([GST-11](../plugin/)) : aucun caller réel n'en avait demandé l'activation, et la surface multi-modes forçait trois branches i18n/CSS/JS à rester en parité avec la branche suggestion. La page de paramétrage du plugin ne propose plus de sélecteur de mode.
+> **Note de rétractation.** Les versions antérieures exposaient aussi les modes `choice` (sélection obligatoire dans la liste) et `bypass` (texte libre avec avertissement). Ces deux modes ont été retirés en v2.0.1 (GST-11) : aucun caller réel n'en avait demandé l'activation, et la surface multi-modes forçait trois branches i18n/CSS/JS à rester en parité avec la branche suggestion. La page de paramétrage du plugin ne propose plus de sélecteur de mode.
 
 > **Multi-thésaurus UI.** L'onglet de bascule entre thésaurus (UNESCO / Rameau / Eurovoc) côté auteur n'a pas été relandé en v2.0.1. Un seul thésaurus est actif par revue, configuré par l'administrateur OJS. L'UI multi-thésaurus est suivie en backlog (GST-32, v2.1+) et sera rouverte seulement sur demande utilisateur réelle post-soumission PKP gallery.
 
 #### 2.3 Gestion bilingue (FECYT)
 
 - Pour chaque terme validé : afficher le couple ES + EN (ou FR + EN)
-- Si un seul terme est accepté : proposer la traduction automatique (LLM) **comme suggestion**, validation humaine obligatoire
 - Indicateur visuel : `[ES ✓]` / `[EN ✓]` / `[EN ?]` par terme
 
-#### 2.4 Champs couverts par phase
+#### 2.4 Champs couverts
 
-| Champ OJS | Phase 1 MVP | Phase 3 |
-|-----------|-------------|---------|
-| `kwd-group` (mots-clés) | ✓ | ✓ |
-| `aff` (affiliations) | — | ✓ (ROR lookup) |
-| `contrib-id` (ORCID) | — | ✓ (validation humaine) |
-| `abstract` secondaire (bilingue) | — | ✓ |
+| Champ OJS | Couverture |
+|-----------|------------|
+| `kwd-group` (mots-clés) | Autocomplete SPARQL (UNESCO / Rameau / Eurovoc) |
+| `aff` (affiliations) | Lookup ROR avec validation humaine |
+| `contrib-id` (ORCID) | Lookup ORCID avec validation humaine |
 
 ---
 
@@ -135,8 +131,8 @@ Langue par défaut :     [Espagnol (ES) ▼]
 
 ### 3.4 Design tokens
 
-Le plugin hérite du thème OJS actif. Aucun token visuel propriétaire dans la Phase 1 MVP.
-Pour les éléments NV spécifiques (bandeau, badge score), utiliser les tokens définis dans `C:\projets\ne-varietur-design-system\colors_and_type.css` :
+Le plugin hérite du thème OJS actif. Aucun token visuel propriétaire.
+Pour les éléments NV spécifiques (bandeau, badge score) :
 - Couleur accent NV : `var(--nv-orange)` — à ne pas hardcoder
 - Police : héritée d'OJS, pas de chargement externe
 
@@ -168,11 +164,3 @@ Soumission complète → métadonnées conformes thésaurus
 
 ---
 
-## 5. Questions ouvertes pour la Phase 2
-
-Ces points nécessitent une décision technique d'Étienne avant le PoC :
-
-1. **Hook OJS :** quel point d'extension PKP utiliser pour l'inline dans le formulaire auteur ? (`TemplateManager::fetch` hook ou composant Smarty dédié ?)
-2. **Stockage URI :** les URIs thésaurus sont-elles stockées dans `submission_settings` ou dans un champ `kwd-group` étendu ?
-3. **Appel SPARQL :** côté client (JS → proxy PHP) ou côté serveur uniquement (PHP → endpoint SPARQL) ? Implications CORS et latence.
-4. **Version OJS cible :** OJS 3.3.x ou 3.4.x uniquement ? La compatibilité ascendante conditionne l'API plugin.
