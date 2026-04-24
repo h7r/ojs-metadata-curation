@@ -34,10 +34,7 @@ Dans OJS : **Paramètres > Site web > Modules > Modules externes installés** > 
 
 ### Configuration
 
-Après activation, cliquez sur **Paramètres** à côté du plugin pour :
-
-1. **Thésaurus** — cocher les vocabulaires actifs (UNESCO, Rameau, Eurovoc)
-2. **Mode d'interaction** — choisir comment les suggestions s'affichent aux auteurs
+Après activation, cliquez sur **Paramètres** à côté du plugin pour cocher les vocabulaires actifs (UNESCO, Rameau, Eurovoc).
 
 ### Docker (développement)
 
