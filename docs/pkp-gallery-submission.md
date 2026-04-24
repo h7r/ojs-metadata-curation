@@ -36,7 +36,7 @@ Le tarball doit être hébergé sur une URL publique stable. GitHub Releases est
 
 ```bash
 # Ajouter le remote GitHub (si pas encore fait)
-git remote add origin https://github.com/nevarietur/ojs-nv-metadata-curation.git
+git remote add origin https://github.com/h7r/ojs-metadata-curation.git
 
 # Tag de release
 git tag -a v2.0.1 -m "Release 2.0.1 — bug fix GST-23 + drop modes GST-11 + doc realign"
@@ -81,7 +81,7 @@ Features (unchanged):
 	<name locale="en">NV Metadata Curation</name>
 	<name locale="es">NV Curación de Metadatos</name>
 	<name locale="fr_FR">NV Curation des Métadonnées</name>
-	<homepage>https://github.com/nevarietur/ojs-nv-metadata-curation</homepage>
+	<homepage>https://github.com/h7r/ojs-metadata-curation</homepage>
 	<summary locale="en">Controlled vocabulary lookup for OJS metadata fields using SPARQL thesauri (UNESCO, Rameau, Eurovoc).</summary>
 	<summary locale="es">Búsqueda de vocabularios controlados para campos de metadatos OJS mediante tesauros SPARQL (UNESCO, Rameau, Eurovoc).</summary>
 	<summary locale="fr_FR">Recherche de vocabulaires contrôlés pour les champs de métadonnées OJS via des thésaurus SPARQL (UNESCO, Rameau, Eurovoc).</summary>
