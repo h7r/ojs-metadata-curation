@@ -7,14 +7,13 @@
  * Distributed under the GNU GPL v3. For full terms see the file LICENSE.
  *
  * @brief SPARQL lookup against controlled-vocabulary thesauri (UNESCO, Rameau/BnF, Eurovoc).
- *        Implements the suggest interface defined in SPECS.md sections 3-5.
  */
 
 namespace APP\plugins\generic\nvMetadataCuration\classes\managers;
 
 class SparqlLookupManager
 {
-    /** @var int Default HTTP timeout in seconds (SPECS.md section 5.3) */
+    /** @var int Default HTTP timeout in seconds */
     private const TIMEOUT_SECONDS = 2;
 
     /** @var int Higher timeout for BnF/Rameau — Virtuoso endpoint is slower */
@@ -45,7 +44,7 @@ class SparqlLookupManager
      * @param string $prefix  User input (>= 3 chars, will be sanitised)
      * @param string $lang    Language code ('es' | 'fr')
      * @param string $thesaurus  Thesaurus id ('unesco' | 'rameau' | 'eurovoc')
-     * @return array Structured response per SPECS.md section 4.2
+     * @return array Structured response with candidate concepts.
      */
     public function suggest(string $prefix, string $lang, string $thesaurus): array
     {
@@ -83,7 +82,7 @@ class SparqlLookupManager
     }
 
     /**
-     * Sanitise user prefix before SPARQL injection (SPECS.md section 5.2).
+     * Sanitise user prefix before SPARQL injection.
      * SPARQL has no positional parameters -- manual sanitisation is required.
      */
     private function sanitizePrefix(string $prefix): string
@@ -113,7 +112,7 @@ class SparqlLookupManager
     }
 
     /**
-     * UNESCO Thesaurus query (SPECS.md section 3.1).
+     * UNESCO Thesaurus query.
      * Bilingual: primary label in $lang, translation in EN.
      */
     private function buildUnescoQuery(string $prefix, string $lang): string
@@ -150,7 +149,7 @@ SPARQL;
     }
 
     /**
-     * Rameau/BnF query (SPECS.md section 3.2).
+     * Rameau/BnF query.
      * French only. Uses bif:contains (Virtuoso full-text index) because
      * strstarts() does not work on lang-tagged literals in BnF's Virtuoso.
      * Correct scheme URI: http://data.bnf.fr/vocabulary/rameau
@@ -270,7 +269,7 @@ SPARQL;
     }
 
     /**
-     * Parse SPARQL JSON results into the normalised response format (SPECS.md section 4.2).
+     * Parse SPARQL JSON results into the normalised response format.
      *
      * @return array<int, array>
      */

@@ -146,7 +146,7 @@ class SuggestHandler extends PKPHandler
 
     /**
      * Save selected curated keywords to submission_settings.
-     * Stores JSON array under key 'nvKeywords' (SPECS.md section 6.3).
+     * Stores JSON array under key 'nvKeywords'.
      *
      * Expects POST with:
      *   - submissionId (int)
