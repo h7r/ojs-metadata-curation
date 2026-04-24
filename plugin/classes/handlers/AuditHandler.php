@@ -23,6 +23,9 @@ use PKP\security\Role;
 
 class AuditHandler extends PKPHandler
 {
+    /** @copydoc PKPHandler::_isBackendPage */
+    public $_isBackendPage = true;
+
     /**
      * @copydoc PKPHandler::authorize()
      */
@@ -130,9 +133,17 @@ class AuditHandler extends PKPHandler
         $plugin = \APP\plugins\generic\nvMetadataCuration\NvMetadataCurationPlugin::getPlugin();
 
         $templateMgr = TemplateManager::getManager($request);
+        $this->setupTemplate($request);
         $templateMgr->assign([
-            'auditData' => $auditData,
             'pageTitle' => 'plugins.generic.nvMetadataCuration.audit.title',
+            'pageComponent' => 'Page',
+            'breadcrumbs' => [
+                [
+                    'id' => 'audit',
+                    'name' => __('plugins.generic.nvMetadataCuration.audit.title'),
+                ],
+            ],
+            'auditData' => $auditData,
         ]);
 
         $templateMgr->addStyleSheet(
