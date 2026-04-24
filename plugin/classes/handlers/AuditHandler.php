@@ -135,7 +135,7 @@ class AuditHandler extends PKPHandler
         $templateMgr = TemplateManager::getManager($request);
         $this->setupTemplate($request);
         $templateMgr->assign([
-            'pageTitle' => 'plugins.generic.nvMetadataCuration.audit.title',
+            'pageTitle' => __('plugins.generic.nvMetadataCuration.audit.title'),
             'pageComponent' => 'Page',
             'breadcrumbs' => [
                 [
