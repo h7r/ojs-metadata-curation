@@ -277,12 +277,18 @@
 		}, 50);
 	}
 
+	function warnNoSubmissionId() {
+		console.warn('[nv] could not resolve submission id on URL:', window.location.href,
+		             '— curation NOT saved to submission_settings');
+	}
+
 	/**
 	 * Auto-save NV keyword metadata to the server immediately.
 	 */
 	function autoSave() {
 		var subId = getSubmissionId();
 		if (subId) saveKeywords(subId);
+		else warnNoSubmissionId();
 	}
 
 	/**
@@ -371,13 +377,16 @@
 	}
 
 	/**
-	 * Try to extract submissionId from the current OJS page URL or form data.
+	 * Resolve submissionId from OJS 3.4 URL.
+	 * Wizard: /submission/{id}/...  |  Editorial: /workflow/(index|access)/{id}/{stageId}
 	 */
 	function getSubmissionId() {
-		// OJS 3.4.x URL pattern: /index.php/{journal}/submission/{id}/...
-		var match = window.location.pathname.match(/\/submission\/(\d+)/);
+		var path = window.location.pathname;
+		var match = path.match(/\/(?:submission|workflow\/(?:index|access))\/(\d+)\b/);
 		if (match) return match[1];
-		// Fallback: look for a hidden input
+		// Some OJS themes keep the workflow path inside the hash — safety net.
+		var hashMatch = window.location.hash.match(/\/workflow\/(?:index|access)\/(\d+)\b/);
+		if (hashMatch) return hashMatch[1];
 		var el = document.querySelector('input[name="submissionId"]');
 		return el ? el.value : null;
 	}
@@ -470,7 +479,11 @@
 			btn._nvSaveBound = true;
 			btn.addEventListener('click', function () {
 				var subId = getSubmissionId();
-				if (subId) saveKeywords(subId);
+				if (subId) {
+					saveKeywords(subId);
+				} else if (selectedKeywords.length > 0) {
+					warnNoSubmissionId();
+				}
 			});
 		});
 	}
