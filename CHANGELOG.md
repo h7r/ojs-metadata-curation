@@ -5,6 +5,42 @@ All notable changes to this plugin will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## v2.0.2 — 2026-04-24
+
+### Fixed
+
+- **GST-41.** `AuditHandler::index()` now declares `$_isBackendPage = true`
+  and calls `$this->setupTemplate($request)` before the template assigns,
+  and `audit.tpl` extends `layouts/backend.tpl` instead of including the
+  non-existent `common/header.tpl` / `common/footer.tpl`. The legacy
+  includes had no target in OJS 3.4 core templates and produced a Smarty
+  « Unable to load template » 500. `GET /nv-metadata-audit` now returns
+  HTTP 200 for MANAGER and SUB_EDITOR inside the OJS backoffice frame.
+  The `RoleBasedHandlerOperationPolicy` allow-list is unchanged.
+
+### Changed
+
+- **GST-41 (identity).** Removed fictional corporate identity that was
+  never registered. `composer.json` now ships as `h7r/ojs-metadata-curation`
+  with a single `h7r` author (no homepage); `docs/pkp-gallery-submission.md`
+  points to `github.com/h7r/ojs-metadata-curation`; `locale/{en,es,fr_FR}/
+  locale.po` Last-Translator is `h7r` with the public
+  `ojs-plugin@ne-varietur.mozmail.com` alias already exposed in
+  `version.xml`. The `nv` / `nvMetadataCuration` product brand and the
+  `ne-varietur.mozmail.com` alias are unchanged — only the invented
+  corp footprint is removed for consistency with the actual identity
+  used for PKP outreach.
+- Bumped `plugin/version.xml` to `2.0.2.0`.
+
+### Removed
+
+- **GST-41 (docs).** `PLAN.md` (v1 implementation blueprint, code-merged)
+  and `docs/SPECS.md` (early functional spec diverged from shipped scope)
+  deleted. Neither was referenced by README, CHANGELOG, or any doc. The
+  stale « Mode d'interaction » README bullet (setting dropped in GST-11 /
+  v2.0.1) is also removed; the honest retraction notes in `CHANGELOG.md`
+  and `docs/ux-spec.md` are preserved as historical record.
+
 ## v2.0.1 — 2026-04-23
 
 ### Fixed

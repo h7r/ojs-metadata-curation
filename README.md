@@ -3,7 +3,7 @@
 Open-source SPARQL-based metadata curation helper for OJS journals. Free and unlimited.
 Distribution via **PKP Plugin Gallery**.
 
-**Version :** 2.0.1 · **OJS :** 3.4.x · **Licence :** GPL v3
+**Version :** 2.0.2 · **OJS :** 3.4.x · **Licence :** GPL v3
 
 ## Fonctionnalités
 
