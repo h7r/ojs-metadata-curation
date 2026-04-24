@@ -53,14 +53,18 @@
 	}
 
 	/**
-	 * Extract submissionId from the OJS page URL or DOM.
+	 * Resolve submissionId from OJS 3.4 URL.
+	 * Wizard: /submission/{id}/...  |  Editorial: /workflow/(index|access)/{id}/{stageId}
 	 */
 	function getSubmissionId() {
-		var match = window.location.pathname.match(/\/submission\/(\d+)\b/);
+		var path = window.location.pathname;
+		var match = path.match(/\/(?:submission|workflow\/(?:index|access))\/(\d+)\b/);
 		if (match) return match[1];
-		var hidden = document.querySelector('input[name="submissionId"]');
-		if (hidden) return hidden.value;
-		return null;
+		// Some OJS themes keep the workflow path inside the hash — safety net.
+		var hashMatch = window.location.hash.match(/\/workflow\/(?:index|access)\/(\d+)\b/);
+		if (hashMatch) return hashMatch[1];
+		var el = document.querySelector('input[name="submissionId"]');
+		return el ? el.value : null;
 	}
 
 	/**
@@ -92,7 +96,8 @@
 
 		var submissionId = getSubmissionId();
 		if (!submissionId) {
-			console.warn('[nvMetadataCuration] Could not determine submissionId, skipping server validation');
+			console.warn('[nv] could not resolve submission id on URL:', window.location.href,
+			             '— curation NOT saved to submission_settings');
 			onSuccess();
 			return;
 		}
