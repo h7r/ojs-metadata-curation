@@ -43,6 +43,11 @@ class NvMetadataCurationPlugin extends GenericPlugin
         if ($success && $this->getEnabled()) {
             self::$instance = $this;
 
+            // Register nvKeywords / nvContributorValidation on the Submission
+            // schema so Repo::submission()->edit() persists them. Without this,
+            // OJS 3.4 silently drops unknown properties on edit().
+            Hook::add('Schema::get::submission', [$this, 'extendSubmissionSchema']);
+
             // OJS 3.4 submission wizard: inject directly into the Vue.js SPA section
             Hook::add('Template::SubmissionWizard::Section', [$this, 'injectSubmissionWizardAssets']);
 
@@ -213,6 +218,33 @@ class NvMetadataCurationPlugin extends GenericPlugin
             ],
             'cssUrl' => $baseUrl . '/css/keyword-lookup.css',
         ];
+    }
+
+    /**
+     * Hook callback: extend the Submission schema with the two custom fields
+     * this plugin persists via Repo::submission()->edit(). OJS 3.4 strips any
+     * property not declared in the schema, so without this hook the save
+     * endpoints return 200 but nothing lands in submission_settings.
+     *
+     * Both fields hold JSON-encoded payloads (keyword list / contributor
+     * validation map) and are plugin-internal — no apiSummary exposure.
+     */
+    public function extendSubmissionSchema(string $hookName, array $args): bool
+    {
+        $schema = &$args[0];
+
+        $schema->properties->nvKeywords = (object) [
+            'type' => 'string',
+            'apiSummary' => false,
+            'validation' => ['nullable'],
+        ];
+        $schema->properties->nvContributorValidation = (object) [
+            'type' => 'string',
+            'apiSummary' => false,
+            'validation' => ['nullable'],
+        ];
+
+        return false;
     }
 
     /**
