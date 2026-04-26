@@ -3,9 +3,6 @@
 /**
  * @file NvMetadataCurationPlugin.php
  *
- * Copyright (c) 2026 Ne Varietur
- * Distributed under the GNU GPL v3. For full terms see the file LICENSE.
- *
  * @class NvMetadataCurationPlugin
  *
  * @brief Controlled vocabulary lookup for OJS metadata fields

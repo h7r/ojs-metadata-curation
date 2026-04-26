@@ -1,9 +1,6 @@
 {**
  * templates/audit.tpl
  *
- * Copyright (c) 2026 Ne Varietur
- * Distributed under the GNU GPL v3.
- *
  * Backoffice audit view — metadata conformity dashboard.
  *}
 {extends file="layouts/backend.tpl"}

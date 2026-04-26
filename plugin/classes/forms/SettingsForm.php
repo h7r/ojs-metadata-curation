@@ -3,9 +3,6 @@
 /**
  * @file classes/forms/SettingsForm.php
  *
- * Copyright (c) 2026 Ne Varietur
- * Distributed under the GNU GPL v3. For full terms see the file LICENSE.
- *
  * @brief Plugin settings form — thesaurus selection.
  */
 

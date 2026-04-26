@@ -8,3 +8,7 @@ plugin/.phpunit.cache/
 
 # IDE / OS
 .gstack/
+.claude/
+
+# Paperclip ticket dumps at repo root (e.g. GST-12-pkp-gallery-submission.md)
+/GST-*.md
