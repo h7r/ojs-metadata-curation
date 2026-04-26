@@ -135,4 +135,4 @@ Features (unchanged):
 - [x] Tarball validé via install Docker OJS local + test 3 locales (GST-46.3 — Gate 1)
 - [x] Tag `v2.0.4.0` poussé (GST-46.4)
 - [x] GitHub Release publiée avec tarball + MD5 (GST-46.4) : https://github.com/h7r/ojs-metadata-curation/releases/tag/v2.0.4.0
-- [ ] PR draft ouverte sur `pkp/plugin-gallery` (GST-46.4)
+- [x] PR draft ouverte sur `pkp/plugin-gallery` (GST-46.4) : https://github.com/pkp/plugin-gallery/pull/485
