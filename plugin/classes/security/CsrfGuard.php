@@ -3,9 +3,6 @@
 /**
  * @file classes/security/CsrfGuard.php
  *
- * Copyright (c) 2026 Ne Varietur
- * Distributed under the GNU GPL v3. For full terms see the file LICENSE.
- *
  * @brief Per-request CSRF + Origin/Referer guard for raw AJAX handlers
  *        that are NOT \PKP\form\Form subclasses (so FormValidatorCSRF
  *        does not apply). Used by SuggestHandler::save and

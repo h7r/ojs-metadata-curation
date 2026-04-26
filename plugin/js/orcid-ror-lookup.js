@@ -1,9 +1,6 @@
 /**
  * @file js/orcid-ror-lookup.js
  *
- * Copyright (c) 2026 Ne Varietur
- * Distributed under the GNU GPL v3.
- *
  * @brief ORCID and ROR autocomplete widgets for contributor metadata.
  *        Attaches to ORCID and affiliation fields in the submission form.
  *        All results require human validation (C1b).

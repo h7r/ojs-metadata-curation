@@ -3,9 +3,6 @@
 /**
  * @file classes/managers/SparqlLookupManager.php
  *
- * Copyright (c) 2026 Ne Varietur
- * Distributed under the GNU GPL v3. For full terms see the file LICENSE.
- *
  * @brief SPARQL lookup against controlled-vocabulary thesauri (UNESCO, Rameau/BnF, Eurovoc).
  */
 

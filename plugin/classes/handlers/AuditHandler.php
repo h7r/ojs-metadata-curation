@@ -3,9 +3,6 @@
 /**
  * @file classes/handlers/AuditHandler.php
  *
- * Copyright (c) 2026 Ne Varietur
- * Distributed under the GNU GPL v3. For full terms see the file LICENSE.
- *
  * @brief Backoffice audit view — metadata conformity per submission.
  *        Shows editors which submissions have curated keywords vs raw input.
  */

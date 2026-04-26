@@ -1,9 +1,6 @@
 /**
  * @file js/keyword-lookup.js
  *
- * Copyright (c) 2026 Ne Varietur
- * Distributed under the GNU GPL v3.
- *
  * @brief Autocomplete widget for SPARQL keyword lookup.
  *        Attaches to OJS keyword input fields, queries the /suggest
  *        endpoint, and displays matching thesaurus concepts.

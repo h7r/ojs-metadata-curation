@@ -3,9 +3,6 @@
 /**
  * @file classes/managers/OrcidRorManager.php
  *
- * Copyright (c) 2026 Ne Varietur
- * Distributed under the GNU GPL v3. For full terms see the file LICENSE.
- *
  * @brief ORCID and ROR lookup for contributor metadata.
  *        Uses the public ORCID API and the ROR REST API.
  *        C1b: lookup only — all results require human validation.

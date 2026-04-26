@@ -3,9 +3,6 @@
 /**
  * @file classes/handlers/SuggestHandler.php
  *
- * Copyright (c) 2026 Ne Varietur
- * Distributed under the GNU GPL v3. For full terms see the file LICENSE.
- *
  * @brief Handles /suggest AJAX requests from the keyword autocomplete widget.
  *        Validates input, delegates to SparqlLookupManager, returns JSON.
  */

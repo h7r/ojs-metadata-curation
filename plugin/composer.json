@@ -5,7 +5,8 @@
     "license": "GPL-3.0-or-later",
     "authors": [
         {
-            "name": "h7r"
+            "name": "Wilfried Fouillaret",
+            "email": "wilfriedfouillaret@gmail.com"
         }
     ],
     "require": {
