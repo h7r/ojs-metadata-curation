@@ -11,7 +11,7 @@
 ## 1. Tarball de release
 
 Fichier : `nvMetadataCuration-2.0.4.0.tar.gz`
-MD5 : `{RELEASE_MD5}` (à recalculer lors du build post-merge)
+MD5 : `f5a754ca27ff2d24f7b0d9544f7b483f`
 
 Reconstruit avec :
 ```bash
@@ -97,8 +97,8 @@ Features (unchanged):
 		<name>Wilfried Fouillaret</name>
 		<email>wilfriedfouillaret@gmail.com</email>
 	</maintainer>
-	<release date="2026-04-26" version="2.0.4.0" md5="{RELEASE_MD5}">
-		<package>{RELEASE_URL}/nvMetadataCuration-2.0.4.0.tar.gz</package>
+	<release date="2026-04-26" version="2.0.4.0" md5="f5a754ca27ff2d24f7b0d9544f7b483f">
+		<package>https://github.com/h7r/ojs-metadata-curation/releases/download/v2.0.4.0/nvMetadataCuration-2.0.4.0.tar.gz</package>
 		<compatibility application="ojs2">
 			<version>3.4.0.0</version>
 			<version>3.4.0.1</version>
@@ -131,8 +131,8 @@ Features (unchanged):
 - [x] Tarball structure : `nvMetadataCuration/` racine unique
 - [x] Compat OJS 3.4.x vérifiée à jour vs `github.com/pkp/ojs/tags` (2026-04-26 : `3.4.0.0` → `3.4.0.10`)
 - [x] GitHub repo public : `github.com/h7r/ojs-metadata-curation`
-- [ ] MD5 recalculé pour `nvMetadataCuration-2.0.4.0.tar.gz` (post-merge, GST-46.2)
-- [ ] Tarball validé via install Docker OJS local + test 3 locales (GST-46.3 — Gate 1)
-- [ ] Tag `v2.0.4.0` poussé (GST-46.4)
-- [ ] GitHub Release publiée avec tarball + MD5 (GST-46.4)
+- [x] MD5 recalculé pour `nvMetadataCuration-2.0.4.0.tar.gz` (post-merge, GST-46.2) : `f5a754ca27ff2d24f7b0d9544f7b483f`
+- [x] Tarball validé via install Docker OJS local + test 3 locales (GST-46.3 — Gate 1)
+- [x] Tag `v2.0.4.0` poussé (GST-46.4)
+- [x] GitHub Release publiée avec tarball + MD5 (GST-46.4) : https://github.com/h7r/ojs-metadata-curation/releases/tag/v2.0.4.0
 - [ ] PR draft ouverte sur `pkp/plugin-gallery` (GST-46.4)
