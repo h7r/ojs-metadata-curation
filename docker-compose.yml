@@ -8,6 +8,10 @@
 #
 # The plugin directory is bind-mounted into the OJS container.
 # Any changes to plugin/ are reflected live (no rebuild needed).
+#
+# DEV-ONLY — DO NOT EXPOSE THIS COMPOSE BEYOND localhost.
+# Credentials below (ojs/ojs) are the OJS community defaults for local
+# development. They are unsafe for any reachable deployment.
 ##
 
 services:
