@@ -5,6 +5,22 @@ All notable changes to this plugin will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## v2.0.4.1 — 2026-10-13
+
+### Security
+
+- **#13.** `audit.tpl` now applies `|escape` to every row value it prints
+  (field statuses in CSS classes and `aria-label`, curated keyword count,
+  ORCID and affiliation ratios), not only to the submission title, and to
+  the translated table label written into an `aria-label` attribute.
+  Raised by the PKP maintainer on pkp/plugin-gallery#485.
+
+### Changed
+
+- **#13.** Plugin Gallery entry declares OJS compatibility with the
+  semver constraint `~3.4.0.0` instead of listing every 3.4.0-x build.
+- Bumped `plugin/version.xml` to `2.0.4.1`.
+
 ## v2.0.2 — 2026-04-24
 
 ### Fixed

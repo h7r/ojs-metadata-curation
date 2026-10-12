@@ -14,7 +14,7 @@
 		{if empty($auditData)}
 			<p>{translate key="plugins.generic.nvMetadataCuration.audit.noSubmissions"}</p>
 		{else}
-			<table class="pkp_table nv-audit-table" aria-label="{translate key="plugins.generic.nvMetadataCuration.audit.tableLabel"}">
+			<table class="pkp_table nv-audit-table" aria-label="{translate|escape key="plugins.generic.nvMetadataCuration.audit.tableLabel"}">
 				<thead>
 					<tr>
 						<th scope="col">{translate key="plugins.generic.nvMetadataCuration.audit.colTitle"}</th>
@@ -32,30 +32,30 @@
 									{$row.title|escape}
 								</a>
 							</td>
-							<td class="nv-audit-cell nv-audit-{$row.fields.kwd_curated.status}">
-								<span class="nv-audit-badge" aria-label="{$row.fields.kwd_curated.status}">
-									{if $row.fields.kwd_curated.status == 'complete'}&#10003; {$row.fields.kwd_curated.count}
+							<td class="nv-audit-cell nv-audit-{$row.fields.kwd_curated.status|escape}">
+								<span class="nv-audit-badge" aria-label="{$row.fields.kwd_curated.status|escape}">
+									{if $row.fields.kwd_curated.status == 'complete'}&#10003; {$row.fields.kwd_curated.count|escape}
 									{elseif $row.fields.kwd_curated.status == 'partial'}&#9679;
 									{else}&#10007;{/if}
 								</span>
 							</td>
-							<td class="nv-audit-cell nv-audit-{$row.fields.kwd_ojs.status}">
-								<span class="nv-audit-badge" aria-label="{$row.fields.kwd_ojs.status}">
+							<td class="nv-audit-cell nv-audit-{$row.fields.kwd_ojs.status|escape}">
+								<span class="nv-audit-badge" aria-label="{$row.fields.kwd_ojs.status|escape}">
 									{if $row.fields.kwd_ojs.status == 'complete'}&#10003;{else}&#10007;{/if}
 								</span>
 							</td>
-							<td class="nv-audit-cell nv-audit-{$row.fields.orcid.status}">
-								<span class="nv-audit-badge" aria-label="{$row.fields.orcid.status}">
+							<td class="nv-audit-cell nv-audit-{$row.fields.orcid.status|escape}">
+								<span class="nv-audit-badge" aria-label="{$row.fields.orcid.status|escape}">
 									{if $row.fields.orcid.status == 'complete'}&#10003;
 									{elseif $row.fields.orcid.status == 'partial'}&#9679;{else}&#10007;{/if}
-									{$row.fields.orcid.ratio}
+									{$row.fields.orcid.ratio|escape}
 								</span>
 							</td>
-							<td class="nv-audit-cell nv-audit-{$row.fields.affiliation.status}">
-								<span class="nv-audit-badge" aria-label="{$row.fields.affiliation.status}">
+							<td class="nv-audit-cell nv-audit-{$row.fields.affiliation.status|escape}">
+								<span class="nv-audit-badge" aria-label="{$row.fields.affiliation.status|escape}">
 									{if $row.fields.affiliation.status == 'complete'}&#10003;
 									{elseif $row.fields.affiliation.status == 'partial'}&#9679;{else}&#10007;{/if}
-									{$row.fields.affiliation.ratio}
+									{$row.fields.affiliation.ratio|escape}
 								</span>
 							</td>
 						</tr>
