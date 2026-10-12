@@ -160,4 +160,4 @@ Le plugin est préparé pour soumission au [PKP Plugin Gallery](https://pkp.sfu.
 
 ## AI disclosure
 
-In line with PKP's policy on AI-assisted contributions: most of this plugin's code was written with AI coding assistants (Claude). The maintainer designed the features, reviewed the code, and tested the plugin end-to-end in OJS 3.4 (Docker).
+The plugin's code was written with AI coding assistants (Claude). The idea came from metadata quality issues raised in the scholarly publishing community; the maintainer scoped the features, then tested and debugged the plugin end-to-end in OJS 3.4 (Docker).
