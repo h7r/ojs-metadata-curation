@@ -1,8 +1,8 @@
 # PKP Plugin Gallery — Dossier de soumission
 
 **Plugin :** NV Metadata Curation
-**Version :** 2.0.4.0
-**Date :** 2026-04-26
+**Version :** 2.0.4.1
+**Date :** 2026-10-13
 **Catégorie :** generic
 **Licence :** GPL v3
 
@@ -10,12 +10,12 @@
 
 ## 1. Tarball de release
 
-Fichier : `nvMetadataCuration-2.0.4.0.tar.gz`
-MD5 : `f5a754ca27ff2d24f7b0d9544f7b483f`
+Fichier : `nvMetadataCuration-2.0.4.1.tar.gz`
+MD5 : `{MD5}` (à calculer après fusion, sur le tarball construit depuis `main`)
 
 Reconstruit avec :
 ```bash
-tar czf nvMetadataCuration-2.0.4.0.tar.gz \
+tar czf nvMetadataCuration-2.0.4.1.tar.gz \
   --transform='s|^plugin|nvMetadataCuration|' \
   --exclude='plugin/vendor' \
   --exclude='plugin/.phpunit.cache' \
@@ -40,32 +40,28 @@ Le tarball doit être hébergé sur une URL publique stable. GitHub Releases est
 git remote add origin https://github.com/h7r/ojs-metadata-curation.git
 
 # Tag de release (4 chiffres, cohérent avec version.xml)
-git tag -a v2.0.4.0 -m "v2.0.4.0 — first public release for PKP Gallery (GST-41/42/44/45)"
-git push origin v2.0.4.0
+git tag -a v2.0.4.1 -m "v2.0.4.1 — audit.tpl escaping, semver compatibility (#13)"
+git push origin v2.0.4.1
 ```
 
 ### 2b. Créer la GitHub Release
 
 ```bash
-gh release create v2.0.4.0 \
-  nvMetadataCuration-2.0.4.0.tar.gz \
-  --title "v2.0.4.0 — first public release for PKP Gallery" \
-  --notes "First public release for PKP Plugin Gallery — Sprint 3 consolidated fixes.
+gh release create v2.0.4.1 \
+  nvMetadataCuration-2.0.4.1.tar.gz \
+  --title "v2.0.4.1 — PKP Gallery review fixes" \
+  --notes "Fixes from the PKP maintainer review (pkp/plugin-gallery#485).
 
 Changes:
-- Fix (GST-41): audit page 500 — AuditHandler uses _isBackendPage + setupTemplate, audit.tpl extends layouts/backend.tpl
-- Docs (GST-41): drop legacy PLAN.md / docs/SPECS.md and stale README bullet
-- Chore (GST-42): sweep dead SPECS.md refs + fix audit pageTitle i18n
-- Fix (GST-44): getSubmissionId() covers editorial workflow URL (JS)
-- Fix (GST-45): register nvKeywords + nvContributorValidation on Submission schema — prevents silent drop in Repo::submission()->edit()
-- Chore (GST-46): maintainer identity set to Wilfried Fouillaret <wilfriedfouillaret@gmail.com> in composer.json, locale.po and gallery dossier; per-file copyright headers removed (LICENSE GPL v3 governs).
+- Security (#13): audit.tpl escapes every row value (statuses, counts, ratios), not only the title, plus the translated aria-label
+- Gallery (#13): OJS compatibility declared as ~3.4.0.0
 
 Features (unchanged):
 - SPARQL autocomplete (UNESCO, Rameau, Eurovoc)
 - ORCID/ROR contributor lookup with human validation
 - Backoffice metadata audit dashboard
 - Trilingual: EN, ES, FR
-- Free and unlimited access (pivot v2.0.0.0)"
+- Free and unlimited access"
 ```
 
 ### 2c. Soumettre la PR sur pkp/plugin-gallery
@@ -78,7 +74,7 @@ Features (unchanged):
 
 ## 3. Entrée XML pour `plugins.xml`
 
-> **IMPORTANT :** Remplacer `{RELEASE_URL}` par l'URL finale du tarball sur GitHub Releases.
+> **IMPORTANT :** Remplacer `{MD5}` par le MD5 du tarball publié sur GitHub Releases (l'URL du `<package>` est déjà la finale).
 > Recalculer le MD5 si le tarball est regénéré.
 
 ```xml
@@ -95,24 +91,15 @@ Features (unchanged):
 	<description locale="fr_FR"><![CDATA[<p>Curation souveraine des métadonnées pour les revues OJS.</p><p>Thésaurus ouverts (UNESCO, Rameau BnF, Eurovoc UE) pour l'autocomplétion des mots-clés.</p><p>Recherche ORCID/ROR avec validation humaine — pas d'auto-complétion silencieuse.</p><p>Gratuit et illimité — sans clé API, sans quota, sans compte tiers.</p><p>Interface trilingue (EN/ES/FR).</p><p>Tableau d'audit des métadonnées en backoffice pour les éditeurs.</p><p>Nécessite OJS 3.4.x et PHP 8.1+.</p>]]></description>
 	<maintainer>
 		<name>Wilfried Fouillaret</name>
+		<institution>Independent</institution>
 		<email>wilfriedfouillaret@gmail.com</email>
 	</maintainer>
-	<release date="2026-04-26" version="2.0.4.0" md5="f5a754ca27ff2d24f7b0d9544f7b483f">
-		<package>https://github.com/h7r/ojs-metadata-curation/releases/download/v2.0.4.0/nvMetadataCuration-2.0.4.0.tar.gz</package>
+	<release date="2026-10-13" version="2.0.4.1" md5="{MD5}">
+		<package>https://github.com/h7r/ojs-metadata-curation/releases/download/v2.0.4.1/nvMetadataCuration-2.0.4.1.tar.gz</package>
 		<compatibility application="ojs2">
-			<version>3.4.0.0</version>
-			<version>3.4.0.1</version>
-			<version>3.4.0.2</version>
-			<version>3.4.0.3</version>
-			<version>3.4.0.4</version>
-			<version>3.4.0.5</version>
-			<version>3.4.0.6</version>
-			<version>3.4.0.7</version>
-			<version>3.4.0.8</version>
-			<version>3.4.0.9</version>
-			<version>3.4.0.10</version>
+			<version>~3.4.0.0</version>
 		</compatibility>
-		<description locale="en">First public release for the PKP Plugin Gallery — full SPARQL keyword autocomplete, validated ORCID/ROR contributor lookup, backoffice metadata audit dashboard, trilingual EN/ES/FR. Free and unlimited.</description>
+		<description locale="en">First release for the PKP Plugin Gallery — SPARQL keyword autocomplete, validated ORCID/ROR contributor lookup, backoffice metadata audit dashboard, trilingual EN/ES/FR. Free and unlimited. Includes output escaping in the audit dashboard template.</description>
 	</release>
 </plugin>
 ```
@@ -121,7 +108,7 @@ Features (unchanged):
 
 ## 4. Checklist pré-soumission
 
-- [x] `version.xml` conforme DTD `pluginVersion.dtd` (4 chiffres : 2.0.4.0)
+- [x] `version.xml` conforme DTD `pluginVersion.dtd` (4 chiffres : 2.0.4.1)
 - [x] `LICENSE` GPL v3 inclus dans le tarball
 - [x] Locales : en, es, fr_FR (fichiers `.po` **conservés** dans le tarball)
 - [x] Aucune dépendance externe runtime
@@ -129,10 +116,12 @@ Features (unchanged):
 - [x] Namespace PSR-4 correct
 - [x] Tests unitaires inclus (5 suites — `RateLimitManagerTest` retiré en v2.0)
 - [x] Tarball structure : `nvMetadataCuration/` racine unique
-- [x] Compat OJS 3.4.x vérifiée à jour vs `github.com/pkp/ojs/tags` (2026-04-26 : `3.4.0.0` → `3.4.0.10`)
+- [x] Compatibilité déclarée en semver `~3.4.0.0` (demande du mainteneur PKP, #13) au lieu de la liste `3.4.0.0` → `3.4.0.10`
 - [x] GitHub repo public : `github.com/h7r/ojs-metadata-curation`
-- [x] MD5 recalculé pour `nvMetadataCuration-2.0.4.0.tar.gz` (post-merge, GST-46.2) : `f5a754ca27ff2d24f7b0d9544f7b483f`
-- [x] Tarball validé via install Docker OJS local + test 3 locales (GST-46.3 — Gate 1)
-- [x] Tag `v2.0.4.0` poussé (GST-46.4)
-- [x] GitHub Release publiée avec tarball + MD5 (GST-46.4) : https://github.com/h7r/ojs-metadata-curation/releases/tag/v2.0.4.0
-- [x] PR draft ouverte sur `pkp/plugin-gallery` (GST-46.4) : https://github.com/pkp/plugin-gallery/pull/485
+- [x] `audit.tpl` : `|escape` sur toutes les valeurs de ligne et sur le libellé traduit de l'`aria-label` (#13)
+- [ ] MD5 calculé pour `nvMetadataCuration-2.0.4.1.tar.gz` (après fusion, tarball construit depuis `main`)
+- [ ] Tag `v2.0.4.1` poussé
+- [ ] GitHub Release publiée avec tarball : https://github.com/h7r/ojs-metadata-curation/releases/tag/v2.0.4.1
+- [ ] Bloc `plugins.xml` de la PR https://github.com/pkp/plugin-gallery/pull/485 mis à jour (2.0.4.1 remplace 2.0.4.0, `~3.4.0.0`), validé contre `plugins.xsd`
+
+Historique : v2.0.4.0 (2026-04-26, MD5 `f5a754ca27ff2d24f7b0d9544f7b483f`) a ouvert la PR #485 ; elle est remplacée par 2.0.4.1 dans le bloc de la galerie, jamais fusionnée.
