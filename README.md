@@ -157,3 +157,7 @@ Le plugin est préparé pour soumission au [PKP Plugin Gallery](https://pkp.sfu.
 - 3 locales complètes (en, es, fr_FR)
 - Aucune dépendance externe (pas de Composer, pas de npm)
 - Compatible OJS 3.4.x
+
+## AI disclosure
+
+The plugin's code was written with AI coding assistants (Claude). The idea came from metadata quality issues raised in the scholarly publishing community; the maintainer scoped the features, then tested and debugged the plugin end-to-end in OJS 3.4 (Docker).
