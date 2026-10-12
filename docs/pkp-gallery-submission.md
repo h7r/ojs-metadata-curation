@@ -11,7 +11,7 @@
 ## 1. Tarball de release
 
 Fichier : `nvMetadataCuration-2.0.4.1.tar.gz`
-MD5 : `{MD5}` (à calculer après fusion, sur le tarball construit depuis `main`)
+MD5 : `b5395cf829409e028e3e34e8d30ace1a`
 
 Reconstruit avec :
 ```bash
@@ -74,7 +74,7 @@ Features (unchanged):
 
 ## 3. Entrée XML pour `plugins.xml`
 
-> **IMPORTANT :** Remplacer `{MD5}` par le MD5 du tarball publié sur GitHub Releases (l'URL du `<package>` est déjà la finale).
+> **IMPORTANT :** MD5 et URL du `<package>` sont ceux du tarball publié sur GitHub Releases.
 > Recalculer le MD5 si le tarball est regénéré.
 
 ```xml
@@ -94,7 +94,7 @@ Features (unchanged):
 		<institution>Independent</institution>
 		<email>wilfriedfouillaret@gmail.com</email>
 	</maintainer>
-	<release date="2026-10-13" version="2.0.4.1" md5="{MD5}">
+	<release date="2026-10-13" version="2.0.4.1" md5="b5395cf829409e028e3e34e8d30ace1a">
 		<package>https://github.com/h7r/ojs-metadata-curation/releases/download/v2.0.4.1/nvMetadataCuration-2.0.4.1.tar.gz</package>
 		<compatibility application="ojs2">
 			<version>~3.4.0.0</version>
@@ -119,9 +119,9 @@ Features (unchanged):
 - [x] Compatibilité déclarée en semver `~3.4.0.0` (demande du mainteneur PKP, #13) au lieu de la liste `3.4.0.0` → `3.4.0.10`
 - [x] GitHub repo public : `github.com/h7r/ojs-metadata-curation`
 - [x] `audit.tpl` : `|escape` sur toutes les valeurs de ligne et sur le libellé traduit de l'`aria-label` (#13)
-- [ ] MD5 calculé pour `nvMetadataCuration-2.0.4.1.tar.gz` (après fusion, tarball construit depuis `main`)
-- [ ] Tag `v2.0.4.1` poussé
-- [ ] GitHub Release publiée avec tarball : https://github.com/h7r/ojs-metadata-curation/releases/tag/v2.0.4.1
+- [x] MD5 calculé pour `nvMetadataCuration-2.0.4.1.tar.gz` (tarball construit depuis `main` @ 24e49de, revérifié sur le fichier téléchargé) : `b5395cf829409e028e3e34e8d30ace1a`
+- [x] Tag `v2.0.4.1` poussé
+- [x] GitHub Release publiée avec tarball : https://github.com/h7r/ojs-metadata-curation/releases/tag/v2.0.4.1
 - [ ] Bloc `plugins.xml` de la PR https://github.com/pkp/plugin-gallery/pull/485 mis à jour (2.0.4.1 remplace 2.0.4.0, `~3.4.0.0`), validé contre `plugins.xsd`
 
 Historique : v2.0.4.0 (2026-04-26, MD5 `f5a754ca27ff2d24f7b0d9544f7b483f`) a ouvert la PR #485 ; elle est remplacée par 2.0.4.1 dans le bloc de la galerie, jamais fusionnée.
