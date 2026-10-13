@@ -1,0 +1,24 @@
+# Socle commun : à copier tel quel à la racine de chaque dépôt.
+# Dans le dépôt, tout fichier texte est en LF, quel que soit core.autocrlf.
+* text=auto eol=lf
+
+# Scripts Windows : CRLF obligatoire pour cmd.exe.
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# Binaires : jamais convertis, jamais comparés ligne à ligne.
+*.docx binary
+*.docm binary
+*.dotx binary
+*.xlsx binary
+*.pdf binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.zip binary
+*.db binary
+*.sqlite binary
+*.pt binary
+*.npy binary
+*.pkl binary
